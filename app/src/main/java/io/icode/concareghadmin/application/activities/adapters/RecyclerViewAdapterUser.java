@@ -16,14 +16,14 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.chatApp.MessageActivity;
-import io.icode.concareghadmin.application.activities.models.Users;
+import io.icode.concareghadmin.application.activities.models.User;
 
 public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAdapterUser.ViewHolder> {
 
     private Context mCtx;
-    private List<Users> mUsers;
+    private List<User> mUsers;
 
-    public RecyclerViewAdapterUser(Context mCtx, List<Users> mUsers){
+    public RecyclerViewAdapterUser(Context mCtx, List<User> mUsers){
         this.mCtx = mCtx;
         this.mUsers = mUsers;
     }
@@ -40,19 +40,19 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        // gets the positions of the all users
-        final Users users = mUsers.get(position);
+        // gets the positions of the all user
+        final User user = mUsers.get(position);
 
         // sets username to the text of the textView
-        holder.username.setText(users.getUsername());
+        holder.username.setText(user.getUsername());
 
-        if(users.getImageUrl() == null){
+        if(user.getImageUrl() == null){
             // loads the default placeholder into ImageView if ImageUrl is null
             holder.profile_pic.setImageResource(R.drawable.ic_person_unknown);
         }
         else{
             // loads user image into the ImageView
-            Glide.with(mCtx).load(users.getImageUrl()).into(holder.profile_pic);
+            Glide.with(mCtx).load(user.getImageUrl()).into(holder.profile_pic);
         }
 
         // onClickListener for view
@@ -61,8 +61,8 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
             public void onClick(View view) {
                 // passing adminUid as a string to the MessageActivity
                 Intent intent = new Intent(mCtx,MessageActivity.class);
-                intent.putExtra("uid",users.getUid());
-                intent.putExtra("username",users.getUsername());
+                intent.putExtra("uid", user.getUid());
+                intent.putExtra("username", user.getUsername());
                 mCtx.startActivity(intent);
             }
         });

@@ -1,6 +1,6 @@
 package io.icode.concareghadmin.application.activities.models;
 
-public class Users {
+public class User {
 
     //field in the database
     private String email;
@@ -12,10 +12,10 @@ public class Users {
 
 
     //default constructor
-    public Users(){}
+    public User(){}
 
     //constructor with one or more parameters
-    public Users(String email, String username, String uid, String gender, String phoneNumber, String imageUrl){
+    public User(String email, String username, String uid, String gender, String phoneNumber, String imageUrl){
         this.email = email;
         this.username = username;
         this.uid = uid;

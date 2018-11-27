@@ -28,7 +28,7 @@ import io.icode.concareghadmin.application.activities.activities.AdminLoginActiv
 import io.icode.concareghadmin.application.activities.adapters.ViewPagerAdapter;
 import io.icode.concareghadmin.application.activities.fragments.ChatsFragment;
 import io.icode.concareghadmin.application.activities.fragments.UsersFragment;
-import io.icode.concareghadmin.application.activities.models.Users;
+import io.icode.concareghadmin.application.activities.models.User;
 import maes.tech.intentanim.CustomIntent;
 
 public class HomeActivity extends AppCompatActivity {
@@ -36,7 +36,7 @@ public class HomeActivity extends AppCompatActivity {
     TextView username;
 
 
-    Users users;
+    User user;
 
     FirebaseAuth mAuth;
     FirebaseUser user;
@@ -58,27 +58,27 @@ public class HomeActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        users = new Users();
+        user = new User();
 
         user = mAuth.getCurrentUser();
 
-        chatDbRef = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
+        chatDbRef = FirebaseDatabase.getInstance().getReference("User").child(user.getUid());
 
         chatDbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                Users users = dataSnapshot.getValue(Users.class);
+                User user = dataSnapshot.getValue(User.class);
 
-                username.setText(user.getDisplayName());
+                username.setText(HomeActivity.this.user.getDisplayName());
 
                 //text if user's imageUrl is equal to default
-                if(user.getPhotoUrl() == null){
+                if(HomeActivity.this.user.getPhotoUrl() == null){
                     profile_image.setImageResource(R.drawable.app_logo);
                 }
                 else{
                     // load user's Image Url
-                    Glide.with(HomeActivity.this).load(user.getPhotoUrl()).into(profile_image);
+                    Glide.with(HomeActivity.this).load(HomeActivity.this.user.getPhotoUrl()).into(profile_image);
                 }
 
             }

@@ -16,7 +16,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
-import io.icode.concareghadmin.application.activities.models.Chats;
+import io.icode.concareghadmin.application.activities.models.Chat;
 
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
@@ -25,12 +25,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public static final int MSG_TYPE_RIGHT = 1;
 
     private Context mCtx;
-    private List<Chats> mChats;
+    private List<Chat> mChats;
     private String imageUrl;
 
     private FirebaseUser user;
 
-    public MessageAdapter(Context mCtx, List<Chats> mChats, String imageUrl){
+    public MessageAdapter(Context mCtx, List<Chat> mChats, String imageUrl){
         this.mCtx= mCtx;
         this.mChats = mChats;
         this.imageUrl = imageUrl;
@@ -55,9 +55,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Chats chats = mChats.get(position);
+        Chat chat = mChats.get(position);
 
-        holder.show_message.setText(chats.getMessage());
+        holder.show_message.setText(chat.getMessage());
 
         // checks if imageUrl is empty or not
         if(imageUrl == null){

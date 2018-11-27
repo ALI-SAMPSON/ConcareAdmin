@@ -25,8 +25,7 @@ import java.util.List;
 
 import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.adapters.RecyclerViewAdapterUser;
-import io.icode.concareghadmin.application.activities.models.Admin;
-import io.icode.concareghadmin.application.activities.models.Users;
+import io.icode.concareghadmin.application.activities.models.User;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,7 +34,7 @@ public class UsersFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private RecyclerViewAdapterUser adapterUser;
-    private List<Users> mUsers;
+    private List<User> mUsers;
 
     ConstraintLayout mLayout;
 
@@ -59,7 +58,7 @@ public class UsersFragment extends Fragment {
 
         mAuth = FirebaseAuth.getInstance();
 
-        userRef = FirebaseDatabase.getInstance().getReference("Users");
+        userRef = FirebaseDatabase.getInstance().getReference("User");
 
         readUsers();
 
@@ -79,13 +78,13 @@ public class UsersFragment extends Fragment {
                 mUsers.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
 
-                    Users users = snapshot.getValue(Users.class);
+                    User user = snapshot.getValue(User.class);
 
-                    assert users != null;
+                    assert user != null;
 
                     assert currentUser != null;
 
-                    mUsers.add(users);
+                    mUsers.add(user);
 
                 }
 

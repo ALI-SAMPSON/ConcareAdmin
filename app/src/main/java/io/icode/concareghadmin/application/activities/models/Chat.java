@@ -1,14 +1,14 @@
 package io.icode.concareghadmin.application.activities.models;
 
-public class Chats {
+public class Chat {
 
     private String sender;
     private String receiver;
     private String message;
 
-    public Chats(){}
+    public Chat(){}
 
-    public Chats(String sender, String receiver, String message) {
+    public Chat(String sender, String receiver, String message) {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;

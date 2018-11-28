@@ -2,7 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="10dp"
+    android:padding="8dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -11,7 +11,10 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:scaleType="centerCrop"
-        android:background="@null" />
+        android:layout_centerVertical="true"
+        android:background="@drawable/avatar_placeholder"
+        app:civ_border_width="1dp"
+        app:civ_border_color="@color/white_dim"/>
 
     <TextView
         android:id="@+id/username"
@@ -19,9 +22,10 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/profile_image"
         android:layout_toEndOf="@+id/profile_image"
-        app:fontFamily="@font/nunito_semibold"
+        app:fontFamily="@font/lato"
         android:layout_centerVertical="true"
         android:text="@string/hint_username"
+        android:textColor="@color/status_bar_back"
         android:textSize="18sp"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"/>

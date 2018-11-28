@@ -57,11 +57,9 @@ public class ChatsFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mUsers = new ArrayList<>();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         usersList = new ArrayList<>();
-
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         reference = FirebaseDatabase.getInstance().getReference("Chats");
 
@@ -103,12 +101,33 @@ public class ChatsFragment extends Fragment {
          reference.addValueEventListener(new ValueEventListener() {
              @Override
              public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                  mUsers.clear();
 
                  for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-
                      Users users = snapshot.getValue(Users.class);
+                     // displaying 1 users from chats
+                     for(String id : usersList){
+                         if(users.getUid().equals(id)){
+                             if(mUsers.size() != 0){
+                                 for(Users users1 : mUsers){
+                                     if(!users.getUid().equals(users1.getUid())){
+                                         mUsers.add(users);
+                                     }
+                                 }
+                             }
+                             else{
+                                //mUsers.add(users);
+                             }
 
+                         }
+                     }
+
+                 }
+
+                 /*
+                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                     Users users = snapshot.getValue(Users.class);
                      // displaying 1 users from chats
                      for(String id : usersList){
                          if(users.getUid().equals(id)){
@@ -126,6 +145,7 @@ public class ChatsFragment extends Fragment {
                      }
 
                  }
+                 */
 
                  // initializing && setting adapter to recyclerView
                  recyclerViewAdapterUser = new RecyclerViewAdapterUser(getContext(), mUsers);

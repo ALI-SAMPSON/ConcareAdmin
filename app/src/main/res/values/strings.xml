@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">CONCARE GH</string>
+    <string name="app_name" translatable="false">CONCARE GH - ADMIN</string>
     <string name="hint_email" translatable="false">Email</string>
     <string name="hint_password" translatable="false">Password</string>
     <string name="hint_location" translatable="false">Location/Address</string>

@@ -111,7 +111,7 @@
                 tools:targetApi="o"/>
         </android.support.design.widget.TextInputLayout>
 
-        <!-- Link to reset the user password -->
+        <!-- Link to reset the users password -->
         <Button
             android:id="@+id/forgot_password"
             android:layout_marginTop="10dp"
@@ -164,7 +164,7 @@
     android:background="@drawable/round_corner_button_login"
     android:onClick="onLoginButtonClick"/>
 
-<!-- Link to the user sign up page -->
+<!-- Link to the users sign up page -->
 <Button
     android:id="@+id/buttonSignUpLink"
     android:layout_marginTop="20dp"

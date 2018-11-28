@@ -1,6 +1,6 @@
 package io.icode.concareghadmin.application.activities.models;
 
-public class Orders {
+public class Order {
 
     private String username;
     private String telephone_Number;
@@ -14,12 +14,12 @@ public class Orders {
     private String room_number;
 
     //default constructor
-    public Orders(){ }
+    public Order(){ }
 
     //constructor with one or more parameters
-    public Orders(String username, String telephone_Number, String campus,
-                  String location, String other_location, String residence,
-                  String contraceptive, String other_contraceptive, String hostel_name, String room_number)
+    public Order(String username, String telephone_Number, String campus,
+                 String location, String other_location, String residence,
+                 String contraceptive, String other_contraceptive, String hostel_name, String room_number)
     {
         this.username = username;
         this.telephone_Number = telephone_Number;

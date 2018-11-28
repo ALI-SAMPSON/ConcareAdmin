@@ -28,19 +28,22 @@ import io.icode.concareghadmin.application.activities.activities.AdminLoginActiv
 import io.icode.concareghadmin.application.activities.adapters.ViewPagerAdapter;
 import io.icode.concareghadmin.application.activities.fragments.ChatsFragment;
 import io.icode.concareghadmin.application.activities.fragments.UsersFragment;
-import io.icode.concareghadmin.application.activities.models.User;
+import io.icode.concareghadmin.application.activities.models.Admin;
+import io.icode.concareghadmin.application.activities.models.Users;
 import maes.tech.intentanim.CustomIntent;
 
 public class HomeActivity extends AppCompatActivity {
+
     CircleImageView profile_image;
     TextView username;
 
+    Users users;
 
-    User user;
+    Admin admin;
 
     FirebaseAuth mAuth;
-    FirebaseUser user;
-    DatabaseReference chatDbRef;
+    FirebaseUser currentAdmin;
+    DatabaseReference adminRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,27 +61,30 @@ public class HomeActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        user = new User();
+        admin = new Admin();
 
-        user = mAuth.getCurrentUser();
+        users = new Users();
 
-        chatDbRef = FirebaseDatabase.getInstance().getReference("User").child(user.getUid());
+        currentAdmin = mAuth.getCurrentUser();
 
-        chatDbRef.addValueEventListener(new ValueEventListener() {
+        adminRef = FirebaseDatabase.getInstance().getReference("Admin").child(currentAdmin.getUid());
+        //.child(users.getUid());
+
+        adminRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                User user = dataSnapshot.getValue(User.class);
+                Admin admin = dataSnapshot.getValue(Admin.class);
 
-                username.setText(HomeActivity.this.user.getDisplayName());
+                username.setText(admin.getUsername());
 
-                //text if user's imageUrl is equal to default
-                if(HomeActivity.this.user.getPhotoUrl() == null){
+                //text if users's imageUrl is equal to default
+                if(admin.getImageUrl() == null){
                     profile_image.setImageResource(R.drawable.app_logo);
                 }
                 else{
-                    // load user's Image Url
-                    Glide.with(HomeActivity.this).load(HomeActivity.this.user.getPhotoUrl()).into(profile_image);
+                    // load users's Image Url
+                    Glide.with(HomeActivity.this).load(admin.getImageUrl()).into(profile_image);
                 }
 
             }

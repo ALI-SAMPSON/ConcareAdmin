@@ -14,8 +14,8 @@
     <string name="text_gender" translatable="false">Gender</string>
     <string name="welcome" translatable="false">Welcome!</string>
     <string name="welcome_msg" translatable="false">Hope you enjoy the stay</string>
-    <string name="sign_up_link" translatable="false">Not yet a user? Sign Up</string>
-    <string name="login_link" translatable="false">Already a user? Sign In</string>
+    <string name="sign_up_link" translatable="false">Not yet a users? Sign Up</string>
+    <string name="login_link" translatable="false">Already a users? Sign In</string>
     <string name="text_upload_pic" translatable="false">Upload Profile</string>
     <string name="text_picture" translatable="false">Picture</string>
     <string name="login" translatable="false">Login</string>
@@ -206,7 +206,7 @@
         to avoid unwanted or unsafe pregnancy.
 
         Do you have any problem with your reproductive health, or perhaps, you want to acquire knowledge on
-        how to put on good, healthy reproductive lifestyles, feel free to chat our consortium of professionals.
+        how to put on good, healthy reproductive lifestyles, feel free to chats our consortium of professionals.
 
         A healthy reproductive system is a key to good health!
 
@@ -227,7 +227,7 @@
 
     <string name="text_3" translatable="false">
         Do you have any problem with your reproductive health, or perhaps, you want to acquire knowledge on
-        how to put on good, healthy reproductive lifestyles, feel free to chat our consortium of professionals.
+        how to put on good, healthy reproductive lifestyles, feel free to chats our consortium of professionals.
     </string>
 
     <string name="text_4" translatable="false">

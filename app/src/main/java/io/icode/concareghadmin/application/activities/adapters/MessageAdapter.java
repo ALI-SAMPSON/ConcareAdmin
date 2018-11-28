@@ -16,7 +16,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
-import io.icode.concareghadmin.application.activities.models.Chat;
+import io.icode.concareghadmin.application.activities.models.Chats;
 
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
@@ -25,12 +25,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public static final int MSG_TYPE_RIGHT = 1;
 
     private Context mCtx;
-    private List<Chat> mChats;
+    private List<Chats> mChats;
     private String imageUrl;
 
     private FirebaseUser user;
 
-    public MessageAdapter(Context mCtx, List<Chat> mChats, String imageUrl){
+    public MessageAdapter(Context mCtx, List<Chats> mChats, String imageUrl){
         this.mCtx= mCtx;
         this.mChats = mChats;
         this.imageUrl = imageUrl;
@@ -55,9 +55,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Chat chat = mChats.get(position);
+        Chats chats = mChats.get(position);
 
-        holder.show_message.setText(chat.getMessage());
+        holder.show_message.setText(chats.getMessage());
 
         // checks if imageUrl is empty or not
         if(imageUrl == null){
@@ -94,7 +94,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         user = FirebaseAuth.getInstance().getCurrentUser();
 
-        if(mChats.get(position).getSender().equals(user.getDisplayName())){
+        if(mChats.get(position).getSender().equals(user.getUid())){
             return MSG_TYPE_RIGHT;
         }
         else{

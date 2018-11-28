@@ -33,7 +33,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
 
-            <!-- Deep linking intent-filter to identify app online when user search -->
+            <!-- Deep linking intent-filter to identify app online when users search -->
             <intent-filter android:label="@string/filter_title_con_care_gh">
                 <action android:name="android.intent.action.VIEW" />
 

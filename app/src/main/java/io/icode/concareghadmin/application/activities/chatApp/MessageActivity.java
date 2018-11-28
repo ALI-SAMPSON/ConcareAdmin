@@ -31,8 +31,8 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.adapters.MessageAdapter;
-import io.icode.concareghadmin.application.activities.models.Chat;
-import io.icode.concareghadmin.application.activities.models.User;
+import io.icode.concareghadmin.application.activities.models.Chats;
+import io.icode.concareghadmin.application.activities.models.Users;
 
 public class MessageActivity extends AppCompatActivity {
 
@@ -58,7 +58,7 @@ public class MessageActivity extends AppCompatActivity {
 
     // variable for MessageAdapter class
     MessageAdapter messageAdapter;
-    List<Chat> mChats;
+    List<Chats> mChats;
 
     RecyclerView recyclerView;
 
@@ -98,7 +98,7 @@ public class MessageActivity extends AppCompatActivity {
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        userRef = FirebaseDatabase.getInstance().getReference("User").child(users_id);
+        userRef = FirebaseDatabase.getInstance().getReference("Users").child(users_id);
 
         getUserDetails();
 
@@ -109,20 +109,20 @@ public class MessageActivity extends AppCompatActivity {
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                    username.setText(user.getUsername());
-                if(user.getImageUrl() == null){
+                Users users = dataSnapshot.getValue(Users.class);
+                    username.setText(users.getUsername());
+                if(users.getImageUrl() == null){
                     // sets a default placeholder into imageView if url is null
                     profile_image.setImageResource(R.drawable.ic_person_unknown);
                 }
                 else{
                     // loads imageUrl into imageView if url is not null
                     Glide.with(MessageActivity.this)
-                            .load(user.getImageUrl()).into(profile_image);
+                            .load(users.getImageUrl()).into(profile_image);
                 }
 
                 // method call
-                readMessages(currentUser.getDisplayName(),users_name, user.getImageUrl());
+                readMessages(currentUser.getUid(),users_id, users.getImageUrl());
             }
 
             @Override
@@ -143,7 +143,7 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("receiver", receiver);
         hashMap.put("message",message);
 
-        chatRef.child("Chat").push().setValue(hashMap);
+        chatRef.child("Chats").push().setValue(hashMap);
 
     }
 
@@ -156,7 +156,7 @@ public class MessageActivity extends AppCompatActivity {
         if(!message.equals("")){
             //btn_send.setVisibility(View.VISIBLE);
             // call to method to sendMessage
-            sendMessage(currentUser.getDisplayName(),users_name,message);
+            sendMessage(currentUser.getUid(),users_id,message);
         }
         else{
             Toast.makeText(MessageActivity.this,
@@ -166,22 +166,22 @@ public class MessageActivity extends AppCompatActivity {
         msg_to_send.setText("");
     }
 
-    // method to readMessages from the system
+    // method to readMessages from the database
     private void readMessages(final String myid, final String userid, final String imageUrl){
 
         // array initialization
         mChats = new ArrayList<>();
 
-        chatRef = FirebaseDatabase.getInstance().getReference("Chat");
+        chatRef = FirebaseDatabase.getInstance().getReference("Chats");
         chatRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mChats.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Chat chat = snapshot.getValue(Chat.class);
-                    if(chat.getReceiver().equals(myid) && chat.getSender().equals(userid) ||
-                            chat.getReceiver().equals(userid) && chat.getSender().equals(myid)){
-                        mChats.add(chat);
+                    Chats chats = snapshot.getValue(Chats.class);
+                    if(chats.getReceiver().equals(myid) && chats.getSender().equals(userid) ||
+                            chats.getReceiver().equals(userid) && chats.getSender().equals(myid)){
+                        mChats.add(chats);
                     }
 
                     messageAdapter = new MessageAdapter(MessageActivity.this,mChats,imageUrl);

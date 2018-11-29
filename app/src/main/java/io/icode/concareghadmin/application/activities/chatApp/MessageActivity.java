@@ -33,6 +33,7 @@ import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.adapters.MessageAdapter;
 import io.icode.concareghadmin.application.activities.models.Chats;
 import io.icode.concareghadmin.application.activities.models.Users;
+import maes.tech.intentanim.CustomIntent;
 
 public class MessageActivity extends AppCompatActivity {
 
@@ -45,6 +46,7 @@ public class MessageActivity extends AppCompatActivity {
     DatabaseReference userRef;
 
     DatabaseReference chatRef;
+    DatabaseReference adminRef;
 
     // editText and Button to send Message
     EditText msg_to_send;
@@ -74,7 +76,9 @@ public class MessageActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                startActivity(new Intent(MessageActivity.this, HomeActivity.class)
+                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                CustomIntent.customType(MessageActivity.this, "fadein-to-fadeout");
             }
         });
 
@@ -196,5 +200,27 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    // setting the status of the users
+    private void status(String status){
+
+        userRef = FirebaseDatabase.getInstance().getReference("Users").child(currentUser.getUid());
+
+        HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put("status",status);
+        userRef.updateChildren(hashMap);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        status("online");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        status("offline");
     }
 }

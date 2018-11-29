@@ -22,10 +22,12 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
 
     private Context mCtx;
     private List<Users> mUsers;
+    private boolean isChat;
 
-    public RecyclerViewAdapterUser(Context mCtx, List<Users> mUsers){
+    public RecyclerViewAdapterUser(Context mCtx, List<Users> mUsers, boolean isChat){
         this.mCtx = mCtx;
         this.mUsers = mUsers;
+        this.isChat = isChat;
     }
 
     @NonNull
@@ -55,6 +57,22 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
             Glide.with(mCtx).load(users.getImageUrl()).into(holder.profile_pic);
         }
 
+        // code to check if user is online
+        if(isChat){
+            if(users.getStatus().equals("online")){
+                holder.status_online.setVisibility(View.VISIBLE);
+                holder.status_offline.setVisibility(View.GONE);
+            }
+            else{
+                holder.status_online.setVisibility(View.GONE);
+                holder.status_offline.setVisibility(View.VISIBLE);
+            }
+        }
+        else{
+            holder.status_online.setVisibility(View.GONE);
+            holder.status_offline.setVisibility(View.GONE);
+        }
+
         // onClickListener for view
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,11 +98,17 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
         CircleImageView profile_pic;
         TextView username;
 
+        // status online or offline indicators
+        CircleImageView status_online;
+        CircleImageView status_offline;
+
         public ViewHolder(View itemView) {
             super(itemView);
 
             profile_pic = itemView.findViewById(R.id.profile_image);
             username = itemView.findViewById(R.id.username);
+            status_online = itemView.findViewById(R.id.status_online);
+            status_offline = itemView.findViewById(R.id.status_offline);
         }
     }
 

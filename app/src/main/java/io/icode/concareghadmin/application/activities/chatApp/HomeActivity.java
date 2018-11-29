@@ -22,6 +22,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.activities.AdminLoginActivity;
@@ -120,19 +122,43 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()){
+
             case R.id.menu_sign_out:
 
                 mAuth.signOut();
-
-                startActivity(new Intent(HomeActivity.this, AdminLoginActivity.class));
-
+                // code changed because app will crash
+                startActivity(new Intent(HomeActivity.this, AdminLoginActivity.class)
+                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 CustomIntent.customType(HomeActivity.this, "fadein-to-fadeout");
 
-                finish();
-
-                break;
+                return true;
         }
-        return super.onOptionsItemSelected(item);
+
+        return false;
+    }
+
+    private void status(String status){
+
+        adminRef = FirebaseDatabase.getInstance().getReference("Admin").child(currentAdmin.getUid());
+
+        HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put("status",status);
+        adminRef.updateChildren(hashMap);
+    }
+
+    // setting status to "online" when activity is resumed
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        status("online");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        status("offline");
     }
 }

@@ -89,7 +89,7 @@ public class UsersFragment extends Fragment {
                 }
 
                 // adapter initialization and RecyclerView set up
-                adapterUser = new RecyclerViewAdapterUser(getContext(),mUsers);
+                adapterUser = new RecyclerViewAdapterUser(getContext(),mUsers,false);
                 recyclerView.setAdapter(adapterUser);
                 adapterUser.notifyDataSetChanged();
             }

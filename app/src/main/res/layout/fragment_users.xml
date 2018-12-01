@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mLayout"
+    android:theme="@style/AppTheme.fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.fragments.UsersFragment">
@@ -12,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!--
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -29,19 +31,21 @@
             app:popupTheme="@style/AppTheme.AppBarOverlay"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:titleTextAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"/>
+            -->
 
-        <!--<EditText
+        <EditText
             android:id="@+id/search_users"
-            android:layout_below="@+id/toolbar"
             android:hint="@string/text_search"
+            android:textColor="@color/status_bar_back"
+            app:fontFamily="@font/lato"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"/>
-            -->
+
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
-            android:layout_below="@+id/toolbar"
+            android:layout_below="@+id/search_users"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         </android.support.v7.widget.RecyclerView>

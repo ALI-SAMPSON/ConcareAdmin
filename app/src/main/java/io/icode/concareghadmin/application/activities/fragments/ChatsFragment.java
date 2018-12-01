@@ -24,6 +24,8 @@ import java.util.List;
 
 import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.adapters.RecyclerViewAdapterUser;
+import io.icode.concareghadmin.application.activities.chatApp.MessageActivity;
+import io.icode.concareghadmin.application.activities.models.Chatlist;
 import io.icode.concareghadmin.application.activities.models.Chats;
 import io.icode.concareghadmin.application.activities.models.Users;
 
@@ -32,15 +34,17 @@ import io.icode.concareghadmin.application.activities.models.Users;
  */
 public class ChatsFragment extends Fragment {
 
+    View view;
+
     private RecyclerView recyclerView;
 
     private RecyclerViewAdapterUser recyclerViewAdapterUser;
 
     private List<Users> mUsers;
 
-    private List<String> usersList;
+    private List<Chatlist> usersList;
 
-    FirebaseUser currentUser;
+    FirebaseUser currentAdmin;
 
     DatabaseReference reference;
 
@@ -51,39 +55,35 @@ public class ChatsFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_chats,container,false);
+        view = inflater.inflate(R.layout.fragment_chats,container,false);
 
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        currentAdmin = FirebaseAuth.getInstance().getCurrentUser();
 
         usersList = new ArrayList<>();
 
-        reference = FirebaseDatabase.getInstance().getReference("Chats");
+
+        reference = FirebaseDatabase.getInstance().getReference("Chatlist").child(currentAdmin.getUid());
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // clear list
                 usersList.clear();
-                // gets the senders and receiver data and add to list of chatted users
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Chats chats = snapshot.getValue(Chats.class);
-                    if(chats.getSender().equals(currentUser.getUid())){
-                        usersList.add(chats.getReceiver());
-                    }
-                    if(chats.getReceiver().equals(currentUser.getUid())){
-                        usersList.add(chats.getSender());
-                    }
+                    Chatlist chatlist = snapshot.getValue(Chatlist.class);
+                    usersList.add(chatlist);
                 }
-                // method call to read user's chats
-                readChats();
+
+                // method call
+                chatList();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                // display error message
                 Toast.makeText(getContext(),databaseError.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
@@ -92,75 +92,39 @@ public class ChatsFragment extends Fragment {
         return view;
     }
 
-    private void readChats(){
+    // method to populate fragment with Admin chats
+    private void chatList(){
 
         mUsers = new ArrayList<>();
 
-         reference = FirebaseDatabase.getInstance().getReference("Users");
+        reference = FirebaseDatabase.getInstance().getReference("Users");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mUsers.clear();
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Users user = snapshot.getValue(Users.class);
+                    for(Chatlist chatlist : usersList){
+                        assert user != null;
+                        if(user.getUid().equals(chatlist.getId())){
+                            mUsers.add(user);
+                        }
+                    }
+                }
 
-         reference.addValueEventListener(new ValueEventListener() {
-             @Override
-             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                recyclerViewAdapterUser = new RecyclerViewAdapterUser(getContext(),mUsers,true);
+                recyclerView.setAdapter(recyclerViewAdapterUser);
+            }
 
-                 mUsers.clear();
-
-                 /*for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                     Users users = snapshot.getValue(Users.class);
-                     // displaying 1 users from chats
-                     for(String id : usersList){
-                         assert users != null;
-                         if(users.getUid().equals(id)){
-                             if(mUsers.size() != 0){
-                                 for(Users users1 : mUsers){
-                                     if(!users.getUid().equals(users1.getUid())){
-                                         mUsers.add(users);
-                                     }
-                                 }
-                             }
-                             else{
-                                //mUsers.add(users);
-                             }
-
-                         }
-                     }
-
-                 }
-                 */
-
-                 /*
-                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                     Users users = snapshot.getValue(Users.class);
-                     // displaying 1 users from chats
-                     for(String id : usersList){
-                         if(users.getUid().equals(id)){
-                             if(mUsers.size() != 0){
-                                 for(Users users1 : mUsers){
-                                     if(!users.getUid().equals(users1.getUid())){
-                                         mUsers.add(users);
-                                     }
-                                 }
-                             }
-                             else{
-                                 mUsers.add(users);
-                             }
-                         }
-                     }
-
-                 }
-                 */
-
-                 // initializing && setting adapter to recyclerView
-                 recyclerViewAdapterUser = new RecyclerViewAdapterUser(getContext(), mUsers,true);
-                 recyclerView.setAdapter(recyclerViewAdapterUser);
-             }
-
-             @Override
-             public void onCancelled(@NonNull DatabaseError databaseError) {
-                 Toast.makeText(getContext(),databaseError.getMessage(),Toast.LENGTH_LONG).show();
-             }
-         });
-
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // display error message
+                Toast.makeText(getContext(),databaseError.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
 
     }
+
+
 
 }

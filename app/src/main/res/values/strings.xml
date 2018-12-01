@@ -254,4 +254,10 @@
          Delivered
     </string>
 
+    <string name="no_message" translatable="false">
+         No Message
+    </string>
+
+
+
 </resources>

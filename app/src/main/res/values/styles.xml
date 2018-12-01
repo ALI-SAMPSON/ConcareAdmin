@@ -9,6 +9,14 @@
     </style>
 
     <!-- Base application theme. -->
+    <style name="AppTheme.fragment" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorAccent">@android:color/darker_gray</item>
+        <item name="colorPrimary">@color/orange_light</item>
+        <item name="colorPrimaryDark">@color/orange_deep</item>
+    </style>
+
+    <!-- Base application theme. -->
     <style name="AppTheme.Splash" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:windowFullscreen">true</item>
         <!-- Customize your theme here. -->

@@ -8,14 +8,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.chatApp.MessageActivity;
+import io.icode.concareghadmin.application.activities.models.Chats;
 import io.icode.concareghadmin.application.activities.models.Users;
 
 public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAdapterUser.ViewHolder> {
@@ -23,6 +32,9 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
     private Context mCtx;
     private List<Users> mUsers;
     private boolean isChat;
+
+    // string variable to contain lastMessage from user
+    private String theLastMessage;
 
     public RecyclerViewAdapterUser(Context mCtx, List<Users> mUsers, boolean isChat){
         this.mCtx = mCtx;
@@ -34,7 +46,8 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_items_users,parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.recyclerview_items_users,parent, false);
 
         return new RecyclerViewAdapterUser.ViewHolder(view);
     }
@@ -55,6 +68,15 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
         else{
             // loads users image into the ImageView
             Glide.with(mCtx).load(users.getImageUrl()).into(holder.profile_pic);
+        }
+
+
+        // calling the lastMessage method
+        if(isChat){
+            lastMessage(users.getUid(),holder.last_msg);
+        }
+        else {
+            holder.last_msg.setVisibility(View.GONE);
         }
 
         // code to check if user is online
@@ -97,6 +119,7 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
 
         CircleImageView profile_pic;
         TextView username;
+        TextView last_msg;
 
         // status online or offline indicators
         CircleImageView status_online;
@@ -109,7 +132,47 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
             username = itemView.findViewById(R.id.username);
             status_online = itemView.findViewById(R.id.status_online);
             status_offline = itemView.findViewById(R.id.status_offline);
+            last_msg = itemView.findViewById(R.id.last_msg);
         }
+    }
+
+    // checks for last message
+    private void lastMessage(final String userid, final TextView last_msg){
+        theLastMessage = "default";
+
+        final FirebaseUser currentAdmin = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference lastMsgRef = FirebaseDatabase.getInstance().getReference("Chats");
+        lastMsgRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Chats chats = snapshot.getValue(Chats.class);
+                    assert currentAdmin != null;
+                    if(chats.getReceiver().equals(currentAdmin.getUid()) && chats.getSender().equals(userid)
+                            || chats.getReceiver().equals(userid) && chats.getSender().equals(currentAdmin.getUid())){
+                        theLastMessage = chats.getMessage();
+                    }
+                }
+
+                switch (theLastMessage){
+                    case "default":
+                        last_msg.setText(R.string.no_message);
+                        break;
+
+                        default:
+                            last_msg.setText(theLastMessage);
+                            break;
+                }
+
+                theLastMessage = "default";
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // display error message if one should occur
+                Toast.makeText(mCtx, databaseError.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 }

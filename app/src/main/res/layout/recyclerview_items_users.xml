@@ -2,7 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="8dp"
+    android:padding="6dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -23,10 +23,24 @@
         android:layout_toRightOf="@+id/profile_image"
         android:layout_toEndOf="@+id/profile_image"
         app:fontFamily="@font/lato"
-        android:layout_centerVertical="true"
+        android:layout_centerVertical="false"
         android:text="@string/hint_username"
         android:textColor="@color/status_bar_back"
         android:textSize="18sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"/>
+
+    <TextView
+        android:id="@+id/last_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/username"
+        android:layout_toRightOf="@+id/profile_image"
+        android:layout_toEndOf="@+id/profile_image"
+        android:text="@string/hint_username"
+        android:textSize="14sp"
+        android:maxLines="1"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"/>
 
@@ -37,9 +51,12 @@
         android:layout_toEndOf="@+id/profile_image"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
         android:layout_height="1dp"
-        android:alpha="0.25"
+        android:alpha="0.2"
         android:background="@color/status_bar_back"/>
+
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/status_online"

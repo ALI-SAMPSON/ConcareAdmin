@@ -66,12 +66,14 @@ public class UsersFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_users,container,false);
 
         // make the options appear in the Toolbar
-        setHasOptionsMenu(true);
+        //setHasOptionsMenu(true);
 
+        /*
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("");
         ((AppCompatActivity)getActivity()).getSupportActionBar().setElevation(5.0f);
+        */
 
         mLayout = view.findViewById(R.id.mLayout);
 
@@ -87,7 +89,7 @@ public class UsersFragment extends Fragment {
 
         readUsers();
 
-        /*
+
         search_users =  view.findViewById(R.id.search_users);
         search_users.addTextChangedListener(new TextWatcher() {
             @Override
@@ -105,7 +107,7 @@ public class UsersFragment extends Fragment {
 
             }
         });
-        */
+
 
 
         // return view
@@ -192,6 +194,7 @@ public class UsersFragment extends Fragment {
 
     }
 
+    /*
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
@@ -232,6 +235,7 @@ public class UsersFragment extends Fragment {
 
         super.onCreateOptionsMenu(menu, inflater);
     }
+    */
 
 
 }

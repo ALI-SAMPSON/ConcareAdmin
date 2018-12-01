@@ -42,7 +42,7 @@ public class MessageActivity extends AppCompatActivity {
     CircleImageView profile_image;
     TextView username;
 
-    FirebaseUser currentUser;
+    FirebaseUser currentAdmin;
     DatabaseReference userRef;
 
     DatabaseReference chatRef;
@@ -103,7 +103,7 @@ public class MessageActivity extends AppCompatActivity {
         users_id = intent.getStringExtra("uid");
         users_name = intent.getStringExtra("username");
 
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        currentAdmin = FirebaseAuth.getInstance().getCurrentUser();
 
         userRef = FirebaseDatabase.getInstance().getReference("Users").child(users_id);
 
@@ -131,7 +131,7 @@ public class MessageActivity extends AppCompatActivity {
                 }
 
                 // method call
-                readMessages(currentUser.getUid(),users_id, users.getImageUrl());
+                readMessages(currentAdmin.getUid(),users_id, users.getImageUrl());
             }
 
             @Override
@@ -143,9 +143,10 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
+    // sends message to user by taking in these three parameters
     private void sendMessage(String sender, String receiver, String message){
 
-        DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference messageRef = FirebaseDatabase.getInstance().getReference();
 
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("sender",sender);
@@ -153,7 +154,27 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("message",message);
         hashMap.put("isseen", false);
 
-        chatRef.child("Chats").push().setValue(hashMap);
+        messageRef.child("Chats").push().setValue(hashMap);
+
+        // add chat to the Chatlist so that it can be added to the Chats fragment
+        final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
+                .child(currentAdmin.getUid())
+                .child(users_id);
+
+        chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    chatRef.child("id").setValue(users_id);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // display error message
+                Toast.makeText(MessageActivity.this,databaseError.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
 
     }
 
@@ -166,7 +187,7 @@ public class MessageActivity extends AppCompatActivity {
         if(!message.equals("")){
             //btn_send.setVisibility(View.VISIBLE);
             // call to method to sendMessage
-            sendMessage(currentUser.getUid(),users_id,message);
+            sendMessage(currentAdmin.getUid(),users_id,message);
         }
         else{
             Toast.makeText(MessageActivity.this,
@@ -187,7 +208,7 @@ public class MessageActivity extends AppCompatActivity {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chats chats = snapshot.getValue(Chats.class);
                     assert chats != null;
-                    if(chats.getReceiver().equals(currentUser.getUid())
+                    if(chats.getReceiver().equals(currentAdmin.getUid())
                             && chats.getSender().equals(users_id)){
                         HashMap<String,Object> hashMap = new HashMap<>();
                         hashMap.put("isseen",true);
@@ -241,7 +262,7 @@ public class MessageActivity extends AppCompatActivity {
     // setting the status of the users
     private void status(String status){
 
-        userRef = FirebaseDatabase.getInstance().getReference("Admin").child(currentUser.getUid());
+        userRef = FirebaseDatabase.getInstance().getReference("Admin").child(currentAdmin.getUid());
 
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put("status",status);

@@ -86,7 +86,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 else{
                     // load users's Image Url
-                    Glide.with(HomeActivity.this).load(admin.getImageUrl()).into(profile_image);
+                    Glide.with(getApplicationContext()).load(admin.getImageUrl()).into(profile_image);
                 }
 
             }

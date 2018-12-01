@@ -242,4 +242,16 @@
         Hello
     </string>
 
+    <string name="text_search" translatable="false">
+        Search...
+    </string>
+
+    <string name="text_seen" translatable="false">
+         Seen
+    </string>
+
+    <string name="text_delivered" translatable="false">
+         Delivered
+    </string>
+
 </resources>

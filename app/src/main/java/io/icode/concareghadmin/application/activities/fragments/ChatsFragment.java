@@ -104,10 +104,11 @@ public class ChatsFragment extends Fragment {
 
                  mUsers.clear();
 
-                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                 /*for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                      Users users = snapshot.getValue(Users.class);
                      // displaying 1 users from chats
                      for(String id : usersList){
+                         assert users != null;
                          if(users.getUid().equals(id)){
                              if(mUsers.size() != 0){
                                  for(Users users1 : mUsers){
@@ -124,6 +125,7 @@ public class ChatsFragment extends Fragment {
                      }
 
                  }
+                 */
 
                  /*
                  for(DataSnapshot snapshot : dataSnapshot.getChildren()){

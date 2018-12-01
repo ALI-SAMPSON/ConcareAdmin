@@ -6,11 +6,19 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -18,7 +26,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +42,8 @@ import io.icode.concareghadmin.application.activities.models.Users;
  */
 public class UsersFragment extends Fragment {
 
+    View view;
+
     private RecyclerView recyclerView;
     private RecyclerViewAdapterUser adapterUser;
     private List<Users> mUsers;
@@ -42,11 +54,24 @@ public class UsersFragment extends Fragment {
 
     DatabaseReference userRef;
 
+    EditText search_users;
+
+    // material searchView
+    MaterialSearchView searchView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_users,container,false);
+        view = inflater.inflate(R.layout.fragment_users,container,false);
+
+        // make the options appear in the Toolbar
+        setHasOptionsMenu(true);
+
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setElevation(5.0f);
 
         mLayout = view.findViewById(R.id.mLayout);
 
@@ -62,8 +87,68 @@ public class UsersFragment extends Fragment {
 
         readUsers();
 
+        /*
+        search_users =  view.findViewById(R.id.search_users);
+        search_users.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                searchUsers(charSequence.toString().toLowerCase());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        */
+
+
         // return view
         return view;
+    }
+
+    private void searchUsers(String s) {
+
+        final FirebaseUser user = mAuth.getCurrentUser();
+
+        userRef = FirebaseDatabase.getInstance().getReference("Users");
+        Query query = userRef.orderByChild("search")
+        .startAt(s)
+        .endAt(s + "\uf8ff");
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                mUsers.clear();
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Users users = snapshot.getValue(Users.class);
+
+                    assert users != null;
+                    assert user != null;
+
+                    if(!users.getUid().equals(user.getUid())){
+                        mUsers.add(users);
+                    }
+                }
+
+                adapterUser = new RecyclerViewAdapterUser(getContext(),mUsers,false);
+                recyclerView.setAdapter(adapterUser);
+                adapterUser.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     // message to read the admin from the database
@@ -74,24 +159,28 @@ public class UsersFragment extends Fragment {
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //clears list
-                mUsers.clear();
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
 
-                    Users users = snapshot.getValue(Users.class);
+                //if(search_users.getText().toString().equals("")) {
+                    //clears list
+                    mUsers.clear();
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
-                    assert users != null;
+                        Users users = snapshot.getValue(Users.class);
 
-                    assert currentUser != null;
+                        assert users != null;
 
-                    mUsers.add(users);
+                        assert currentUser != null;
 
-                }
+                        mUsers.add(users);
 
-                // adapter initialization and RecyclerView set up
-                adapterUser = new RecyclerViewAdapterUser(getContext(),mUsers,false);
-                recyclerView.setAdapter(adapterUser);
-                adapterUser.notifyDataSetChanged();
+                    }
+
+                    // adapter initialization and RecyclerView set up
+                    adapterUser = new RecyclerViewAdapterUser(getContext(), mUsers, true);
+                    recyclerView.setAdapter(adapterUser);
+                    adapterUser.notifyDataSetChanged();
+
+               // }
             }
 
             @Override
@@ -102,5 +191,47 @@ public class UsersFragment extends Fragment {
         });
 
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        inflater.inflate(R.menu.menu_search,menu);
+
+        MenuItem menuItem = menu.findItem(R.id.menu_search);
+
+        // creating and initializing materialsearchview to search for Users
+        searchView = view.findViewById(R.id.search_view);
+        searchView.setMenuItem(menuItem);
+        searchView.setEllipsize(true);
+        searchView.setSubmitOnClick(true);
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if(!query.isEmpty()){
+                    searchUsers(query.toLowerCase());
+                }
+                else{
+                    searchUsers("");
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                if(!query.isEmpty()){
+                    searchUsers(query.toLowerCase());
+                }
+                else {
+                    searchUsers("");
+                }
+
+                return true;
+            }
+        });
+
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
 
 }

@@ -64,6 +64,9 @@ public class MessageActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
 
+    // Listener to listener for messages seen
+    ValueEventListener seenListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +109,8 @@ public class MessageActivity extends AppCompatActivity {
 
         getUserDetails();
 
+        seenMessage(users_id);
+
     }
 
     private void getUserDetails(){
@@ -121,7 +126,7 @@ public class MessageActivity extends AppCompatActivity {
                 }
                 else{
                     // loads imageUrl into imageView if url is not null
-                    Glide.with(MessageActivity.this)
+                    Glide.with(getApplicationContext())
                             .load(users.getImageUrl()).into(profile_image);
                 }
 
@@ -146,6 +151,7 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("sender",sender);
         hashMap.put("receiver", receiver);
         hashMap.put("message",message);
+        hashMap.put("isseen", false);
 
         chatRef.child("Chats").push().setValue(hashMap);
 
@@ -170,6 +176,35 @@ public class MessageActivity extends AppCompatActivity {
         msg_to_send.setText("");
     }
 
+    // method to check if user has seen message
+    private void seenMessage(final String users_id){
+
+        chatRef = FirebaseDatabase.getInstance().getReference("Chats");
+
+        seenListener = chatRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Chats chats = snapshot.getValue(Chats.class);
+                    assert chats != null;
+                    if(chats.getReceiver().equals(currentUser.getUid())
+                            && chats.getSender().equals(users_id)){
+                        HashMap<String,Object> hashMap = new HashMap<>();
+                        hashMap.put("isseen",true);
+                        snapshot.getRef().updateChildren(hashMap);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Snackbar.make(relativeLayout,databaseError.getMessage(),Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+
+    }
+
     // method to readMessages from the database
     private void readMessages(final String myid, final String userid, final String imageUrl){
 
@@ -183,6 +218,7 @@ public class MessageActivity extends AppCompatActivity {
                 mChats.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chats chats = snapshot.getValue(Chats.class);
+                    assert chats != null;
                     if(chats.getReceiver().equals(myid) && chats.getSender().equals(userid) ||
                             chats.getReceiver().equals(userid) && chats.getSender().equals(myid)){
                         mChats.add(chats);
@@ -205,7 +241,7 @@ public class MessageActivity extends AppCompatActivity {
     // setting the status of the users
     private void status(String status){
 
-        userRef = FirebaseDatabase.getInstance().getReference("Users").child(currentUser.getUid());
+        userRef = FirebaseDatabase.getInstance().getReference("Admin").child(currentUser.getUid());
 
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put("status",status);
@@ -221,6 +257,7 @@ public class MessageActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        chatRef.removeEventListener(seenListener);
         status("offline");
     }
 }

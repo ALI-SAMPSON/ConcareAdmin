@@ -58,6 +58,13 @@
         <item name="colorPrimaryDark">@color/orange_light</item>
     </style>
 
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorAccent">@color/orange_light</item>
+        <item name="colorPrimary">@color/orange_light</item>
+        <item name="colorPrimaryDark">@color/orange_deep</item>
+    </style>
+
     <style name="MenuStyle" parent="Theme.AppCompat.Light">
         <item name="android:background">@android:color/white</item>
     </style>

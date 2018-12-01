@@ -10,13 +10,17 @@ public class Users {
     private String phoneNumber;
     private String imageUrl;
     private String status;
+    // field to search username in both caps and lowercase
+    private String search;
 
 
     //default constructor
     public Users(){}
 
     //constructor with one or more parameters
-    public Users(String email, String username, String uid, String gender, String phoneNumber, String imageUrl, String status){
+    public Users(String email, String username, String uid,
+                 String gender, String phoneNumber, String imageUrl,
+                 String status, String search){
         this.email = email;
         this.username = username;
         this.uid = uid;
@@ -24,6 +28,7 @@ public class Users {
         this.phoneNumber = phoneNumber;
         this.imageUrl = imageUrl;
         this.status = status;
+        this.search = search;
 
     }
 
@@ -86,5 +91,13 @@ public class Users {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getSearch() {
+        return search;
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
     }
 }

@@ -165,7 +165,7 @@
     android:onClick="onLoginButtonClick"/>
 
 <!-- Link to the users sign up page -->
-<Button
+<!--<Button
     android:id="@+id/buttonSignUpLink"
     android:layout_marginTop="20dp"
     android:layout_width="280dp"
@@ -185,11 +185,12 @@
     android:textAlignment="center"
     android:background="@drawable/round_corner_button_with_stroke"
     android:onClick="onSignUpLinkClick"/>
+    -->
 
 <!--Progress Bar-->
 <ProgressBar
     android:id="@+id/progressBar"
-    android:layout_below="@+id/buttonSignUpLink"
+    android:layout_below="@+id/buttonLogin"
     android:layout_centerHorizontal="true"
     android:layout_alignParentBottom="true"
     android:layout_width="wrap_content"

@@ -68,7 +68,7 @@ public class AdminLoginActivity extends AppCompatActivity {
         // getting the ids of the views
         forgot_password = findViewById(R.id.forgot_password);
         buttonLogin = findViewById(R.id.buttonLogin);
-        buttonSignUpLink = findViewById(R.id.buttonSignUpLink);
+        //buttonSignUpLink = findViewById(R.id.buttonSignUpLink);
 
         relativeLayout = findViewById(R.id.relativeLayout);
 
@@ -288,7 +288,7 @@ public class AdminLoginActivity extends AppCompatActivity {
     }
 
     // Link to the signUp Interface
-    public void onSignUpLinkClick(View view){
+    /*public void onSignUpLinkClick(View view){
 
         // creates an instance of the intent class and opens the signUpctivity
         startActivity(new Intent(this,AdminSignUpActivity.class));
@@ -299,6 +299,7 @@ public class AdminLoginActivity extends AppCompatActivity {
         // finish the activity
         finish();
     }
+    */
 
     // Method to clear text fields
     public void clearTextFields(){

@@ -18,11 +18,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.icode.concareghadmin.application.R;
+import io.icode.concareghadmin.application.activities.Notifications.Token;
 import io.icode.concareghadmin.application.activities.adapters.RecyclerViewAdapterUser;
 import io.icode.concareghadmin.application.activities.chatApp.MessageActivity;
 import io.icode.concareghadmin.application.activities.models.Chatlist;
@@ -32,6 +34,7 @@ import io.icode.concareghadmin.application.activities.models.Users;
 /**
  * A simple {@link Fragment} subclass.
  */
+@SuppressWarnings("ALL")
 public class ChatsFragment extends Fragment {
 
     View view;
@@ -88,8 +91,17 @@ public class ChatsFragment extends Fragment {
             }
         });
 
+        // method call to update token
+        updateToken(FirebaseInstanceId.getInstance().getToken());
 
         return view;
+    }
+
+    // Update currentAdmin's token
+    private void updateToken(String token){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
+        Token token1 = new Token(token);
+        reference.child(currentAdmin.getUid()).setValue(token1);
     }
 
     // method to populate fragment with Admin chats

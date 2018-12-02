@@ -22,6 +22,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -30,10 +31,20 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
+import io.icode.concareghadmin.application.activities.Notifications.Client;
+import io.icode.concareghadmin.application.activities.Notifications.Data;
+import io.icode.concareghadmin.application.activities.Notifications.MyResponse;
+import io.icode.concareghadmin.application.activities.Notifications.Sender;
+import io.icode.concareghadmin.application.activities.Notifications.Token;
 import io.icode.concareghadmin.application.activities.adapters.MessageAdapter;
+import io.icode.concareghadmin.application.activities.fragments.APIService;
+import io.icode.concareghadmin.application.activities.models.Admin;
 import io.icode.concareghadmin.application.activities.models.Chats;
 import io.icode.concareghadmin.application.activities.models.Users;
 import maes.tech.intentanim.CustomIntent;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MessageActivity extends AppCompatActivity {
 
@@ -67,6 +78,10 @@ public class MessageActivity extends AppCompatActivity {
     // Listener to listener for messages seen
     ValueEventListener seenListener;
 
+    APIService apiService;
+
+    boolean notify = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +99,9 @@ public class MessageActivity extends AppCompatActivity {
                 CustomIntent.customType(MessageActivity.this, "fadein-to-fadeout");
             }
         });
+
+        // creates APIService using Google API from the APIService Class
+        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
 
         relativeLayout = findViewById(R.id.relativeLayout);
 
@@ -143,8 +161,30 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
+    // ImageView OnClickListener to send Message
+    public void btnSend(View view) {
+
+        // sets notify to true
+        notify = true;
+
+        String message  = msg_to_send.getText().toString();
+
+        // checks if the edit field is not message before sending message
+        if(!message.equals("")){
+            //btn_send.setVisibility(View.VISIBLE);
+            // call to method to sendMessage
+            sendMessage(currentAdmin.getUid(),users_id,message);
+        }
+        else{
+            Toast.makeText(MessageActivity.this,
+                    "Oops, No message to send",Toast.LENGTH_LONG).show();
+        }
+        // clear the field after message is sent
+        msg_to_send.setText("");
+    }
+
     // sends message to user by taking in these three parameters
-    private void sendMessage(String sender, String receiver, String message){
+    private void sendMessage(String sender, final String receiver, String message){
 
         DatabaseReference messageRef = FirebaseDatabase.getInstance().getReference();
 
@@ -176,25 +216,72 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
+        // variable to hold the message to be sent
+        final String msg = message;
+
+        adminRef = FirebaseDatabase.getInstance().getReference("Admin").child(currentAdmin.getUid());
+        adminRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Admin admin = dataSnapshot.getValue(Admin.class);
+                assert admin != null;
+                if(notify) {
+                    sendNotification(receiver, admin.getUsername(), msg);
+                }
+                // sets notify to false
+                notify = false;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // display error message
+                Toast.makeText(MessageActivity.this,databaseError.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 
-    // ImageView OnClickListener to send Message
-    public void btnSend(View view) {
+    // sends notification to respective user as soon as message is sent
+    private void sendNotification(String receiver, final String username , final String messsage){
+        DatabaseReference tokens  = FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query = tokens.orderByKey().equalTo(receiver);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Token token = snapshot.getValue(Token.class);
+                    Data data = new Data(currentAdmin.getUid(), R.mipmap.app_logo_round,"You have a New Message",
+                            username+": "+messsage, users_id);
 
-        String message  = msg_to_send.getText().toString();
+                    assert token != null;
+                    Sender sender = new Sender(data, token.getToken());
 
-        // checks if the edit field is not message before sending message
-        if(!message.equals("")){
-            //btn_send.setVisibility(View.VISIBLE);
-            // call to method to sendMessage
-            sendMessage(currentAdmin.getUid(),users_id,message);
-        }
-        else{
-            Toast.makeText(MessageActivity.this,
-                    "Oops, No message to send",Toast.LENGTH_LONG).show();
-        }
-        // clear the field after message is sent
-        msg_to_send.setText("");
+                    apiService.sendNotification(sender)
+                            .enqueue(new Callback<MyResponse>() {
+                                @Override
+                                public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                    if(response.code() == 200){
+                                        if(response.body().success != 1){
+                                            Toast.makeText(MessageActivity.this,"Failed!",Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<MyResponse> call, Throwable t) {
+                                    // display error message
+                                    //Toast.makeText(MessageActivity.this,t.getMessage(),Toast.LENGTH_LONG).show();
+                                }
+                            });
+                }
+            }
+
+            @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                // display error message
+                Toast.makeText(MessageActivity.this,databaseError.getMessage(),Toast.LENGTH_LONG).show();
+                }
+        });
     }
 
     // method to check if user has seen message

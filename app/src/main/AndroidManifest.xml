@@ -22,11 +22,15 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/app_logo"
+        android:icon="@mipmap/app_logo_round"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/app_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notification" />
+
         <activity
             android:name=".activities.activities.AdminLoginActivity"
             android:configChanges="screenLayout|screenSize|keyboardHidden|orientation"

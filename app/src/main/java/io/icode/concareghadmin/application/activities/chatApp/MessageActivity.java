@@ -250,7 +250,7 @@ public class MessageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
-                    Data data = new Data(currentAdmin.getUid(), R.mipmap.app_logo_round,"You have a New Message",
+                    Data data = new Data(currentAdmin.getUid(), R.drawable.ic_notification,getString(R.string.application_name),
                             username+": "+messsage, users_id);
 
                     assert token != null;
@@ -261,6 +261,7 @@ public class MessageActivity extends AppCompatActivity {
                                 @Override
                                 public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
                                     if(response.code() == 200){
+                                        assert response.body() != null;
                                         if(response.body().success != 1){
                                             Toast.makeText(MessageActivity.this,"Failed!",Toast.LENGTH_LONG).show();
                                         }
@@ -270,7 +271,7 @@ public class MessageActivity extends AppCompatActivity {
                                 @Override
                                 public void onFailure(Call<MyResponse> call, Throwable t) {
                                     // display error message
-                                    //Toast.makeText(MessageActivity.this,t.getMessage(),Toast.LENGTH_LONG).show();
+                                    Toast.makeText(MessageActivity.this,t.getMessage(),Toast.LENGTH_LONG).show();
                                 }
                             });
                 }

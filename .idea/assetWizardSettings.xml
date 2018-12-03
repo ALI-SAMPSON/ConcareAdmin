@@ -18,8 +18,35 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="foregroundImage" value="E:\APPLICATION\CON CARE GH\IMG-20180920-WA0012.jpg" />
-                                      <entry key="outputName" value="app_logo" />
+                                      <entry key="foregroundImage" value="E:\APPLICATION\CON CARE GH\IMG-20180919-WA0002.jpg" />
+                                      <entry key="outputName" value="notification_icon" />
+                                    </map>
+                                  </option>
+                                </PersistentState>
+                              </value>
+                            </entry>
+                            <entry key="notification">
+                              <value>
+                                <PersistentState>
+                                  <option name="children">
+                                    <map>
+                                      <entry key="image">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="paddingPercent" value="15" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
+                                    </map>
+                                  </option>
+                                  <option name="values">
+                                    <map>
+                                      <entry key="assetType" value="IMAGE" />
+                                      <entry key="imageAsset" value="E:\APPLICATION\CON CARE GH\IMG-20180920-WA0012.jpg" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -50,7 +77,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/navigation/ic_check_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/communication/ic_message_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -61,7 +88,7 @@
                         <option name="values">
                           <map>
                             <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_check_down" />
+                            <entry key="outputName" value="ic_notification" />
                             <entry key="sourceFile" value="C:\Users\iCODE" />
                           </map>
                         </option>

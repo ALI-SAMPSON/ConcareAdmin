@@ -31,6 +31,7 @@ import io.icode.concareghadmin.application.activities.adapters.ViewPagerAdapter;
 import io.icode.concareghadmin.application.activities.fragments.ChatsFragment;
 import io.icode.concareghadmin.application.activities.fragments.UsersFragment;
 import io.icode.concareghadmin.application.activities.models.Admin;
+import io.icode.concareghadmin.application.activities.models.Chats;
 import io.icode.concareghadmin.application.activities.models.Users;
 import maes.tech.intentanim.CustomIntent;
 
@@ -46,6 +47,8 @@ public class HomeActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseUser currentAdmin;
     DatabaseReference adminRef;
+
+    DatabaseReference chatRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,19 +101,52 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         // getting reference to the views
-        TabLayout tabLayout =  findViewById(R.id.tab_layout);
-        ViewPager viewPager = findViewById(R.id.view_pager);
+        final TabLayout tabLayout =  findViewById(R.id.tab_layout);
+        final ViewPager viewPager = findViewById(R.id.view_pager);
 
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        // Checks for incoming messages and counts them to be displays together in the chats fragments
+        chatRef = FirebaseDatabase.getInstance().getReference("Chats");
 
-        // adds ChatsFragment and AdminFragment to the viewPager
-        viewPagerAdapter.addFragment(new ChatsFragment(), getString(R.string.text_chats));
-        viewPagerAdapter.addFragment(new UsersFragment(), getString(R.string.text_users));
-        //Sets Adapter view of the ViewPager
-        viewPager.setAdapter(viewPagerAdapter);
+        chatRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+                // variable to count the number of unread messages
+                int unreadMessages = 0;
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Chats chats = snapshot.getValue(Chats.class);
+                    assert chats != null;
+                    if(chats.getReceiver().equals(currentAdmin.getUid()) && !chats.isSeen()){
+                        unreadMessages++;
+                    }
+                }
 
-        //sets tablayout with viewPager
-        tabLayout.setupWithViewPager(viewPager);
+                if(unreadMessages == 0){
+                    // adds ChatsFragment and AdminFragment to the viewPager
+                    viewPagerAdapter.addFragment(new ChatsFragment(), getString(R.string.text_chats));
+                }
+                else{
+                    // adds ChatsFragment and AdminFragment to the viewPager + count of unread messages
+                    viewPagerAdapter.addFragment(new ChatsFragment(), "("+unreadMessages+") Chats");
+                }
+
+                // adds ChatsFragment and AdminFragment to the viewPager
+                //viewPagerAdapter.addFragment(new ChatsFragment(), getString(R.string.text_chats));
+                viewPagerAdapter.addFragment(new UsersFragment(), getString(R.string.text_users));
+                //Sets Adapter view of the ViewPager
+                viewPager.setAdapter(viewPagerAdapter);
+
+                //sets tablayout with viewPager
+                tabLayout.setupWithViewPager(viewPager);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     @Override

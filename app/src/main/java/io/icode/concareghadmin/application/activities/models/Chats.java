@@ -5,7 +5,9 @@ public class Chats {
     private String sender;
     private String receiver;
     private String message;
-    boolean isseen;
+    private boolean isseen;
+
+    private String mKey;
 
     public Chats(){}
 
@@ -46,5 +48,13 @@ public class Chats {
 
     public void setSeen(boolean isseen) {
         isseen = isseen;
+    }
+
+    public String getmKey() {
+        return mKey;
+    }
+
+    public void setmKey(String mKey) {
+        this.mKey = mKey;
     }
 }

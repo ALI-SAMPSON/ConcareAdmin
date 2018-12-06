@@ -73,14 +73,13 @@ public class HomeActivity extends AppCompatActivity {
         currentAdmin = mAuth.getCurrentUser();
 
         adminRef = FirebaseDatabase.getInstance().getReference("Admin").child(currentAdmin.getUid());
-        //.child(users.getUid());
 
         adminRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 Admin admin = dataSnapshot.getValue(Admin.class);
-
+                assert admin != null;
                 username.setText(admin.getUsername());
 
                 //text if users's imageUrl is equal to default
@@ -142,7 +141,7 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Toast.makeText(HomeActivity.this,databaseError.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
 

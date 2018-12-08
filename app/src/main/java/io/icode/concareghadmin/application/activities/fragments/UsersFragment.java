@@ -1,6 +1,10 @@
 package io.icode.concareghadmin.application.activities.fragments;
 
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -19,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -40,7 +45,9 @@ import io.icode.concareghadmin.application.activities.models.Users;
 /**
  * A simple {@link Fragment} subclass.
  */
+@SuppressWarnings("ALL")
 public class UsersFragment extends Fragment {
+
 
     View view;
 
@@ -75,39 +82,38 @@ public class UsersFragment extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setElevation(5.0f);
         */
 
-        mLayout = view.findViewById(R.id.mLayout);
+            mLayout = view.findViewById(R.id.mLayout);
 
-        recyclerView =  view.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView =  view.findViewById(R.id.recyclerView);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mUsers = new ArrayList<>();
+            mUsers = new ArrayList<>();
 
-        mAuth = FirebaseAuth.getInstance();
+            mAuth = FirebaseAuth.getInstance();
 
-        userRef = FirebaseDatabase.getInstance().getReference("Users");
+            userRef = FirebaseDatabase.getInstance().getReference("Users");
 
-        readUsers();
+            readUsers();
 
 
-        search_users =  view.findViewById(R.id.search_users);
-        search_users.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            search_users =  view.findViewById(R.id.search_users);
+            search_users.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            }
+                }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                searchUsers(charSequence.toString().toLowerCase());
-            }
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    searchUsers(charSequence.toString().toLowerCase());
+                }
 
-            @Override
-            public void afterTextChanged(Editable editable) {
+                @Override
+                public void afterTextChanged(Editable editable) {
 
-            }
-        });
-
+                }
+            });
 
 
         // return view

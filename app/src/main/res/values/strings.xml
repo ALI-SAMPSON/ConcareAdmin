@@ -282,4 +282,8 @@
          NO
     </string>
 
+    <string name="no_internet">No Internet</string>
+
+    <string name="text_no_internet">check Internet Connection and Try Again!</string>
+
 </resources>

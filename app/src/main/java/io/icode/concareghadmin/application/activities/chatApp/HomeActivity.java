@@ -1,6 +1,9 @@
 package io.icode.concareghadmin.application.activities.chatApp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -10,6 +13,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +40,10 @@ import io.icode.concareghadmin.application.activities.models.Chats;
 import io.icode.concareghadmin.application.activities.models.Users;
 import maes.tech.intentanim.CustomIntent;
 
+@SuppressWarnings("ALL")
 public class HomeActivity extends AppCompatActivity {
+
+    RelativeLayout internetConnection;
 
     CircleImageView profile_image;
     TextView username;
@@ -55,6 +63,8 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        internetConnection = findViewById(R.id.no_internet_connection);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
@@ -72,78 +82,102 @@ public class HomeActivity extends AppCompatActivity {
 
         currentAdmin = mAuth.getCurrentUser();
 
-        adminRef = FirebaseDatabase.getInstance().getReference("Admin").child(currentAdmin.getUid());
+        //check if internet is available or not on phone
+        boolean isConnected = false;
 
-        adminRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
 
-                Admin admin = dataSnapshot.getValue(Admin.class);
-                assert admin != null;
-                username.setText(admin.getUsername());
+            //we are connected to a network
+            isConnected = true;
 
-                //text if users's imageUrl is equal to default
-                if(admin.getImageUrl() == null){
-                    profile_image.setImageResource(R.drawable.app_logo);
-                }
-                else{
-                    // load users's Image Url
-                    Glide.with(getApplicationContext()).load(admin.getImageUrl()).into(profile_image);
-                }
+            // sets visibility to visible if there is  no internet connection
+            internetConnection.setVisibility(View.GONE);
 
-            }
+            adminRef = FirebaseDatabase.getInstance().getReference("Admin").child(currentAdmin.getUid());
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(HomeActivity.this,databaseError.getMessage(),Toast.LENGTH_LONG).show();
-            }
-        });
+            adminRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-        // getting reference to the views
-        final TabLayout tabLayout =  findViewById(R.id.tab_layout);
-        final ViewPager viewPager = findViewById(R.id.view_pager);
+                    Admin admin = dataSnapshot.getValue(Admin.class);
+                    assert admin != null;
+                    username.setText(admin.getUsername());
 
-        // Checks for incoming messages and counts them to be displays together in the chats fragments
-        chatRef = FirebaseDatabase.getInstance().getReference("Chats");
-
-        chatRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-                // variable to count the number of unread messages
-                int unreadMessages = 0;
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Chats chats = snapshot.getValue(Chats.class);
-                    assert chats != null;
-                    if(chats.getReceiver().equals(currentAdmin.getUid()) && !chats.isSeen()){
-                        unreadMessages++;
+                    //text if users's imageUrl is equal to default
+                    if(admin.getImageUrl() == null){
+                        profile_image.setImageResource(R.drawable.app_logo);
                     }
+                    else{
+                        // load users's Image Url
+                        Glide.with(getApplicationContext()).load(admin.getImageUrl()).into(profile_image);
+                    }
+
                 }
 
-                if(unreadMessages == 0){
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Toast.makeText(HomeActivity.this,databaseError.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            });
+
+            // getting reference to the views
+            final TabLayout tabLayout =  findViewById(R.id.tab_layout);
+            final ViewPager viewPager = findViewById(R.id.view_pager);
+
+            // Checks for incoming messages and counts them to be displays together in the chats fragments
+            chatRef = FirebaseDatabase.getInstance().getReference("Chats");
+
+            chatRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+                    // variable to count the number of unread messages
+                    int unreadMessages = 0;
+                    for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                        Chats chats = snapshot.getValue(Chats.class);
+                        assert chats != null;
+                        if(chats.getReceiver().equals(currentAdmin.getUid()) && !chats.isSeen()){
+                            unreadMessages++;
+                        }
+                    }
+
+                    if(unreadMessages == 0){
+                        // adds ChatsFragment and AdminFragment to the viewPager
+                        viewPagerAdapter.addFragment(new ChatsFragment(), getString(R.string.text_chats));
+                    }
+                    else{
+                        // adds ChatsFragment and AdminFragment to the viewPager + count of unread messages
+                        viewPagerAdapter.addFragment(new ChatsFragment(), "("+unreadMessages+") Chats");
+                    }
+
                     // adds ChatsFragment and AdminFragment to the viewPager
-                    viewPagerAdapter.addFragment(new ChatsFragment(), getString(R.string.text_chats));
+                    //viewPagerAdapter.addFragment(new ChatsFragment(), getString(R.string.text_chats));
+                    viewPagerAdapter.addFragment(new UsersFragment(), getString(R.string.text_users));
+                    //Sets Adapter view of the ViewPager
+                    viewPager.setAdapter(viewPagerAdapter);
+
+                    //sets tablayout with viewPager
+                    tabLayout.setupWithViewPager(viewPager);
                 }
-                else{
-                    // adds ChatsFragment and AdminFragment to the viewPager + count of unread messages
-                    viewPagerAdapter.addFragment(new ChatsFragment(), "("+unreadMessages+") Chats");
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Toast.makeText(HomeActivity.this,databaseError.getMessage(),Toast.LENGTH_LONG).show();
                 }
+            });
 
-                // adds ChatsFragment and AdminFragment to the viewPager
-                //viewPagerAdapter.addFragment(new ChatsFragment(), getString(R.string.text_chats));
-                viewPagerAdapter.addFragment(new UsersFragment(), getString(R.string.text_users));
-                //Sets Adapter view of the ViewPager
-                viewPager.setAdapter(viewPagerAdapter);
 
-                //sets tablayout with viewPager
-                tabLayout.setupWithViewPager(viewPager);
-            }
+        }
+        // else condition
+        else{
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(HomeActivity.this,databaseError.getMessage(),Toast.LENGTH_LONG).show();
-            }
-        });
+            isConnected = false;
+
+            // sets visibility to visible if there is  no internet connection
+            internetConnection.setVisibility(View.VISIBLE);
+        }
 
 
     }

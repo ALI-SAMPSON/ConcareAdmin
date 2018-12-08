@@ -1,6 +1,9 @@
 package io.icode.concareghadmin.application.activities.fragments;
 
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -9,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -52,7 +56,7 @@ public class ChatsFragment extends Fragment {
     DatabaseReference reference;
 
 
-
+    @SuppressWarnings("ALL")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -68,7 +72,6 @@ public class ChatsFragment extends Fragment {
 
         usersList = new ArrayList<>();
 
-
         reference = FirebaseDatabase.getInstance().getReference("Chatlist").child(currentAdmin.getUid());
 
         reference.addValueEventListener(new ValueEventListener() {
@@ -79,7 +82,6 @@ public class ChatsFragment extends Fragment {
                     Chatlist chatlist = snapshot.getValue(Chatlist.class);
                     usersList.add(chatlist);
                 }
-
                 // method call
                 chatList();
             }
@@ -93,6 +95,7 @@ public class ChatsFragment extends Fragment {
 
         // method call to update token
         updateToken(FirebaseInstanceId.getInstance().getToken());
+
 
         return view;
     }

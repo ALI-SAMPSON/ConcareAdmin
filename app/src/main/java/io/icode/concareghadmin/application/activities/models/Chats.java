@@ -1,5 +1,7 @@
 package io.icode.concareghadmin.application.activities.models;
 
+import com.google.firebase.database.Exclude;
+
 public class Chats {
 
     private String sender;
@@ -7,7 +9,8 @@ public class Chats {
     private String message;
     private boolean isseen;
 
-    private String mKey;
+    // unique to identify message to be deleted
+    private String key;
 
     public Chats(){}
 
@@ -50,11 +53,15 @@ public class Chats {
         isseen = isseen;
     }
 
-    public String getmKey() {
-        return mKey;
+    //getters and setters to store && retrieve the unique key of each message
+    // excluding from database field
+    @Exclude
+    public String getKey() {
+        return key;
     }
 
-    public void setmKey(String mKey) {
-        this.mKey = mKey;
+    @Exclude
+    public void setKey(String key) {
+        this.key = key;
     }
 }

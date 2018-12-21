@@ -14,45 +14,37 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!--
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/white_snow"/>
-
-        <com.miguelcatalan.materialsearchview.MaterialSearchView
-            android:id="@+id/search_view"
-            android:elevation="10dp"
+        <LinearLayout
+            android:id="@+id/search_layout"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/text_search"
-            android:textColorHint="@color/status_bar_back"
-            android:theme="@style/AppTheme.AppBarOverlay"
-            app:popupTheme="@style/AppTheme.AppBarOverlay"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:titleTextAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"/>
-            -->
-
-        <EditText
-            android:id="@+id/search_users"
-            android:hint="@string/text_search"
-            android:textColor="@color/status_bar_back"
-            app:fontFamily="@font/lato"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"/>
-
+            android:layout_margin="5dp"
+            android:background="@drawable/round_edittext_background">
+            <EditText
+                android:id="@+id/editTextSearch"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                app:fontFamily="@font/lato"
+                android:textSize="16sp"
+                android:textColor="@color/dark"
+                android:inputType="textMultiLine|textAutoComplete|textAutoCorrect"
+                android:hint="@string/hint_search"
+                android:drawableStart="@drawable/ic_search_grey"
+                android:drawableLeft="@drawable/ic_search_grey"
+                android:drawablePadding="@dimen/padding_normal"
+                app:backgroundTint="@color/colorWhite"/>
+        </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
-            android:layout_below="@+id/search_users"
+            android:layout_below="@+id/search_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         </android.support.v7.widget.RecyclerView>
 
-
     </RelativeLayout>
-
 
 </android.support.constraint.ConstraintLayout>

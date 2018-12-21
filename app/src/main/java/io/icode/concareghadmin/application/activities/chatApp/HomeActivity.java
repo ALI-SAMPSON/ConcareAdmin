@@ -1,9 +1,15 @@
 package io.icode.concareghadmin.application.activities.chatApp;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -28,6 +34,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
@@ -53,8 +61,8 @@ public class HomeActivity extends AppCompatActivity {
 
     Admin admin;
 
-    FirebaseAuth mAuth;
-    FirebaseUser currentAdmin;
+    ProgressDialog progressDialog;
+
     DatabaseReference adminRef;
 
     DatabaseReference chatRef;
@@ -75,13 +83,9 @@ public class HomeActivity extends AppCompatActivity {
 
         username =  findViewById(R.id.username);
 
-        mAuth = FirebaseAuth.getInstance();
-
         admin = new Admin();
 
         users = new Users();
-
-        currentAdmin = mAuth.getCurrentUser();
 
         //check if internet is available or not on phone
         boolean isConnected = false;
@@ -158,9 +162,9 @@ public class HomeActivity extends AppCompatActivity {
                     }
 
                     // adds ChatsFragment and AdminFragment to the viewPager
-                    //viewPagerAdapter.addFragment(new UsersFragment(), getString(R.string.text_users));
+                    viewPagerAdapter.addFragment(new UsersFragment(), getString(R.string.text_users));
                     //Sets Adapter view of the ViewPager
-                    //viewPager.setAdapter(viewPagerAdapter);
+                    viewPager.setAdapter(viewPagerAdapter);
 
                     //sets tablayout with viewPager
                     tabLayout.setupWithViewPager(viewPager);
@@ -183,14 +187,18 @@ public class HomeActivity extends AppCompatActivity {
             internetConnection.setVisibility(View.VISIBLE);
         }
 
+        // method call to change ProgressDialog style based on the android version of user's phone
+        changeProgressDialogBackground();
 
     }
 
     @Override
     protected void onStart(){
         super.onStart();
+
         // checks if user is currently logged in
-        if(SavedSharePreference.getEmail(HomeActivity.this).length() == 0){
+
+        /*if(SavedSharePreference.getEmail(HomeActivity.this).length() == 0){
 
             // start the activity
             startActivity(new Intent(HomeActivity.this,AdminLoginActivity.class));
@@ -202,11 +210,8 @@ public class HomeActivity extends AppCompatActivity {
             finish();
 
         }
+        */
 
-        else{
-
-            // stay here
-        }
     }
 
     @Override
@@ -223,16 +228,65 @@ public class HomeActivity extends AppCompatActivity {
 
             case R.id.menu_sign_out:
 
-                mAuth.signOut();
-                // code changed because app will crash
-                startActivity(new Intent(HomeActivity.this, AdminLoginActivity.class)
-                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                CustomIntent.customType(HomeActivity.this, "fadein-to-fadeout");
+                // method call to signout admin
+               signOutAdmin();
 
                 return true;
         }
 
         return false;
+    }
+
+    private void signOutAdmin(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+        builder.setTitle(getString(R.string.text_sign_out));
+        builder.setMessage(getString(R.string.sign_out_msg));
+
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                // show dialog
+                progressDialog.show();
+
+                Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        // dismiss dialog
+                        progressDialog.dismiss();
+
+                        // log admin out of the system and clear all stored data
+                        clearEmail(HomeActivity.this);
+
+                        // send amin to login activity
+                        startActivity(new Intent(HomeActivity.this, AdminLoginActivity.class)
+                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        CustomIntent.customType(HomeActivity.this, "fadein-to-fadeout");
+
+                    }
+                },3000);
+
+            }
+        });
+
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+    }
+
+    private  void clearEmail(Context ctx){
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+        editor.clear(); // clear all stored data (email)
+        editor.commit();
     }
 
     private void status(String status){
@@ -257,4 +311,27 @@ public class HomeActivity extends AppCompatActivity {
         super.onPause();
         //status("offline");
     }
+
+    // method to change ProgressDialog style based on the android version of user's phone
+    private void changeProgressDialogBackground(){
+
+        // if the build sdk version >= android 5.0
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            //sets the background color according to android version
+            progressDialog = new ProgressDialog(this, ProgressDialog.THEME_HOLO_DARK);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setTitle("");
+            progressDialog.setMessage("signing out...");
+        }
+        //else do this
+        else{
+            //sets the background color according to android version
+            progressDialog = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setTitle("");
+            progressDialog.setMessage("signing out...");
+        }
+
+    }
+
 }

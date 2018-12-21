@@ -1,7 +1,9 @@
 package io.icode.concareghadmin.application.activities.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +20,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.auth.FirebaseAuth;
 
 import io.icode.concareghadmin.application.R;
+import io.icode.concareghadmin.application.activities.SavedSharePreference;
 import io.icode.concareghadmin.application.activities.chatApp.HomeActivity;
 import maes.tech.intentanim.CustomIntent;
 
@@ -49,10 +52,12 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         // getting reference to the first Top progressBar
         progressBar = findViewById(R.id.progressBar);
+
         // changes color of progressBar to you desired color
         progressBar.getIndeterminateDrawable().setColorFilter(0xff676767,PorterDuff.Mode.MULTIPLY);
 
         progressBar1 = findViewById(R.id.progressBar1);
+
         // changes color of progressBar to you desired color
         progressBar1.getIndeterminateDrawable().setColorFilter(0xff676767,PorterDuff.Mode.MULTIPLY);
 
@@ -94,20 +99,23 @@ public class SplashScreenActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if(mAuth.getCurrentUser() != null){
 
-            // starts the activity
+        // checks if user is currently logged in
+        if(SavedSharePreference.getEmail(SplashScreenActivity.this).length() == 0){
+            // open splash screen first
+            splashScreen();
+        }
+        else{
+
+            // start the activity
             startActivity(new Intent(SplashScreenActivity.this,HomeActivity.class));
 
             // Add a custom animation ot the activity
             CustomIntent.customType(SplashScreenActivity.this,"fadein-to-fadeout");
 
-            // finishes the activity
+            // finish the activity
             finish();
-        }
-        else{
-            // open splash screen first
-            splashScreen();
+
         }
     }
 

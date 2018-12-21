@@ -2,6 +2,7 @@ package io.icode.concareghadmin.application.activities.chatApp;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -56,6 +57,12 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
     CircleImageView profile_image;
     TextView username;
+
+    // instance of Admin Class
+    Admin admin;
+
+    // variable to hold uid of admin from sharePreference
+    String admin_uid;
 
     FirebaseUser currentAdmin;
     DatabaseReference userRef;
@@ -127,6 +134,15 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         users_id = intent.getStringExtra("uid");
         users_name = intent.getStringExtra("username");
 
+        // creating an instance of the Admin Class
+        admin = new Admin();
+
+        // getting the uid of the admin stored in sharePreference
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        admin_uid = preferences.getString("uid","");
+
+
         currentAdmin = FirebaseAuth.getInstance().getCurrentUser();
 
         userRef = FirebaseDatabase.getInstance().getReference("Users").child(users_id);
@@ -155,7 +171,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
                 }
 
                 // method call
-                readMessages(currentAdmin.getUid(),users_id, users.getImageUrl());
+                readMessages(admin_uid,users_id, users.getImageUrl());
             }
 
             @Override
@@ -179,7 +195,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         if(!message.equals("")){
             //btn_send.setVisibility(View.VISIBLE);
             // call to method to sendMessage
-            sendMessage(currentAdmin.getUid(),users_id,message);
+            sendMessage(admin_uid,users_id,message);
         }
         else{
             Toast.makeText(MessageActivity.this,
@@ -204,7 +220,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
         // add chat to the chatlist so that it can be added to the Chats fragment
         final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
-                .child(currentAdmin.getUid())
+                .child(admin_uid)
                 .child(users_id);
 
         chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -225,7 +241,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         // variable to hold the message to be sent
         final String msg = message;
 
-        adminRef = FirebaseDatabase.getInstance().getReference("Admin").child(currentAdmin.getUid());
+        adminRef = FirebaseDatabase.getInstance().getReference("Admin").child(admin_uid);
         adminRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -256,7 +272,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
-                    Data data = new Data(currentAdmin.getUid(), R.drawable.ic_notification,getString(R.string.application_name),
+                    Data data = new Data(admin_uid, R.drawable.ic_notification,getString(R.string.application_name),
                             username+": "+messsage, users_id);
 
                     assert token != null;
@@ -287,7 +303,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                 // display error message
                 Toast.makeText(MessageActivity.this,databaseError.getMessage(),Toast.LENGTH_LONG).show();
-                }
+            }
         });
     }
 
@@ -302,7 +318,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chats chats = snapshot.getValue(Chats.class);
                     assert chats != null;
-                    if(chats.getReceiver().equals(currentAdmin.getUid())
+                    if(chats.getReceiver().equals(admin_uid)
                             && chats.getSender().equals(users_id)){
                         HashMap<String,Object> hashMap = new HashMap<>();
                         hashMap.put("isseen",true);
@@ -411,7 +427,9 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
     // setting the status of the users
     private void status(String status){
-        userRef = FirebaseDatabase.getInstance().getReference("Admin").child(currentAdmin.getUid());
+
+        adminRef = FirebaseDatabase.getInstance().getReference("Admin");
+        //.child(admin.getAdminUid());
 
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put("status",status);

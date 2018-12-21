@@ -125,27 +125,7 @@ public class AdminLoginActivity extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
-
-        // getting sharePreferences
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String email = preferences.getString("email", "" );
-        String password = preferences.getString("password","");
-
-        // getting text from user
-        String my_email = editTextEmail.getText().toString();
-        String my_password = editTextPassword.getText().toString();
-
-        // checks if user is currently logged in
-        if(email.equals(my_email) && password.equals(my_password)){
-            // start the activity
-            startActivity(new Intent(AdminLoginActivity.this,HomeActivity.class));
-
-            // Add a custom animation ot the activity
-            CustomIntent.customType(AdminLoginActivity.this,"fadein-to-fadeout");
-
-            // finish the activity
-            finish();
-        }
+        // do nothing
     }
 
     // method to animate the app logo
@@ -245,7 +225,6 @@ public class AdminLoginActivity extends AppCompatActivity {
 
                    // decrypt password
                    try {
-
                        decryptedPassword = decryptPassword(encryptedPassword,email);
                    } catch (Exception e) {
                        e.printStackTrace();
@@ -260,12 +239,16 @@ public class AdminLoginActivity extends AppCompatActivity {
                        // display a successful login message
                        Toast.makeText(AdminLoginActivity.this,getString(R.string.login_successful),Toast.LENGTH_SHORT).show();
 
-                       // setting email to sharePreference
+                       // storing email in shared preference
                        SharedPreferences.Editor editor = PreferenceManager
                                .getDefaultSharedPreferences(AdminLoginActivity.this).edit();
                        editor.putString("email", email);
-                       editor.putString("password",password);
+                       editor.putString("uid", admin.getAdminUid());
                        editor.apply();
+
+                       // setting uid and email to getter method in sharedPreferences
+                       SavedSharePreference.setEmail(AdminLoginActivity.this, email);
+                       SavedSharePreference.setUid(AdminLoginActivity.this, admin.getAdminUid());
 
                        // clear the text fields
                        clearTextFields();

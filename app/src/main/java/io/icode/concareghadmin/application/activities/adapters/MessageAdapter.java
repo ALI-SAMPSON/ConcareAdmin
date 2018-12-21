@@ -1,6 +1,8 @@
 package io.icode.concareghadmin.application.activities.adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
@@ -171,7 +173,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         user = FirebaseAuth.getInstance().getCurrentUser();
 
-        if(mChats.get(position).getSender().equals(user.getUid())){
+        // getting the uid of the admin stored in shared preference
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mCtx);
+        final String admin_uid = preferences.getString("uid","");
+
+        if(mChats.get(position).getSender().equals(admin_uid)){
             return MSG_TYPE_RIGHT;
         }
         else{

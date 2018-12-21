@@ -10,6 +10,7 @@
     <string name="hint_username" translatable="false">Username</string>
     <string name="hint_phone" translatable="false">Phone Number</string>
     <string name="hint_contact" translatable="false">Contact Number</string>
+    <string name="hint_search" translatable="false">Search...</string>
     <string name="hint_room_number" translatable="false">Hostel Room Number</string>
     <string name="hint_confirm_password" translatable="false">Confirm Password</string>
     <string name="text_gender" translatable="false">Gender</string>
@@ -35,6 +36,7 @@
     <string name="exit_app_message" translatable="false">Please press again to exit</string>
     <string name="text_order" translatable="false">Order</string>
     <string name="text_cancel" translatable="false">Cancel</string>
+    <string name="sign_out_msg" translatable="false">Are you sure you want to sign out?</string>
 
 
     <!--Error Text -->

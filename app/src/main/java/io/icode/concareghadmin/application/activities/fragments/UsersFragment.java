@@ -61,7 +61,7 @@ public class UsersFragment extends Fragment {
 
     DatabaseReference userRef;
 
-    EditText search_users;
+    EditText editTextSearch;
 
     // material searchView
     MaterialSearchView searchView;
@@ -97,8 +97,10 @@ public class UsersFragment extends Fragment {
             readUsers();
 
 
-            search_users =  view.findViewById(R.id.search_users);
-            search_users.addTextChangedListener(new TextWatcher() {
+        editTextSearch =  view.findViewById(R.id.editTextSearch);
+
+        // adding TextChange Listener to search edittext
+        editTextSearch.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -141,9 +143,8 @@ public class UsersFragment extends Fragment {
                     assert users != null;
                     assert user != null;
 
-                    if(!users.getUid().equals(user.getUid())){
-                        mUsers.add(users);
-                    }
+                    mUsers.add(users);
+
                 }
 
                 adapterUser = new RecyclerViewAdapterUser(getContext(),mUsers,false);
@@ -202,49 +203,5 @@ public class UsersFragment extends Fragment {
         });
 
     }
-
-    /*
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
-        inflater.inflate(R.menu.menu_search,menu);
-
-        MenuItem menuItem = menu.findItem(R.id.menu_search);
-
-        // creating and initializing materialsearchview to search for Users
-        searchView = view.findViewById(R.id.search_view);
-        searchView.setMenuItem(menuItem);
-        searchView.setEllipsize(true);
-        searchView.setSubmitOnClick(true);
-        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                if(!query.isEmpty()){
-                    searchUsers(query.toLowerCase());
-                }
-                else{
-                    searchUsers("");
-                }
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String query) {
-                if(!query.isEmpty()){
-                    searchUsers(query.toLowerCase());
-                }
-                else {
-                    searchUsers("");
-                }
-
-                return true;
-            }
-        });
-
-
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    */
-
 
 }

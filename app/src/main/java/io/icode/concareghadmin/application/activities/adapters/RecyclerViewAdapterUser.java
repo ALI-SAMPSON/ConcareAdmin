@@ -2,6 +2,8 @@ package io.icode.concareghadmin.application.activities.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,11 +25,18 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
+import io.icode.concareghadmin.application.activities.SavedSharePreference;
 import io.icode.concareghadmin.application.activities.chatApp.MessageActivity;
+import io.icode.concareghadmin.application.activities.models.Admin;
 import io.icode.concareghadmin.application.activities.models.Chats;
 import io.icode.concareghadmin.application.activities.models.Users;
 
 public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAdapterUser.ViewHolder> {
+
+    Admin admin;
+
+    // variable to store admin uid from sharePreference
+    //String admin_uid;
 
     private Context mCtx;
     private List<Users> mUsers;
@@ -117,6 +126,8 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
+        Admin admin;
+
         CircleImageView profile_pic;
         TextView username;
         TextView last_msg;
@@ -128,6 +139,8 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
         public ViewHolder(View itemView) {
             super(itemView);
 
+            admin = new Admin();
+
             profile_pic = itemView.findViewById(R.id.profile_image);
             username = itemView.findViewById(R.id.username);
             status_online = itemView.findViewById(R.id.status_online);
@@ -137,11 +150,16 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
     }
 
     // checks for last message
-    private void lastMessage(final String userid, final TextView last_msg){
+    private void lastMessage(final String user_id, final TextView last_msg){
 
         theLastMessage = "default";
 
         final FirebaseUser currentAdmin = FirebaseAuth.getInstance().getCurrentUser();
+
+        // getting the uid of the admin stored in shared preference
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mCtx);
+        final String admin_uid = preferences.getString("uid","");
+
         DatabaseReference lastMsgRef = FirebaseDatabase.getInstance().getReference("Chats");
         lastMsgRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -149,8 +167,8 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chats chats = snapshot.getValue(Chats.class);
                     assert currentAdmin != null;
-                    if(chats.getReceiver().equals(currentAdmin.getUid()) && chats.getSender().equals(userid)
-                            || chats.getReceiver().equals(userid) && chats.getSender().equals(currentAdmin.getUid())){
+                    if(chats.getReceiver().equals(admin_uid) && chats.getSender().equals(user_id)
+                            || chats.getReceiver().equals(user_id) && chats.getSender().equals(admin_uid)){
                         theLastMessage = chats.getMessage();
                     }
                 }

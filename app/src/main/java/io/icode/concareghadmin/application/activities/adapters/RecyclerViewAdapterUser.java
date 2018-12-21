@@ -138,6 +138,7 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
 
     // checks for last message
     private void lastMessage(final String userid, final TextView last_msg){
+
         theLastMessage = "default";
 
         final FirebaseUser currentAdmin = FirebaseAuth.getInstance().getCurrentUser();

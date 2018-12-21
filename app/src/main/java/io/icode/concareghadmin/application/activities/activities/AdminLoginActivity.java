@@ -1,11 +1,15 @@
 package io.icode.concareghadmin.application.activities.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Patterns;
 import android.view.View;
 import android.view.animation.Animation;
@@ -23,13 +27,31 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.security.MessageDigest;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
+import io.icode.concareghadmin.application.activities.SavedSharePreference;
 import io.icode.concareghadmin.application.activities.chatApp.HomeActivity;
+import io.icode.concareghadmin.application.activities.models.Admin;
 import maes.tech.intentanim.CustomIntent;
 
 public class AdminLoginActivity extends AppCompatActivity {
+
+    // variable to store Decryption algorithm name
+    String AES = "AES";
+
+    // variable to store encrypted password
+    String decryptedPassword;
 
     ProgressBar progressBar;
 
@@ -39,6 +61,10 @@ public class AdminLoginActivity extends AppCompatActivity {
     Button forgot_password;
     Button buttonLogin;
     Button buttonSignUpLink;
+
+    Admin admin;
+
+    DatabaseReference adminRef;
 
     private CardView my_card;
 
@@ -56,6 +82,10 @@ public class AdminLoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_login);
+
+        admin = new Admin();
+
+        adminRef = FirebaseDatabase.getInstance().getReference("Admin");
 
         app_logo = findViewById(R.id.app_logo);
 
@@ -95,9 +125,18 @@ public class AdminLoginActivity extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
-        // checks if user is currently logged in
-        if(mAuth.getCurrentUser() != null){
 
+        // getting sharePreferences
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String email = preferences.getString("email", "" );
+        String password = preferences.getString("password","");
+
+        // getting text from user
+        String my_email = editTextEmail.getText().toString();
+        String my_password = editTextPassword.getText().toString();
+
+        // checks if user is currently logged in
+        if(email.equals(my_email) && password.equals(my_password)){
             // start the activity
             startActivity(new Intent(AdminLoginActivity.this,HomeActivity.class));
 
@@ -157,7 +196,7 @@ public class AdminLoginActivity extends AppCompatActivity {
         String _email = editTextEmail.getText().toString().trim();
         String _password = editTextPassword.getText().toString().trim();
 
-        if(_email.isEmpty()){
+        if(TextUtils.isEmpty(_email)){
             editTextEmail.clearAnimation();
             editTextEmail.startAnimation(shake);
             editTextEmail.setError(getString(R.string.error_empty_email));
@@ -167,7 +206,7 @@ public class AdminLoginActivity extends AppCompatActivity {
             editTextEmail.startAnimation(shake);
             editTextEmail.setError(getString(R.string.email_invalid));
         }
-        else if(_password.isEmpty()){
+        else if(TextUtils.isEmpty(_password)){
             editTextPassword.clearAnimation();
             editTextPassword.startAnimation(shake);
             editTextPassword.setError(getString(R.string.error_empty_password));
@@ -181,12 +220,88 @@ public class AdminLoginActivity extends AppCompatActivity {
         }
         else{
             // a call to the loginUser method
-            loginUser();
+            loginAdmin();
         }
     }
 
     // Method to handle user login
-    public void loginUser(){
+    private void loginAdmin() {
+
+        progressBar.setVisibility(View.VISIBLE);
+
+        final String email = editTextEmail.getText().toString();
+        final String password = editTextPassword.getText().toString();
+
+       adminRef.addValueEventListener(new ValueEventListener() {
+           @Override
+           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+               for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+
+                   Admin admin = snapshot.getValue(Admin.class);
+
+                   assert admin != null;
+                   String adminEmail = admin.getEmail();
+                   String encryptedPassword = admin.getPassword();
+
+                   // decrypt password
+                   try {
+
+                       decryptedPassword = decryptPassword(encryptedPassword,email);
+                   } catch (Exception e) {
+                       e.printStackTrace();
+                   }
+
+                   // compares decrypted password to the current password entered and
+                   if(password.equals(decryptedPassword) && email.equals(adminEmail)){
+
+                       // dismiss the dialog
+                       progressBar.setVisibility(View.GONE);
+
+                       // display a successful login message
+                       Toast.makeText(AdminLoginActivity.this,getString(R.string.login_successful),Toast.LENGTH_SHORT).show();
+
+                       // setting email to sharePreference
+                       SharedPreferences.Editor editor = PreferenceManager
+                               .getDefaultSharedPreferences(AdminLoginActivity.this).edit();
+                       editor.putString("email", email);
+                       editor.putString("password",password);
+                       editor.apply();
+
+                       // clear the text fields
+                       clearTextFields();
+
+                       // start the home activity
+                       startActivity(new Intent(AdminLoginActivity.this,HomeActivity.class));
+
+                       // Add a custom animation ot the activity
+                       CustomIntent.customType(AdminLoginActivity.this,"fadein-to-fadeout");
+
+                       // finishes this activity(prevents user from going back to this activity when back button is pressed)
+                       finish();
+                   }
+                   else{
+
+                       progressBar.setVisibility(View.GONE);
+                       // display a message if there is an error
+                       //Snackbar.make(relativeLayout,"Incorrect Email or password. Please Try Again",Snackbar.LENGTH_LONG).show();
+                       Toast.makeText(AdminLoginActivity.this,"Incorrect email or password. Please Try Again",Toast.LENGTH_LONG).show();
+
+                   }
+
+               }
+           }
+
+           @Override
+           public void onCancelled(@NonNull DatabaseError databaseError) {
+               Snackbar.make(relativeLayout,databaseError.getMessage(),Snackbar.LENGTH_LONG).show();
+           }
+       });
+
+    }
+
+
+    // Method to handle user login
+    /*public void loginUser(){
 
         // shakes the button
         buttonLogin.clearAnimation();
@@ -239,59 +354,34 @@ public class AdminLoginActivity extends AppCompatActivity {
                 });
 
     }
+    */
 
-    // Method that checks if the email enter is verified
-    private void checkIfEmailIsVerified(){
+    // method to decrypt password
+    private String decryptPassword(String password, String email) throws Exception {
+        SecretKeySpec key  = generateKey(email);
+        Cipher c = Cipher.getInstance(AES);
+        c.init(Cipher.DECRYPT_MODE,key);
+        byte[] decodedValue = Base64.decode(password,Base64.DEFAULT);
+        byte[] decVal = c.doFinal(decodedValue);
+        String decryptedValue = new String(decVal);
+        return decryptedValue;
 
-        FirebaseUser user = mAuth.getCurrentUser();
+    }
 
-        boolean isEmailVerified = user.isEmailVerified();
-
-        // Check is emailVerified is true
-        if(isEmailVerified){
-
-            // display a successful login message
-            Toast.makeText(AdminLoginActivity.this,getString(R.string.login_successful),Toast.LENGTH_SHORT).show();
-
-            // clear the text fields
-            clearTextFields();
-
-            // start the home activity
-            startActivity(new Intent(AdminLoginActivity.this,HomeActivity.class));
-
-            // Add a custom animation ot the activity
-            CustomIntent.customType(AdminLoginActivity.this,"fadein-to-fadeout");
-
-            // finishes this activity(prevents user from going back to this activity when back button is pressed)
-            finish();
-
-        }
-        else {
-
-            // display a message to the user to verify email
-            Toast.makeText(AdminLoginActivity.this,getString(R.string.text_email_not_verified),Toast.LENGTH_LONG).show();
-
-            // signs user out and restarts the Login Activity
-            mAuth.signOut();
-
-            // restarts the activity
-            startActivity(new Intent (AdminLoginActivity.this,AdminLoginActivity.class));
-
-            // Add a custom animation ot the activity
-            CustomIntent.customType(AdminLoginActivity.this,"fadein-to-fadeout");
-
-            // finish the activity
-            finish();
-
-        }
-
+    private SecretKeySpec generateKey(String password) throws Exception{
+        final MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] bytes = password.getBytes("UTF-8");
+        digest.update(bytes, 0 , bytes.length);
+        byte[] key = digest.digest();
+        SecretKeySpec keySpec = new SecretKeySpec(key,"AES");
+        return keySpec;
     }
 
     // Link to the signUp Interface
     /*public void onSignUpLinkClick(View view){
 
         // creates an instance of the intent class and opens the signUpctivity
-        startActivity(new Intent(this,AdminSignUpActivity.class));
+        startActivity(new Intent(AdminLoginActivity.this,AdminSignUpActivity.class));
 
         // Add a custom animation ot the activity
         CustomIntent.customType(AdminLoginActivity.this,"fadein-to-fadeout");
@@ -300,6 +390,7 @@ public class AdminLoginActivity extends AppCompatActivity {
         finish();
     }
     */
+
 
     // Method to clear text fields
     public void clearTextFields(){

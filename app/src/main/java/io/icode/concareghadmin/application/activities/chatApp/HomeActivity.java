@@ -31,6 +31,7 @@ import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
+import io.icode.concareghadmin.application.activities.SavedSharePreference;
 import io.icode.concareghadmin.application.activities.activities.AdminLoginActivity;
 import io.icode.concareghadmin.application.activities.adapters.ViewPagerAdapter;
 import io.icode.concareghadmin.application.activities.fragments.ChatsFragment;
@@ -95,23 +96,27 @@ public class HomeActivity extends AppCompatActivity {
             // sets visibility to visible if there is  no internet connection
             internetConnection.setVisibility(View.GONE);
 
-            adminRef = FirebaseDatabase.getInstance().getReference("Admin").child(currentAdmin.getUid());
+            //adminRef = FirebaseDatabase.getInstance().getReference("Admin").child(currentAdmin.getUid());
+
+            adminRef = FirebaseDatabase.getInstance().getReference("Admin");
 
             adminRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    Admin admin = dataSnapshot.getValue(Admin.class);
-                    assert admin != null;
-                    username.setText(admin.getUsername());
+                    for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
-                    //text if users's imageUrl is equal to default
-                    if(admin.getImageUrl() == null){
-                        profile_image.setImageResource(R.drawable.app_logo);
-                    }
-                    else{
-                        // load users's Image Url
-                        Glide.with(getApplicationContext()).load(admin.getImageUrl()).into(profile_image);
+                        Admin admin = snapshot.getValue(Admin.class);
+                        assert admin != null;
+                        username.setText(admin.getUsername());
+
+                        //text if users's imageUrl is equal to default
+                        if (admin.getImageUrl() == null) {
+                            profile_image.setImageResource(R.drawable.app_logo);
+                        } else {
+                            // load users's Image Url
+                            Glide.with(getApplicationContext()).load(admin.getImageUrl()).into(profile_image);
+                        }
                     }
 
                 }
@@ -138,25 +143,24 @@ public class HomeActivity extends AppCompatActivity {
                     for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                         Chats chats = snapshot.getValue(Chats.class);
                         assert chats != null;
-                        if(chats.getReceiver().equals(currentAdmin.getUid()) && !chats.isSeen()){
+                        if(chats.getReceiver().equals(admin.getAdminUid()) && !chats.isSeen()){
                             unreadMessages++;
                         }
                     }
 
                     if(unreadMessages == 0){
                         // adds ChatsFragment and AdminFragment to the viewPager
-                        viewPagerAdapter.addFragment(new ChatsFragment(), getString(R.string.text_chats));
+                        //viewPagerAdapter.addFragment(new ChatsFragment(), getString(R.string.text_chats));
                     }
                     else{
                         // adds ChatsFragment and AdminFragment to the viewPager + count of unread messages
-                        viewPagerAdapter.addFragment(new ChatsFragment(), "("+unreadMessages+") Chats");
+                        //viewPagerAdapter.addFragment(new ChatsFragment(), "("+unreadMessages+") Chats");
                     }
 
                     // adds ChatsFragment and AdminFragment to the viewPager
-                    //viewPagerAdapter.addFragment(new ChatsFragment(), getString(R.string.text_chats));
-                    viewPagerAdapter.addFragment(new UsersFragment(), getString(R.string.text_users));
+                    //viewPagerAdapter.addFragment(new UsersFragment(), getString(R.string.text_users));
                     //Sets Adapter view of the ViewPager
-                    viewPager.setAdapter(viewPagerAdapter);
+                    //viewPager.setAdapter(viewPagerAdapter);
 
                     //sets tablayout with viewPager
                     tabLayout.setupWithViewPager(viewPager);
@@ -180,6 +184,29 @@ public class HomeActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        // checks if user is currently logged in
+        if(SavedSharePreference.getEmail(HomeActivity.this).length() == 0){
+
+            // start the activity
+            startActivity(new Intent(HomeActivity.this,AdminLoginActivity.class));
+
+            // Add a custom animation ot the activity
+            CustomIntent.customType(HomeActivity.this,"fadein-to-fadeout");
+
+            // finish the activity
+            finish();
+
+        }
+
+        else{
+
+            // stay here
+        }
     }
 
     @Override
@@ -210,7 +237,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void status(String status){
 
-        adminRef = FirebaseDatabase.getInstance().getReference("Admin").child(currentAdmin.getUid());
+        adminRef = FirebaseDatabase.getInstance().getReference("Admin");
 
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put("status",status);
@@ -222,12 +249,12 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        status("online");
+        //status("online");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        status("offline");
+        //status("offline");
     }
 }

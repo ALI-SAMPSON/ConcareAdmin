@@ -6,6 +6,7 @@ public class Admin {
     private String email;
     private String username;
     private String adminUid;
+    private String password;
     private String gender;
     private String phoneNumber;
     private String imageUrl;
@@ -86,5 +87,13 @@ public class Admin {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

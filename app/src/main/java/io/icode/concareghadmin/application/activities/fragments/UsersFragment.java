@@ -120,6 +120,7 @@ public class UsersFragment extends Fragment {
         return view;
     }
 
+    // method to search for user in the system
     private void searchUsers(String s) {
 
         final FirebaseUser user = mAuth.getCurrentUser();
@@ -153,7 +154,8 @@ public class UsersFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                //Toast.makeText(getContext(),databaseError.getMessage(),Toast.LENGTH_LONG).show();
+                Snackbar.make(mLayout,databaseError.getMessage(),Snackbar.LENGTH_LONG).show();
             }
         });
 
@@ -186,6 +188,7 @@ public class UsersFragment extends Fragment {
                     // adapter initialization and RecyclerView set up
                     adapterUser = new RecyclerViewAdapterUser(getContext(), mUsers, true);
                     recyclerView.setAdapter(adapterUser);
+                    // notifies any data change
                     adapterUser.notifyDataSetChanged();
 
                // }

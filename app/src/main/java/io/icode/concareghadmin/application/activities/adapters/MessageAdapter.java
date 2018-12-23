@@ -32,8 +32,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private List<Chats> mChats;
     private String imageUrl;
 
-    private FirebaseUser user;
-
     // Global variable to handle OnItemClickListener
     public static OnItemClickListener mListener;
 
@@ -170,9 +168,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     @Override
     public int getItemViewType(int position) {
-
-        user = FirebaseAuth.getInstance().getCurrentUser();
-
         // getting the uid of the admin stored in shared preference
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mCtx);
         final String admin_uid = preferences.getString("uid","");

@@ -154,11 +154,11 @@ public class HomeActivity extends AppCompatActivity {
 
                     if(unreadMessages == 0){
                         // adds ChatsFragment and AdminFragment to the viewPager
-                        //viewPagerAdapter.addFragment(new ChatsFragment(), getString(R.string.text_chats));
+                        viewPagerAdapter.addFragment(new ChatsFragment(), getString(R.string.text_chats));
                     }
                     else{
                         // adds ChatsFragment and AdminFragment to the viewPager + count of unread messages
-                        //viewPagerAdapter.addFragment(new ChatsFragment(), "("+unreadMessages+") Chats");
+                        viewPagerAdapter.addFragment(new ChatsFragment(), "("+unreadMessages+") Chats");
                     }
 
                     // adds ChatsFragment and AdminFragment to the viewPager

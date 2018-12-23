@@ -1,4 +1,4 @@
-package io.icode.concareghadmin.application.activities.Notifications;
+package io.icode.concareghadmin.application.activities.notifications;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -14,11 +14,9 @@ import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.chatApp.MessageActivity;
 
 @SuppressWarnings("ALL")
@@ -74,7 +72,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 
-             builder.setSmallIcon(R.mipmap.app_logo_round)
+             builder.setSmallIcon(Integer.parseInt(icon))
                     .setContentTitle(title)
                     .setContentText(body)
                     .setWhen(System.currentTimeMillis())

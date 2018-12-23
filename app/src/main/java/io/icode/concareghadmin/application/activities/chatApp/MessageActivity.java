@@ -36,11 +36,11 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
-import io.icode.concareghadmin.application.activities.Notifications.Client;
-import io.icode.concareghadmin.application.activities.Notifications.Data;
-import io.icode.concareghadmin.application.activities.Notifications.MyResponse;
-import io.icode.concareghadmin.application.activities.Notifications.Sender;
-import io.icode.concareghadmin.application.activities.Notifications.Token;
+import io.icode.concareghadmin.application.activities.notifications.Client;
+import io.icode.concareghadmin.application.activities.notifications.Data;
+import io.icode.concareghadmin.application.activities.notifications.MyResponse;
+import io.icode.concareghadmin.application.activities.notifications.Sender;
+import io.icode.concareghadmin.application.activities.notifications.Token;
 import io.icode.concareghadmin.application.activities.adapters.MessageAdapter;
 import io.icode.concareghadmin.application.activities.fragments.APIService;
 import io.icode.concareghadmin.application.activities.models.Admin;
@@ -248,6 +248,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
                 Admin admin = dataSnapshot.getValue(Admin.class);
                 assert admin != null;
                 if(notify) {
+                    // method call to send notification when admin send a message
                     sendNotification(receiver, admin.getUsername(), msg);
                 }
                 // sets notify to false
@@ -272,7 +273,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
-                    Data data = new Data(admin_uid, R.drawable.ic_notification,getString(R.string.application_name),
+                    Data data = new Data(admin_uid, R.mipmap.app_logo_round,getString(R.string.application_name),
                             username+": "+messsage, users_id);
 
                     assert token != null;

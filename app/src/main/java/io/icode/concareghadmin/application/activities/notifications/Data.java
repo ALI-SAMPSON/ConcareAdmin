@@ -1,4 +1,4 @@
-package io.icode.concareghadmin.application.activities.Notifications;
+package io.icode.concareghadmin.application.activities.notifications;
 
 public class Data {
 

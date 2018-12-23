@@ -103,8 +103,6 @@ public class AdminLoginActivity extends AppCompatActivity {
         relativeLayout = findViewById(R.id.relativeLayout);
 
         progressBar = findViewById(R.id.progressBar);
-        // sets a custom color on progressBar
-        //progressBar.getIndeterminateDrawable().setColorFilter(0xFE5722,PorterDuff.Mode.MULTIPLY);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -215,6 +213,7 @@ public class AdminLoginActivity extends AppCompatActivity {
        adminRef.addValueEventListener(new ValueEventListener() {
            @Override
            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
 
                    Admin admin = snapshot.getValue(Admin.class);
@@ -261,6 +260,7 @@ public class AdminLoginActivity extends AppCompatActivity {
 
                        // finishes this activity(prevents user from going back to this activity when back button is pressed)
                        finish();
+
                    }
                    else{
 
@@ -276,6 +276,7 @@ public class AdminLoginActivity extends AppCompatActivity {
 
            @Override
            public void onCancelled(@NonNull DatabaseError databaseError) {
+               // display error message
                Snackbar.make(relativeLayout,databaseError.getMessage(),Snackbar.LENGTH_LONG).show();
            }
        });

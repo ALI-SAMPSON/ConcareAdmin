@@ -1,7 +1,7 @@
 package io.icode.concareghadmin.application.activities.fragments;
 
-import io.icode.concareghadmin.application.activities.Notifications.MyResponse;
-import io.icode.concareghadmin.application.activities.Notifications.Sender;
+import io.icode.concareghadmin.application.activities.notifications.MyResponse;
+import io.icode.concareghadmin.application.activities.notifications.Sender;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;

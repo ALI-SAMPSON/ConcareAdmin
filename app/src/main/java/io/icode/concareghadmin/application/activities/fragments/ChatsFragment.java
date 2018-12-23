@@ -2,9 +2,9 @@ package io.icode.concareghadmin.application.activities.fragments;
 
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,11 +12,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,11 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.icode.concareghadmin.application.R;
-import io.icode.concareghadmin.application.activities.Notifications.Token;
+import io.icode.concareghadmin.application.activities.notifications.Token;
 import io.icode.concareghadmin.application.activities.adapters.RecyclerViewAdapterUser;
-import io.icode.concareghadmin.application.activities.chatApp.MessageActivity;
+import io.icode.concareghadmin.application.activities.chatApp.HomeActivity;
 import io.icode.concareghadmin.application.activities.models.Chatlist;
-import io.icode.concareghadmin.application.activities.models.Chats;
 import io.icode.concareghadmin.application.activities.models.Users;
 
 /**
@@ -51,10 +47,17 @@ public class ChatsFragment extends Fragment {
 
     private List<Chatlist> usersList;
 
-    FirebaseUser currentAdmin;
+    String admin_uid;
 
     DatabaseReference reference;
 
+    HomeActivity applicationContext;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        applicationContext = (HomeActivity)context;
+    }
 
     @SuppressWarnings("ALL")
     @Override
@@ -68,11 +71,14 @@ public class ChatsFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        currentAdmin = FirebaseAuth.getInstance().getCurrentUser();
-
         usersList = new ArrayList<>();
 
-        reference = FirebaseDatabase.getInstance().getReference("Chatlist").child(currentAdmin.getUid());
+        // getting the uid of the admin stored in shared preference
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext);
+
+        admin_uid = preferences.getString("uid","");
+
+        reference = FirebaseDatabase.getInstance().getReference("Chatlist").child(admin_uid);
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -104,7 +110,7 @@ public class ChatsFragment extends Fragment {
     private void updateToken(String token){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
         Token token1 = new Token(token);
-        reference.child(currentAdmin.getUid()).setValue(token1);
+        reference.child(admin_uid).setValue(token1);
     }
 
     // method to populate fragment with Admin chats

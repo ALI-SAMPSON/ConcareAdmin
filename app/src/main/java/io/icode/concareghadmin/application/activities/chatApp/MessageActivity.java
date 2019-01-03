@@ -1,5 +1,8 @@
 package io.icode.concareghadmin.application.activities.chatApp;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -33,6 +36,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
@@ -95,6 +100,8 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
     boolean notify = false;
 
+    ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,6 +153,10 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         currentAdmin = FirebaseAuth.getInstance().getCurrentUser();
 
         userRef = FirebaseDatabase.getInstance().getReference("Users").child(users_id);
+
+        // progressDialog to display before deleting message
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Deleting message...");
 
         getUserDetails();
 
@@ -247,12 +258,12 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Admin admin = dataSnapshot.getValue(Admin.class);
                 assert admin != null;
-                if(notify) {
-                    // method call to send notification when admin send a message
-                    sendNotification(receiver, admin.getUsername(), msg);
-                }
+                //if(notify) {
+                // method call to send notification to user when admin sends a message
+                sendNotification(receiver, admin.getUsername(), msg);
+                //}
                 // sets notify to false
-                notify = false;
+                //notify = false;
             }
 
             @Override
@@ -390,10 +401,65 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
     }
 
     @Override
-    public void onDeleteClick(int position) {
+    public void onDeleteClick(final int position) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MessageActivity.this);
+        builder.setTitle(getString(R.string.title_delete_message));
+        builder.setMessage(getString(R.string.text_delete_message));
+
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                // show dialog
+                progressDialog.show();
+
+                Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        // dismiss dialog
+                        progressDialog.dismiss();
+
+                        // gets the position of the selected message
+                        Chats selectedMessage = mChats.get(position);
+
+                        //gets the key at the selected position
+                        String selectedKey = selectedMessage.getKey();
+
+                        chatRef.child(selectedKey).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    Toast.makeText(MessageActivity.this," Message deleted ",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(MessageActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
+                            }
+                        });
+
+
+                    }
+                },3000);
+
+            }
+        });
+
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
 
         // gets the position of the selected message
-        Chats selectedMessage = mChats.get(position);
+       /* Chats selectedMessage = mChats.get(position);
 
         //gets the key at the selected position
         String selectedKey = selectedMessage.getKey();
@@ -412,6 +478,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
                 Toast.makeText(MessageActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
+        */
     }
 
     @Override
@@ -441,21 +508,22 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
     protected void onResume() {
         super.onResume();
         status("online");
-        currentUser(users_id);
+        //currentUser(users_id);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        chatRef.removeEventListener(seenListener);
-        status("offline");
-        currentUser("none");
+        status("online");
+        //currentUser("none");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // removes eventListener when activity is destroyed
+        status("offline");
+        // removes eventListeners when activity is destroyed
+        chatRef.removeEventListener(seenListener);
         chatRef.removeEventListener(mDBListener);
     }
 }

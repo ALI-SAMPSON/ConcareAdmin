@@ -260,10 +260,12 @@ public class HomeActivity extends AppCompatActivity {
                         // log admin out of the system and clear all stored data
                         clearEmail(HomeActivity.this);
 
-                        // send amin to login activity
+                        // send admin to login activity
                         startActivity(new Intent(HomeActivity.this, AdminLoginActivity.class)
                                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         CustomIntent.customType(HomeActivity.this, "fadein-to-fadeout");
+
+                        finish();
 
                     }
                 },3000);
@@ -283,6 +285,7 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    // method to clear sharePreference when admin log outs
     private  void clearEmail(Context ctx){
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
         editor.clear(); // clear all stored data (email)

@@ -156,7 +156,7 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
         theLastMessage = "default";
 
         // getting the uid of the admin stored in shared preference
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mCtx);
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mCtx);
         final String admin_uid = preferences.getString("uid","");
 
         DatabaseReference lastMsgRef = FirebaseDatabase.getInstance().getReference("Chats");
@@ -166,34 +166,49 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chats chats = snapshot.getValue(Chats.class);
 
+                    assert chats != null;
+
+                    // compares the uid of the admin and user and return the last message
                     if(chats.getReceiver().equals(admin_uid) && chats.getSender().equals(user_id)
                             || chats.getReceiver().equals(user_id) && chats.getSender().equals(admin_uid)){
                         theLastMessage = chats.getMessage();
                     }
 
-                    // checks if message is seen already by admin
-                    /*if(chats.isSeen()){
-                        last_msg.setTextColor(ContextCompat.getColor(mCtx,android.R.color.darker_gray));
-                        last_msg.setText(theLastMessage);
+                    // switch case for theLastMessage
+                    switch (theLastMessage){
+                        case "default":
+                            last_msg.setText(R.string.no_message);
+                            break;
+
+                        default:
+
+                            // checks if chat is is seen by user
+                            if(chats.isSeen()){
+                                last_msg.setText(theLastMessage);
+                            }
+                            else{
+                                last_msg.setTextColor(ContextCompat.getColor(mCtx,R.color.black));
+                                last_msg.setText(theLastMessage);
+                            }
+
+                            //last_msg.setText(theLastMessage);
+                            break;
                     }
-                    else{
-                        last_msg.setTextColor(ContextCompat.getColor(mCtx,R.color.orange_light));
-                        last_msg.setText(theLastMessage);
-                    }
-                    */
+
+
                 }
 
                 // switch case for theLastMessage
-                switch (theLastMessage){
+                /*switch (theLastMessage){
                     case "default":
                         last_msg.setText(R.string.no_message);
                         break;
 
                         default:
-                            last_msg.setTextColor(ContextCompat.getColor(mCtx,R.color.orange_light));
                             last_msg.setText(theLastMessage);
                             break;
                 }
+                */
 
                 theLastMessage = "default";
             }

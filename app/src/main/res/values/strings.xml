@@ -178,6 +178,7 @@
     <string name="text_users" translatable="false">Users</string>
     <string name="text_admin" translatable="false">Admin</string>
     <string name="text_chat_with_us" translatable="false">Chat with Us</string>
+    <string name="no_recent_chats" translatable="false">No Recent Chats</string>
 
     <string name="default_notification_channel_id" translatable="false">Default Notification Channel Id</string>
 
@@ -271,10 +272,10 @@
     </string>
 
     <string name="text_delete_for_me" translatable="false">
-         DELETE FOR ME
+         Delete Message
     </string>
 
-    <string name="text_cancel_for_me" translatable="false">CANCEL</string>
+    <string name="text_cancel_for_me" translatable="false">Cancel</string>
 
     <string name="text_yes" translatable="false">
          YES
@@ -287,5 +288,13 @@
     <string name="no_internet">No Internet</string>
 
     <string name="text_no_internet">check Internet Connection and Try Again!</string>
+
+    <string name="title_delete_message" translatable="false">
+         Delete Message
+    </string>
+
+    <string name="text_delete_message" translatable="false">
+         Are you sure you want to delete this message?
+    </string>
 
 </resources>

@@ -284,62 +284,6 @@ public class AdminLoginActivity extends AppCompatActivity {
     }
 
 
-    // Method to handle user login
-    /*public void loginUser(){
-
-        // shakes the button
-        buttonLogin.clearAnimation();
-        buttonLogin.startAnimation(shake);
-
-        // shows the progressBar
-        progressBar.setVisibility(View.VISIBLE);
-
-        //gets text from the editTExt fields
-        final String _email = editTextEmail.getText().toString().trim();
-        final String _password = editTextPassword.getText().toString().trim();
-
-        mAuth.signInWithEmailAndPassword(_email,_password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-
-                            // Method to check if email is Verified
-                            //checkIfEmailIsVerified();
-
-                            // display a successful login message
-                            Toast.makeText(AdminLoginActivity.this,getString(R.string.login_successful),Toast.LENGTH_SHORT).show();
-
-                            // clear the text fields
-                            clearTextFields();
-
-                            // start the home activity
-                            startActivity(new Intent(AdminLoginActivity.this,HomeActivity.class));
-
-                            // Add a custom animation ot the activity
-                            CustomIntent.customType(AdminLoginActivity.this,"fadein-to-fadeout");
-
-                            // finishes this activity(prevents user from going back to this activity when back button is pressed)
-                            finish();
-
-                        }
-                        else{
-
-                            // display a message if there is an error
-                            Snackbar.make(relativeLayout,task.getException().getMessage(),Snackbar.LENGTH_LONG).show();
-
-                            // sign out user
-                            mAuth.signOut();
-
-                        }
-                        // dismisses the progressBar
-                        progressBar.setVisibility(View.GONE);
-                    }
-                });
-
-    }
-    */
-
     // method to decrypt password
     private String decryptPassword(String password, String email) throws Exception {
         SecretKeySpec key  = generateKey(email);

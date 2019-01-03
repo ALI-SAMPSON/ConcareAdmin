@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -39,13 +40,15 @@ public class ChatsFragment extends Fragment {
 
     View view;
 
+    TextView tv_no_chats;
+
     private RecyclerView recyclerView;
 
     private RecyclerViewAdapterUser recyclerViewAdapterUser;
 
-    private List<Users> mUsers;
-
     private List<Chatlist> usersList;
+
+    private List<Users> mUsers;
 
     String admin_uid;
 
@@ -67,11 +70,13 @@ public class ChatsFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_chats,container,false);
 
-        recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        tv_no_chats = view.findViewById(R.id.tv_no_chats);
 
         usersList = new ArrayList<>();
+
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(applicationContext));
 
         // getting the uid of the admin stored in shared preference
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext);
@@ -88,7 +93,7 @@ public class ChatsFragment extends Fragment {
                     Chatlist chatlist = snapshot.getValue(Chatlist.class);
                     usersList.add(chatlist);
                 }
-                // method call
+                // method call to populate current chats of the chats of the Admin
                 chatList();
             }
 
@@ -122,19 +127,36 @@ public class ChatsFragment extends Fragment {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                 mUsers.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Users user = snapshot.getValue(Users.class);
                     for(Chatlist chatlist : usersList){
                         assert user != null;
                         if(user.getUid().equals(chatlist.getId())){
+                            // set visibility to gone
+                            tv_no_chats.setVisibility(View.GONE);
+                            // sets visibility to Visible if ther are recent chats
+                            recyclerView.setVisibility(View.VISIBLE);
+                            // adds current users admin has chat with
                             mUsers.add(user);
                         }
                     }
                 }
 
-                recyclerViewAdapterUser = new RecyclerViewAdapterUser(getContext(),mUsers,true);
+                recyclerViewAdapterUser = new RecyclerViewAdapterUser(applicationContext,mUsers,true);
                 recyclerView.setAdapter(recyclerViewAdapterUser);
+
+                // checks if there is no recent chat
+                if(!dataSnapshot.exists()){
+                    // sets visibility of recyclerView to gone and textView to visible if no recent chat exist
+                    recyclerView.setVisibility(View.GONE);
+                    tv_no_chats.setVisibility(View.VISIBLE);
+                }
+
+                // notifies adapter of any changes
+                //recyclerViewAdapterUser.notifyDataSetChanged();
+
             }
 
             @Override

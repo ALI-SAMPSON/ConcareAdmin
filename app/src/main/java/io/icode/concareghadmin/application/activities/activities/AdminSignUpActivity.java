@@ -189,13 +189,13 @@ public class AdminSignUpActivity extends AppCompatActivity {
             editTextPassword.requestFocus();
         }
         else{
-            // a call to the loginUser method
-            loginUser();
+            // a call to the signUp method
+            signUpAdmin();
         }
     }
 
     // Method to handle user login
-    public void loginUser(){
+    public void signUpAdmin(){
 
         // shakes the button
         buttonSignUp.clearAnimation();

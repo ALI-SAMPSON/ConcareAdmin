@@ -174,32 +174,10 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
                         theLastMessage = chats.getMessage();
                     }
 
-                    // switch case for theLastMessage
-                    switch (theLastMessage){
-                        case "default":
-                            last_msg.setText(R.string.no_message);
-                            break;
-
-                        default:
-
-                            // checks if chat is is seen by user
-                            if(chats.isSeen()){
-                                last_msg.setText(theLastMessage);
-                            }
-                            else{
-                                last_msg.setTextColor(ContextCompat.getColor(mCtx,R.color.black));
-                                last_msg.setText(theLastMessage);
-                            }
-
-                            //last_msg.setText(theLastMessage);
-                            break;
-                    }
-
-
                 }
 
                 // switch case for theLastMessage
-                /*switch (theLastMessage){
+                switch (theLastMessage){
                     case "default":
                         last_msg.setText(R.string.no_message);
                         break;
@@ -208,7 +186,6 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
                             last_msg.setText(theLastMessage);
                             break;
                 }
-                */
 
                 theLastMessage = "default";
             }

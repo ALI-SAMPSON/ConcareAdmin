@@ -41,16 +41,16 @@ import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
-import io.icode.concareghadmin.application.activities.notifications.Client;
-import io.icode.concareghadmin.application.activities.notifications.Data;
-import io.icode.concareghadmin.application.activities.notifications.MyResponse;
-import io.icode.concareghadmin.application.activities.notifications.Sender;
-import io.icode.concareghadmin.application.activities.notifications.Token;
 import io.icode.concareghadmin.application.activities.adapters.MessageAdapter;
 import io.icode.concareghadmin.application.activities.fragments.APIService;
 import io.icode.concareghadmin.application.activities.models.Admin;
 import io.icode.concareghadmin.application.activities.models.Chats;
 import io.icode.concareghadmin.application.activities.models.Users;
+import io.icode.concareghadmin.application.activities.notifications.Client;
+import io.icode.concareghadmin.application.activities.notifications.Data;
+import io.icode.concareghadmin.application.activities.notifications.MyResponse;
+import io.icode.concareghadmin.application.activities.notifications.Sender;
+import io.icode.concareghadmin.application.activities.notifications.Token;
 import maes.tech.intentanim.CustomIntent;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -82,7 +82,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
     Intent intent;
 
     // string to get intentExtras
-    String users_id;
+    String  users_id;
     String users_name;
 
     // variable for MessageAdapter class
@@ -229,7 +229,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
         messageRef.child("Chats").push().setValue(hashMap);
 
-        // add chat to the chatlist so that it can be added to the Chats fragment
+        // add chat to the chatList so that it can be added to the Chats fragment
         final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
                 .child(admin_uid)
                 .child(users_id);
@@ -258,12 +258,12 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Admin admin = dataSnapshot.getValue(Admin.class);
                 assert admin != null;
-                //if(notify) {
-                // method call to send notification to user when admin sends a message
-                sendNotification(receiver, admin.getUsername(), msg);
-                //}
+                if(notify) {
+                  // method call to send notification to user when admin sends a message
+                  sendNotification(receiver, admin.getUsername(), msg);
+                }
                 // sets notify to false
-                //notify = false;
+                notify = false;
             }
 
             @Override
@@ -276,7 +276,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
     }
 
     // sends notification to respective user as soon as message is sent
-    private void sendNotification(String receiver, final String username , final String messsage){
+    private void sendNotification(String receiver, final String username , final String message){
         DatabaseReference tokens  = FirebaseDatabase.getInstance().getReference("Tokens");
         Query query = tokens.orderByKey().equalTo(receiver);
         query.addValueEventListener(new ValueEventListener() {
@@ -284,18 +284,18 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
-                    Data data = new Data(admin_uid, R.mipmap.app_logo_round,getString(R.string.application_name),
-                            username+": "+messsage, users_id);
+                    Data data = new Data(admin_uid, R.mipmap.app_logo, username+": "+message,
+                            getString(R.string.application_name), users_id);
 
                     assert token != null;
                     Sender sender = new Sender(data, token.getToken());
 
+                    // apiService object to sendNotification to user
                     apiService.sendNotification(sender)
                             .enqueue(new Callback<MyResponse>() {
                                 @Override
                                 public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
                                     if(response.code() == 200){
-                                        assert response.body() != null;
                                         if(response.body().success != 1){
                                             Toast.makeText(MessageActivity.this,"Failed!",Toast.LENGTH_LONG).show();
                                         }

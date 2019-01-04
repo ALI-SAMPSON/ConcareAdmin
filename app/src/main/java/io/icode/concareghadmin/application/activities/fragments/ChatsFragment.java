@@ -26,11 +26,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.icode.concareghadmin.application.R;
-import io.icode.concareghadmin.application.activities.notifications.Token;
 import io.icode.concareghadmin.application.activities.adapters.RecyclerViewAdapterUser;
 import io.icode.concareghadmin.application.activities.chatApp.HomeActivity;
 import io.icode.concareghadmin.application.activities.models.Chatlist;
 import io.icode.concareghadmin.application.activities.models.Users;
+import io.icode.concareghadmin.application.activities.notifications.Token;
 
 /**
  * A simple {@link Fragment} subclass.

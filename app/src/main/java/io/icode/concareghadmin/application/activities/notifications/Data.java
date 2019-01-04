@@ -4,18 +4,18 @@ public class Data {
 
     private String user;
     private int icon;
-    private String title;
     private String body;
+    private String title;
     private String sent;
 
     public Data() {
     }
 
-    public Data(String user, int icon, String title, String body, String sent) {
+    public Data(String user, int icon, String body, String title, String sent) {
         this.user = user;
         this.icon = icon;
-        this.title = title;
         this.body = body;
+        this.title = title;
         this.sent = sent;
     }
 
@@ -35,20 +35,20 @@ public class Data {
         this.icon = icon;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getBody() {
         return body;
     }
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getSent() {

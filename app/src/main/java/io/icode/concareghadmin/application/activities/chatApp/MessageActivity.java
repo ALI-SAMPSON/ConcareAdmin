@@ -284,7 +284,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
-                    Data data = new Data(admin_uid, R.mipmap.app_logo, username+": "+message,
+                    Data data = new Data(admin_uid, R.mipmap.app_logo_round, username+": "+message,
                             getString(R.string.application_name), users_id);
 
                     assert token != null;

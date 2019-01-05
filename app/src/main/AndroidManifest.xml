@@ -52,7 +52,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.activities.AdminSignUpActivity" />
-        <activity android:name=".activities.chatApp.HomeActivity"
+        <activity android:name=".activities.chatApp.ChatActivity"
             android:configChanges="screenLayout|screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>

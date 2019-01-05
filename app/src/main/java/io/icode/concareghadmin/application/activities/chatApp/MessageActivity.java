@@ -114,7 +114,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MessageActivity.this, HomeActivity.class)
+                startActivity(new Intent(MessageActivity.this, ChatActivity.class)
                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 CustomIntent.customType(MessageActivity.this, "fadein-to-fadeout");
             }

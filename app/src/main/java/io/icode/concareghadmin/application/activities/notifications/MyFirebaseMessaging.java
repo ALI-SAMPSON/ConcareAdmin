@@ -23,6 +23,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import io.icode.concareghadmin.application.R;
+import io.icode.concareghadmin.application.activities.chatApp.ChatActivity;
 import io.icode.concareghadmin.application.activities.chatApp.MessageActivity;
 import io.icode.concareghadmin.application.activities.models.Admin;
 
@@ -80,7 +81,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         int j = Integer.parseInt(user.replaceAll("[\\D]",""));
-        Intent intent = new Intent(this,MessageActivity.class);
+        Intent intent = new Intent(this,ChatActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("userid",user);
         intent.putExtras(bundle);
@@ -118,7 +119,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         int j = Integer.parseInt(user.replaceAll("[\\D]",""));
-        Intent intent = new Intent(this,MessageActivity.class);
+        Intent intent = new Intent(this,ChatActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("userid",user);
         intent.putExtras(bundle);

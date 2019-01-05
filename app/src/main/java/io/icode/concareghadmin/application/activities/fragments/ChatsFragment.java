@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +28,7 @@ import java.util.List;
 
 import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.adapters.RecyclerViewAdapterUser;
-import io.icode.concareghadmin.application.activities.chatApp.HomeActivity;
+import io.icode.concareghadmin.application.activities.chatApp.ChatActivity;
 import io.icode.concareghadmin.application.activities.models.Chatlist;
 import io.icode.concareghadmin.application.activities.models.Users;
 import io.icode.concareghadmin.application.activities.notifications.Token;
@@ -54,12 +55,14 @@ public class ChatsFragment extends Fragment {
 
     DatabaseReference reference;
 
-    HomeActivity applicationContext;
+    ProgressBar progressBar;
+
+    ChatActivity applicationContext;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        applicationContext = (HomeActivity)context;
+        applicationContext = (ChatActivity)context;
     }
 
     @SuppressWarnings("ALL")
@@ -74,14 +77,25 @@ public class ChatsFragment extends Fragment {
 
         usersList = new ArrayList<>();
 
+        mUsers = new ArrayList<>();
+
+        // getting reference to view
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(applicationContext));
+
+        progressBar = view.findViewById(R.id.progressBar);
 
         // getting the uid of the admin stored in shared preference
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext);
 
         admin_uid = preferences.getString("uid","");
+
+        // initializing recyclerView adapter
+        recyclerViewAdapterUser = new RecyclerViewAdapterUser(applicationContext,mUsers,true);
+
+        // setting adapter
+        recyclerView.setAdapter(recyclerViewAdapterUser);
 
         reference = FirebaseDatabase.getInstance().getReference("Chatlist").child(admin_uid);
 
@@ -107,7 +121,6 @@ public class ChatsFragment extends Fragment {
         // method call to update token
         updateToken(FirebaseInstanceId.getInstance().getToken());
 
-
         return view;
     }
 
@@ -121,9 +134,12 @@ public class ChatsFragment extends Fragment {
     // method to populate fragment with Admin chats
     private void chatList(){
 
-        mUsers = new ArrayList<>();
+        // display the  progressBar
+        progressBar.setVisibility(View.VISIBLE);
 
+        // db reference to users table
         reference = FirebaseDatabase.getInstance().getReference("Users");
+
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -144,9 +160,6 @@ public class ChatsFragment extends Fragment {
                     }
                 }
 
-                recyclerViewAdapterUser = new RecyclerViewAdapterUser(applicationContext,mUsers,true);
-                recyclerView.setAdapter(recyclerViewAdapterUser);
-
                 // checks if there is no recent chat
                 if(!dataSnapshot.exists()){
                     // sets visibility of recyclerView to gone and textView to visible if no recent chat exist
@@ -155,12 +168,19 @@ public class ChatsFragment extends Fragment {
                 }
 
                 // notifies adapter of any changes
-                //recyclerViewAdapterUser.notifyDataSetChanged();
+                recyclerViewAdapterUser.notifyDataSetChanged();
+
+                // dismiss the progressBar
+                progressBar.setVisibility(View.GONE);
 
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                // dismiss the progressBar
+                progressBar.setVisibility(View.GONE);
+
                 // display error message
                 Toast.makeText(getContext(),databaseError.getMessage(),Toast.LENGTH_LONG).show();
             }

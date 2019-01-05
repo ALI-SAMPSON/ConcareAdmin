@@ -22,11 +22,7 @@ import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,7 +37,7 @@ import javax.crypto.spec.SecretKeySpec;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.SavedSharePreference;
-import io.icode.concareghadmin.application.activities.chatApp.HomeActivity;
+import io.icode.concareghadmin.application.activities.chatApp.ChatActivity;
 import io.icode.concareghadmin.application.activities.models.Admin;
 import maes.tech.intentanim.CustomIntent;
 
@@ -253,7 +249,7 @@ public class AdminLoginActivity extends AppCompatActivity {
                        clearTextFields();
 
                        // start the home activity
-                       startActivity(new Intent(AdminLoginActivity.this,HomeActivity.class));
+                       startActivity(new Intent(AdminLoginActivity.this,ChatActivity.class));
 
                        // Add a custom animation ot the activity
                        CustomIntent.customType(AdminLoginActivity.this,"fadein-to-fadeout");

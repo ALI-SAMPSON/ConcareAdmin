@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,11 +54,10 @@ public class UsersFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private RecyclerViewAdapterUser adapterUser;
+    private RecyclerViewAdapterUser adapterSearch;
     private List<Users> mUsers;
 
     ConstraintLayout mLayout;
-
-    FirebaseAuth mAuth;
 
     DatabaseReference userRef;
 
@@ -66,66 +66,73 @@ public class UsersFragment extends Fragment {
     // material searchView
     MaterialSearchView searchView;
 
+    ProgressBar progressBar;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_users,container,false);
 
-        // make the options appear in the Toolbar
-        //setHasOptionsMenu(true);
+        mLayout = view.findViewById(R.id.mLayout);
 
-        /*
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("");
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setElevation(5.0f);
-        */
-
-            mLayout = view.findViewById(R.id.mLayout);
-
-            recyclerView =  view.findViewById(R.id.recyclerView);
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-            mUsers = new ArrayList<>();
-
-            mAuth = FirebaseAuth.getInstance();
-
-            userRef = FirebaseDatabase.getInstance().getReference("Users");
-
-            readUsers();
-
+        // getting reference to recyclerview
+        recyclerView =  view.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         editTextSearch =  view.findViewById(R.id.editTextSearch);
 
-        // adding TextChange Listener to search edittext
-        editTextSearch.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        mUsers = new ArrayList<>();
 
-                }
+        userRef = FirebaseDatabase.getInstance().getReference("Users");
 
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    searchUsers(charSequence.toString().toLowerCase());
-                }
+        // adapter initialization and RecyclerView set up
+        adapterUser = new RecyclerViewAdapterUser(getContext(), mUsers, true);
+        // setting adapter to recyclerView
+        recyclerView.setAdapter(adapterUser);
 
-                @Override
-                public void afterTextChanged(Editable editable) {
+        // adapter initialization
+        adapterSearch = new RecyclerViewAdapterUser(getContext(),mUsers,false);
+        // setting adapter to recyclerView
+        recyclerView.setAdapter(adapterSearch);
 
-                }
-            });
+        // getting reference to progressBar
+        progressBar = view.findViewById(R.id.progressBar);
 
+        // method call to display users from db
+        displayUsers();
+
+        // method call to search for user
+        search();
 
         // return view
         return view;
     }
 
+    // method calling the searchUsers method
+    private void search(){
+        // adding TextChange Listener to search edittext
+        editTextSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                searchUsers(charSequence.toString().toLowerCase());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
     // method to search for user in the system
     private void searchUsers(String s) {
-
-        final FirebaseUser user = mAuth.getCurrentUser();
 
         userRef = FirebaseDatabase.getInstance().getReference("Users");
         Query query = userRef.orderByChild("search")
@@ -136,26 +143,25 @@ public class UsersFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                // clear's list
                 mUsers.clear();
+
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Users users = snapshot.getValue(Users.class);
 
                     assert users != null;
-                    assert user != null;
 
                     mUsers.add(users);
 
                 }
 
-                adapterUser = new RecyclerViewAdapterUser(getContext(),mUsers,false);
-                recyclerView.setAdapter(adapterUser);
-                adapterUser.notifyDataSetChanged();
+                adapterSearch.notifyDataSetChanged();
 
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                //Toast.makeText(getContext(),databaseError.getMessage(),Toast.LENGTH_LONG).show();
+                // display db error message
                 Snackbar.make(mLayout,databaseError.getMessage(),Snackbar.LENGTH_LONG).show();
             }
         });
@@ -163,42 +169,45 @@ public class UsersFragment extends Fragment {
     }
 
     // message to read the admin from the database
-    public  void readUsers(){
+    public  void displayUsers(){
 
-        final FirebaseUser currentUser = mAuth.getCurrentUser();
+        // display the progressBar
+        progressBar.setVisibility(View.VISIBLE);
 
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                //if(search_users.getText().toString().equals("")) {
-                    //clears list
+                    // clear's list
                     mUsers.clear();
+
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
                         Users users = snapshot.getValue(Users.class);
 
                         assert users != null;
 
-                        assert currentUser != null;
-
                         mUsers.add(users);
 
                     }
 
-                    // adapter initialization and RecyclerView set up
-                    adapterUser = new RecyclerViewAdapterUser(getContext(), mUsers, true);
-                    recyclerView.setAdapter(adapterUser);
                     // notifies any data change
                     adapterUser.notifyDataSetChanged();
 
-               // }
+                // display the progressBar
+                progressBar.setVisibility(View.GONE);
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                //Toast.makeText(getContext(),databaseError.getMessage(),Toast.LENGTH_LONG).show();
+
+                // dismiss the progressBar
+                progressBar.setVisibility(View.GONE);
+
+                // display db error message
                 Snackbar.make(mLayout,databaseError.getMessage(),Snackbar.LENGTH_LONG).show();
+
             }
         });
 

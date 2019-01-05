@@ -1,9 +1,7 @@
 package io.icode.concareghadmin.application.activities.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -21,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.SavedSharePreference;
-import io.icode.concareghadmin.application.activities.chatApp.HomeActivity;
+import io.icode.concareghadmin.application.activities.chatApp.ChatActivity;
 import maes.tech.intentanim.CustomIntent;
 
 public class SplashScreenActivity extends AppCompatActivity {
@@ -108,7 +106,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         else{
 
             // start the activity
-            startActivity(new Intent(SplashScreenActivity.this,HomeActivity.class));
+            startActivity(new Intent(SplashScreenActivity.this,ChatActivity.class));
 
             // Add a custom animation ot the activity
             CustomIntent.customType(SplashScreenActivity.this,"fadein-to-fadeout");

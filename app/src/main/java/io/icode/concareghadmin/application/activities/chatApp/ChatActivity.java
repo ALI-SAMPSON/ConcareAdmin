@@ -25,8 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,7 +37,6 @@ import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
-import io.icode.concareghadmin.application.activities.SavedSharePreference;
 import io.icode.concareghadmin.application.activities.activities.AdminLoginActivity;
 import io.icode.concareghadmin.application.activities.adapters.ViewPagerAdapter;
 import io.icode.concareghadmin.application.activities.fragments.ChatsFragment;
@@ -50,7 +47,7 @@ import io.icode.concareghadmin.application.activities.models.Users;
 import maes.tech.intentanim.CustomIntent;
 
 @SuppressWarnings("ALL")
-public class HomeActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity {
 
     RelativeLayout internetConnection;
 
@@ -70,7 +67,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_chat);
 
         internetConnection = findViewById(R.id.no_internet_connection);
 
@@ -127,7 +124,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(HomeActivity.this,databaseError.getMessage(),Toast.LENGTH_LONG).show();
+                    Toast.makeText(ChatActivity.this,databaseError.getMessage(),Toast.LENGTH_LONG).show();
                 }
             });
 
@@ -172,7 +169,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(HomeActivity.this,databaseError.getMessage(),Toast.LENGTH_LONG).show();
+                    Toast.makeText(ChatActivity.this,databaseError.getMessage(),Toast.LENGTH_LONG).show();
                 }
             });
 
@@ -198,13 +195,13 @@ public class HomeActivity extends AppCompatActivity {
 
         // checks if user is currently logged in
 
-        /*if(SavedSharePreference.getEmail(HomeActivity.this).length() == 0){
+        /*if(SavedSharePreference.getEmail(ChatActivity.this).length() == 0){
 
             // start the activity
-            startActivity(new Intent(HomeActivity.this,AdminLoginActivity.class));
+            startActivity(new Intent(ChatActivity.this,AdminLoginActivity.class));
 
             // Add a custom animation ot the activity
-            CustomIntent.customType(HomeActivity.this,"fadein-to-fadeout");
+            CustomIntent.customType(ChatActivity.this,"fadein-to-fadeout");
 
             // finish the activity
             finish();
@@ -239,7 +236,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void signOutAdmin(){
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
         builder.setTitle(getString(R.string.text_sign_out));
         builder.setMessage(getString(R.string.sign_out_msg));
 
@@ -258,12 +255,12 @@ public class HomeActivity extends AppCompatActivity {
                         progressDialog.dismiss();
 
                         // log admin out of the system and clear all stored data
-                        clearEmail(HomeActivity.this);
+                        clearEmail(ChatActivity.this);
 
                         // send admin to login activity
-                        startActivity(new Intent(HomeActivity.this, AdminLoginActivity.class)
+                        startActivity(new Intent(ChatActivity.this, AdminLoginActivity.class)
                                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                        CustomIntent.customType(HomeActivity.this, "fadein-to-fadeout");
+                        CustomIntent.customType(ChatActivity.this, "fadein-to-fadeout");
 
                         finish();
 

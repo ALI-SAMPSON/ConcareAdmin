@@ -10,9 +10,11 @@ import android.content.ContextWrapper;
 import android.net.Uri;
 import android.os.Build;
 
+import io.icode.concareghadmin.application.R;
+
 public class OreoNotification extends ContextWrapper{
 
-    private static final String CHANNEL_ID = "io.icode.concareghadmin.application";
+    private static final String CHANNEL_ID = "io.icode.concaregh.application";
 
     private static final String CHANNEL_NAME = "concareghapp";
 
@@ -67,7 +69,7 @@ public class OreoNotification extends ContextWrapper{
                 .setContentText(body)
                 .setContentIntent(pendingIntent)
                 .setSound(soundUri)
-                .setSmallIcon(Integer.parseInt(icon))
+                .setSmallIcon(R.mipmap.app_logo_round)
                 .setAutoCancel(true);
     }
 

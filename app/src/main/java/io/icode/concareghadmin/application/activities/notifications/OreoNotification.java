@@ -61,6 +61,7 @@ public class OreoNotification extends ContextWrapper{
     // method to create notification channel
     public Notification.Builder getOreoNotification(String title, String body,
                                                     PendingIntent pendingIntent, Uri soundUri,String icon){
+        // return new Notification.Builder object
         return new Notification.Builder(getApplicationContext(),CHANNEL_ID)
                 .setContentTitle(title)
                 .setContentText(body)

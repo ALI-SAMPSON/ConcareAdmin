@@ -55,6 +55,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
                         else{
                             sendNotification(remoteMessage);
                         }
+
                     }
 
                 }
@@ -135,6 +136,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
             i = j;
         }
 
+        // building notification using notification manager
         oreoNotification.getManager().notify(i,builder.build());
 
 

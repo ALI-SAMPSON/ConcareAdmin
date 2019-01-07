@@ -52,6 +52,13 @@
         android:layout_height="match_parent">
     </android.support.v7.widget.RecyclerView>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:progressBarStyleSmall"
+        android:visibility="gone"
+        android:layout_centerInParent="true"/>
 
     <RelativeLayout
         android:id="@+id/bottom_layout"
@@ -59,7 +66,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/circular_edittext"
         android:layout_alignParentBottom="true"
-        android:layout_margin="5dp"
+        android:layout_margin="8dp"
         android:padding="5dp">
 
         <EditText

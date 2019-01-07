@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -100,6 +101,9 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
     boolean notify = false;
 
+    // loading bar to load messages
+    ProgressBar progressBar;
+
     ProgressDialog progressDialog;
 
     @Override
@@ -154,8 +158,11 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
         userRef = FirebaseDatabase.getInstance().getReference("Users").child(users_id);
 
+        progressBar =  findViewById(R.id.progressBar);
+
         // progressDialog to display before deleting message
         progressDialog = new ProgressDialog(this);
+        // setting message on progressDialog
         progressDialog.setMessage("Deleting message...");
 
         getUserDetails();
@@ -351,6 +358,9 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
     // method to readMessages from the database
     private void readMessages(final String myid, final String userid, final String imageUrl){
 
+        // display progressBar
+        progressBar.setVisibility(View.VISIBLE);
+
         // array initialization
         mChats = new ArrayList<>();
 
@@ -373,9 +383,13 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
                     // initializing the messageAdapter and setting adapter to recyclerView
                     messageAdapter = new MessageAdapter(MessageActivity.this,mChats,imageUrl);
+                    // setting adapter
                     recyclerView.setAdapter(messageAdapter);
                     // notify data change in adapter
                     messageAdapter.notifyDataSetChanged();
+
+                    // dismiss progressBar
+                    progressBar.setVisibility(View.GONE);
 
                     // setting on OnItemClickListener in this activity as an interface for ContextMenu
                     messageAdapter.setOnItemClickListener(MessageActivity.this);
@@ -385,6 +399,11 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                // dismiss progressBar
+                progressBar.setVisibility(View.GONE);
+
+                // display error message
                 Snackbar.make(relativeLayout,databaseError.getMessage(),Snackbar.LENGTH_LONG).show();
             }
         });
@@ -458,27 +477,6 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
 
-        // gets the position of the selected message
-       /* Chats selectedMessage = mChats.get(position);
-
-        //gets the key at the selected position
-        String selectedKey = selectedMessage.getKey();
-
-        // removes/deletes the selected message by admin
-        chatRef.child(selectedKey).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    Toast.makeText(MessageActivity.this," Message deleted ",Toast.LENGTH_SHORT).show();
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(MessageActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
-            }
-        });
-        */
     }
 
     @Override

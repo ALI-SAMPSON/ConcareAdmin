@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -20,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.HttpAuthHandler;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -247,10 +249,12 @@ public class ChatActivity extends AppCompatActivity {
                 // show dialog
                 progressDialog.show();
 
-                Timer timer = new Timer();
-                timer.schedule(new TimerTask() {
+                // delays the running of the ProgressBar for 3 secs
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+
                         // dismiss dialog
                         progressDialog.dismiss();
 

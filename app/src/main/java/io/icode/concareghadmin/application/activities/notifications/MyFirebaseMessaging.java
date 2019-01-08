@@ -96,8 +96,8 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
                 .setAutoCancel(true)
                 .setSound(defaultSound)
                 .setVibrate(new long[]{1000,1000,1000})
-                .setWhen(System.currentTimeMillis());
-                //.setContentIntent(pendingIntent);
+                .setWhen(System.currentTimeMillis())
+                .setContentIntent(pendingIntent);
         NotificationManager nm = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 
         int i = 0;

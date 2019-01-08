@@ -70,6 +70,7 @@ public class OreoNotification extends ContextWrapper{
                 .setContentIntent(pendingIntent)
                 .setSound(soundUri)
                 .setSmallIcon(R.mipmap.app_logo_round)
+                .setWhen(System.currentTimeMillis())
                 .setAutoCancel(true);
     }
 

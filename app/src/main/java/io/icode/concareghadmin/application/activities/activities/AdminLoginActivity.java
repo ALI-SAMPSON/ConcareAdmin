@@ -36,7 +36,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
-import io.icode.concareghadmin.application.activities.SavedSharePreference;
+import io.icode.concareghadmin.application.activities.prefs.SavedSharePreference;
 import io.icode.concareghadmin.application.activities.chatApp.ChatActivity;
 import io.icode.concareghadmin.application.activities.models.Admin;
 import maes.tech.intentanim.CustomIntent;

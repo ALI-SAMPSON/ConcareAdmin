@@ -1,4 +1,4 @@
-package io.icode.concareghadmin.application.activities;
+package io.icode.concareghadmin.application.activities.prefs;
 
 import android.content.Context;
 import android.content.SharedPreferences;

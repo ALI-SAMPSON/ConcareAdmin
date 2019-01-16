@@ -18,7 +18,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.auth.FirebaseAuth;
 
 import io.icode.concareghadmin.application.R;
-import io.icode.concareghadmin.application.activities.SavedSharePreference;
+import io.icode.concareghadmin.application.activities.prefs.SavedSharePreference;
 import io.icode.concareghadmin.application.activities.chatApp.ChatActivity;
 import maes.tech.intentanim.CustomIntent;
 

@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -78,7 +79,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
     // editText and Button to send Message
     EditText msg_to_send;
-    ImageView btn_send;
+    ImageButton btn_send;
 
     Intent intent;
 

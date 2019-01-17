@@ -20,7 +20,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -31,17 +31,18 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <!--<meta-data android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_notification" /> -->
+        <!--
+            <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notification" />
+        -->
 
         <activity
             android:name=".activities.activities.AdminLoginActivity"
             android:configChanges="screenLayout|screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme">
-        </activity>
-
-        <activity android:name=".activities.activities.SplashScreenActivity"
+            android:theme="@style/AppTheme"></activity>
+        <activity
+            android:name=".activities.activities.SplashScreenActivity"
             android:configChanges="screenLayout|screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
@@ -52,27 +53,28 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.activities.AdminSignUpActivity" />
-        <activity android:name=".activities.chatApp.ChatActivity"
+        <activity
+            android:name=".activities.chatApp.ChatActivity"
             android:configChanges="screenLayout|screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity android:name=".activities.activities.ResetPasswordActivity" />
-        <activity android:name=".activities.chatApp.MessageActivity">
-        </activity>
+        <activity android:name=".activities.chatApp.MessageActivity"></activity>
 
-        <service android:name=".activities.notifications.MyFirebaseIdService"
+        <service
+            android:name=".activities.notifications.MyFirebaseIdService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
-        <service android:name=".activities.notifications.MyFirebaseMessaging"
+        <service
+            android:name=".activities.notifications.MyFirebaseMessaging"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 

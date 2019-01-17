@@ -3,9 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/menu_create_group"
+        android:title="@string/text_create_group"
+        android:orderInCategory="100"
+        app:showAsAction="never">
+    </item>
+
+    <item
         android:id="@+id/menu_sign_out"
         android:title="@string/sign_out"
-        android:orderInCategory="100"
+        android:orderInCategory="200"
         app:showAsAction="never">
     </item>
 
@@ -13,7 +20,7 @@
     <item
         android:id="@+id/menu_exit"
         android:title="@string/text_exit"
-        android:orderInCategory="400"
+        android:orderInCategory="300"
         app:showAsAction="never">
     </item>
 

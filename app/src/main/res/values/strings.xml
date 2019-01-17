@@ -40,6 +40,7 @@
 
 
     <!--Error Text -->
+    <string name="error_empty_group_name" translatable="false">Enter a group name</string>
     <string name="error_empty_email" translatable="false">Email field cannot be left empty</string>
     <string name="error_empty_password" translatable="false">Password field cannot be left empty</string>
     <string name="email_invalid" translatable="false">Enter a valid email address</string>
@@ -86,10 +87,20 @@
     <string name="text_please_wait" translatable="false">Please wait...</string>
 
     <!-- Home activity menu items -->
+    <string name="text_create_group" translatable="false">Create Group</string>
     <string name="text_about" translatable="false">About Us</string>
     <string name="text_contact" translatable="false">Contact Us</string>
     <string name="text_sign_out" translatable="false">Sign out</string>
     <string name="text_exit" translatable="false">Exit</string>
+
+    <!-- string for group activity -->
+    <string name="text_groups" translatable="false">Groups</string>
+    <string name="text_group_name" translatable="false">Group Name</string>
+    <string name="enter_group_name" translatable="false">Please enter group name</string>
+    <string name="hint_group_example" translatable="false">e.g KNUST</string>
+    <string name="msg_group_created_successful" translatable="false">Group Created Successfully</string>
+
+    <string name="text_create" translatable="false">CREATE</string>
 
     <!--<string name="text_about_us">
         ConCare GH is a unique

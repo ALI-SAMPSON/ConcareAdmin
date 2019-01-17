@@ -17,16 +17,20 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.HttpAuthHandler;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,14 +38,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.activities.AdminLoginActivity;
 import io.icode.concareghadmin.application.activities.adapters.ViewPagerAdapter;
 import io.icode.concareghadmin.application.activities.fragments.ChatsFragment;
+import io.icode.concareghadmin.application.activities.fragments.GroupsFragment;
 import io.icode.concareghadmin.application.activities.fragments.UsersFragment;
 import io.icode.concareghadmin.application.activities.models.Admin;
 import io.icode.concareghadmin.application.activities.models.Chats;
@@ -65,6 +68,8 @@ public class ChatActivity extends AppCompatActivity {
     DatabaseReference adminRef;
 
     DatabaseReference chatRef;
+
+    DatabaseReference rootRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,7 +165,8 @@ public class ChatActivity extends AppCompatActivity {
                         viewPagerAdapter.addFragment(new ChatsFragment(), "("+unreadMessages+") Chats");
                     }
 
-                    // adds ChatsFragment and AdminFragment to the viewPager
+                    // adds UsersFragment and GroupsFragment to the viewPager
+                    viewPagerAdapter.addFragment(new GroupsFragment(),getString(R.string.text_groups));
                     viewPagerAdapter.addFragment(new UsersFragment(), getString(R.string.text_users));
                     //Sets Adapter view of the ViewPager
                     viewPager.setAdapter(viewPagerAdapter);
@@ -185,6 +191,8 @@ public class ChatActivity extends AppCompatActivity {
             // sets visibility to visible if there is  no internet connection
             internetConnection.setVisibility(View.VISIBLE);
         }
+
+        rootRef = FirebaseDatabase.getInstance().getReference();
 
         // method call to change ProgressDialog style based on the android version of user's phone
         changeProgressDialogBackground();
@@ -216,7 +224,7 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_user,menu);
+        inflater.inflate(R.menu.menu_admin,menu);
         return true;
     }
 
@@ -225,15 +233,99 @@ public class ChatActivity extends AppCompatActivity {
 
         switch (item.getItemId()){
 
+            case R.id.menu_create_group:
+
+                // method call to signout admin
+                requestNewGroup();
+
+                break;
+
             case R.id.menu_sign_out:
 
                 // method call to signout admin
                signOutAdmin();
 
-                return true;
+                break;
+
+            case R.id.menu_exit:
+
+                // finish activity
+                finish();
+
+                break;
         }
 
-        return false;
+       return super.onOptionsItemSelected(item);
+    }
+
+    // request to create new group
+    private void requestNewGroup(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.custom_dialog, null);
+        builder.setView(dialogView);
+
+        final EditText editTextGroupName = dialogView.findViewById(R.id.editTextGroupName);
+
+        builder.setTitle(R.string.text_group_name);
+        builder.setMessage(R.string.enter_group_name);
+
+        // onclick listener for positive  button
+        builder.setPositiveButton(R.string.text_create, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                // getting text from field
+                String groupName = editTextGroupName.getText().toString();
+
+                if(TextUtils.isEmpty(groupName)){
+                    // display hint to user
+                    Toast.makeText(ChatActivity.this, R.string.error_empty_group_name, Toast.LENGTH_SHORT).show();
+                }
+                else {
+
+                    // create group
+                    createNewGroup(groupName);
+                }
+
+            }
+        });
+
+
+        // onclick listener for negative button
+        builder.setNegativeButton(R.string.text_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // dismiss / hides the dialog
+                dialog.cancel();
+            }
+        });
+
+        // display the alertDialog
+        builder.show();
+
+    }
+
+    // method to create group in database
+    private void createNewGroup(final String groupName){
+        rootRef.child("Groups").child(groupName).setValue("")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+
+                            // display a success message if group is created succcessfully
+                            Toast.makeText(ChatActivity.this, groupName + " group is created successfully ", Toast.LENGTH_LONG).show();
+
+                        }
+
+                        else {
+                            // display an error message if group is not created succcessfully
+                            Toast.makeText(ChatActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     private void signOutAdmin(){

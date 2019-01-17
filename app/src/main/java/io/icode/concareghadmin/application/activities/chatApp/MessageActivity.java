@@ -153,7 +153,6 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
         admin_uid = preferences.getString("uid","");
 
-
         currentAdmin = FirebaseAuth.getInstance().getCurrentUser();
 
         userRef = FirebaseDatabase.getInstance().getReference("Users").child(users_id);
@@ -365,6 +364,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         mChats = new ArrayList<>();
 
         chatRef = FirebaseDatabase.getInstance().getReference("Chats");
+
         mDBListener = chatRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

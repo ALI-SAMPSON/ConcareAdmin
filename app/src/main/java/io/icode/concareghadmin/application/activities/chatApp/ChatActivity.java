@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +25,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,13 +50,18 @@ import io.icode.concareghadmin.application.activities.fragments.GroupsFragment;
 import io.icode.concareghadmin.application.activities.fragments.UsersFragment;
 import io.icode.concareghadmin.application.activities.models.Admin;
 import io.icode.concareghadmin.application.activities.models.Chats;
+import io.icode.concareghadmin.application.activities.models.Groups;
 import io.icode.concareghadmin.application.activities.models.Users;
 import maes.tech.intentanim.CustomIntent;
 
 @SuppressWarnings("ALL")
 public class ChatActivity extends AppCompatActivity {
 
+    Toolbar toolbar;
+
     RelativeLayout internetConnection;
+
+    LinearLayout linearLayout;
 
     CircleImageView profile_image;
     TextView username;
@@ -63,13 +70,23 @@ public class ChatActivity extends AppCompatActivity {
 
     Admin admin;
 
+    Groups groups;
+
+    //check if internet is available or not on phone
+    boolean isConnected = false;
+
     ProgressDialog progressDialog;
 
     DatabaseReference adminRef;
 
     DatabaseReference chatRef;
 
-    DatabaseReference rootRef;
+    DatabaseReference groupRef;
+
+    // variable for duration of snackbar and toast
+    private static final int DURATION_LONG = 5000;
+
+    private static final int DURATION_SHORT = 3000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,10 +95,12 @@ public class ChatActivity extends AppCompatActivity {
 
         internetConnection = findViewById(R.id.no_internet_connection);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
+        linearLayout = findViewById(R.id.linearLayout);
+
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("");
         toolbar.setNavigationIcon(R.drawable.ic_menu);
+        setSupportActionBar(toolbar);
 
         profile_image = findViewById(R.id.profile_image);
 
@@ -91,8 +110,62 @@ public class ChatActivity extends AppCompatActivity {
 
         users = new Users();
 
-        //check if internet is available or not on phone
-        boolean isConnected = false;
+        groups = new Groups();
+
+        groupRef = FirebaseDatabase.getInstance().getReference("Groups");
+
+        // method call to check if internet connection is enabled
+        isInternetConnnectionEnabled();
+
+        // method call to change ProgressDialog style based on the android version of user's phone
+        changeProgressDialogBackground();
+
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_admin,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+
+            case R.id.menu_create_group:
+
+                // method call to signout admin
+                requestNewGroup();
+
+                break;
+
+            case R.id.menu_sign_out:
+
+                // method call to signout admin
+               signOutAdmin();
+
+                break;
+
+            case R.id.menu_exit:
+
+                // finish activity
+                finish();
+
+                break;
+        }
+
+       return super.onOptionsItemSelected(item);
+    }
+
+    // method to check if internet connection is enabled
+    private void isInternetConnnectionEnabled(){
 
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
@@ -103,8 +176,6 @@ public class ChatActivity extends AppCompatActivity {
 
             // sets visibility to visible if there is  no internet connection
             internetConnection.setVisibility(View.GONE);
-
-            //adminRef = FirebaseDatabase.getInstance().getReference("Admin").child(currentAdmin.getUid());
 
             adminRef = FirebaseDatabase.getInstance().getReference("Admin");
 
@@ -123,7 +194,7 @@ public class ChatActivity extends AppCompatActivity {
                             profile_image.setImageResource(R.drawable.app_logo);
                         } else {
                             // load users's Image Url
-                            Glide.with(getApplicationContext()).load(admin.getImageUrl()).into(profile_image);
+                            Glide.with(ChatActivity.this).load(admin.getImageUrl()).into(profile_image);
                         }
                     }
 
@@ -131,6 +202,7 @@ public class ChatActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // display message if error occurs
                     Toast.makeText(ChatActivity.this,databaseError.getMessage(),Toast.LENGTH_LONG).show();
                 }
             });
@@ -192,70 +264,6 @@ public class ChatActivity extends AppCompatActivity {
             internetConnection.setVisibility(View.VISIBLE);
         }
 
-        rootRef = FirebaseDatabase.getInstance().getReference();
-
-        // method call to change ProgressDialog style based on the android version of user's phone
-        changeProgressDialogBackground();
-
-    }
-
-    @Override
-    protected void onStart(){
-        super.onStart();
-
-        // checks if user is currently logged in
-
-        /*if(SavedSharePreference.getEmail(ChatActivity.this).length() == 0){
-
-            // start the activity
-            startActivity(new Intent(ChatActivity.this,AdminLoginActivity.class));
-
-            // Add a custom animation ot the activity
-            CustomIntent.customType(ChatActivity.this,"fadein-to-fadeout");
-
-            // finish the activity
-            finish();
-
-        }
-        */
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_admin,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()){
-
-            case R.id.menu_create_group:
-
-                // method call to signout admin
-                requestNewGroup();
-
-                break;
-
-            case R.id.menu_sign_out:
-
-                // method call to signout admin
-               signOutAdmin();
-
-                break;
-
-            case R.id.menu_exit:
-
-                // finish activity
-                finish();
-
-                break;
-        }
-
-       return super.onOptionsItemSelected(item);
     }
 
     // request to create new group
@@ -284,7 +292,6 @@ public class ChatActivity extends AppCompatActivity {
                     Toast.makeText(ChatActivity.this, R.string.error_empty_group_name, Toast.LENGTH_SHORT).show();
                 }
                 else {
-
                     // create group
                     createNewGroup(groupName);
                 }
@@ -309,7 +316,59 @@ public class ChatActivity extends AppCompatActivity {
 
     // method to create group in database
     private void createNewGroup(final String groupName){
-        rootRef.child("Groups").child(groupName).setValue("")
+
+        groups.setGroupName(groupName);
+
+        // checks if group already exist
+        groupRef.child(groupName).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+
+                    // display hint if group already exist
+                    Snackbar.make(linearLayout,groupName + " group already exist . Please create a group with a different name."
+                            + " E.g " + groupName + " 01 , 02...",DURATION_LONG).show();
+
+                }
+
+                else {
+
+                    groupRef.child(groupName).setValue(groups)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful()){
+
+                                        // display a success message if group is created succcessfully
+                                        /*Toast.makeText(ChatActivity.this,
+                                                groupName + " group is created successfully ", Toast.LENGTH_LONG).show();
+                                                */
+
+                                        // display a success message if group is created succcessfully
+                                        Snackbar.make(linearLayout,groupName + " group is created successfully ",DURATION_SHORT).show();
+
+                                    }
+
+                                    else {
+                                        // display an error message if group is not created succcessfully
+                                        Toast.makeText(ChatActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // display an error message if group is not created succcessfully
+                Toast.makeText(ChatActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        /*groupRef.child(groupName).setValue(groups)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -326,6 +385,7 @@ public class ChatActivity extends AppCompatActivity {
                         }
                     }
                 });
+        */
     }
 
     private void signOutAdmin(){
@@ -355,7 +415,7 @@ public class ChatActivity extends AppCompatActivity {
 
                         // send admin to login activity
                         startActivity(new Intent(ChatActivity.this, AdminLoginActivity.class)
-                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
                         CustomIntent.customType(ChatActivity.this, "fadein-to-fadeout");
 
                         finish();
@@ -405,6 +465,12 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        //status("online");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         //status("offline");
     }
 

@@ -31,7 +31,7 @@
             android:textSize="16sp"
             android:fontFamily="@font/nunito_semibold"
             android:hint="@string/hint_group_example"
-            android:inputType="textPassword"
+            android:inputType="text"
             android:importantForAutofill="no"
             tools:targetApi="o"/>
     </android.support.design.widget.TextInputLayout>

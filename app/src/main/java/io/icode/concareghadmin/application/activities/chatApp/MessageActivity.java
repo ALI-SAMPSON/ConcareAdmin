@@ -112,8 +112,8 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         setContentView(R.layout.activity_message);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,7 +131,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
         profile_image =  findViewById(R.id.profile_image);
         username =  findViewById(R.id.username);
-        msg_to_send =  findViewById(R.id.editText_send);
+        msg_to_send =  findViewById(R.id.editTextMessage);
         btn_send =  findViewById(R.id.btn_send);
 
         //getting reference to the recyclerview and setting it up

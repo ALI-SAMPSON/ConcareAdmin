@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/chat_bg"
-    tools:context=".activities.chatApp.MessageActivity">
+    tools:context=".activities.chatApp.GroupMessageActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/bar_layout"
@@ -23,14 +23,14 @@
             app:popupTheme="@style/MenuStyle">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profile_image"
+                android:id="@+id/ci_group_icon"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:background="@drawable/avatar_placeholder"
                 android:scaleType="centerCrop"/>
 
             <TextView
-                android:id="@+id/username"
+                android:id="@+id/tv_group_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"

@@ -40,7 +40,7 @@
             android:name=".activities.activities.AdminLoginActivity"
             android:configChanges="screenLayout|screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".activities.activities.SplashScreenActivity"
             android:configChanges="screenLayout|screenSize|keyboardHidden|orientation"
@@ -59,7 +59,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity android:name=".activities.activities.ResetPasswordActivity" />
-        <activity android:name=".activities.chatApp.MessageActivity"></activity>
+        <activity android:name=".activities.chatApp.MessageActivity" />
 
         <service
             android:name=".activities.notifications.MyFirebaseIdService"
@@ -78,6 +78,7 @@
             </intent-filter>
         </service>
 
+        <activity android:name=".activities.chatApp.GroupMessageActivity"></activity>
     </application>
 
 </manifest>

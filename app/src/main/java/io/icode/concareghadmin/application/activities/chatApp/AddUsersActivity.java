@@ -35,7 +35,9 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import io.icode.concareghadmin.application.R;
@@ -82,6 +84,11 @@ public class AddUsersActivity extends AppCompatActivity {
 
     // getting the groupName passed
     String groupName;
+
+    // string variable to store the time and date at which a group was created
+    String currentDate;
+
+    String currentTime;
 
 
     @Override
@@ -138,6 +145,9 @@ public class AddUsersActivity extends AppCompatActivity {
 
         // method call
         displayUsers();
+
+        // method call to get the current time and data
+        getTimeAndDate();
 
     }
 
@@ -201,6 +211,21 @@ public class AddUsersActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    // gets the current date and time
+    private void getTimeAndDate(){
+
+        // gets the current date
+        Calendar calendarDate = Calendar.getInstance();
+        SimpleDateFormat currentDateFormat = new  SimpleDateFormat("MMM dd,yyyy");
+        currentDate = currentDateFormat.format(calendarDate.getTime());
+
+        // get the current time
+        Calendar calendarTime = Calendar.getInstance();
+        SimpleDateFormat currentTimeFormat = new SimpleDateFormat("hh:mm a");
+        currentTime = currentTimeFormat.format(calendarTime.getTime());
 
     }
 
@@ -333,8 +358,10 @@ public class AddUsersActivity extends AppCompatActivity {
     private void createGroup(final String groupName){
 
         groups.setGroupName(groupName);
-        //groups.setGroupIcon("");
+        groups.setGroupIcon("");
         groups.setGroupMembersIds(selectedUserIds);
+        groups.setDateCreated(currentDate);
+        groups.setTimeCreated(currentTime);
 
         groupRef.child(groupName).setValue(groups)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {

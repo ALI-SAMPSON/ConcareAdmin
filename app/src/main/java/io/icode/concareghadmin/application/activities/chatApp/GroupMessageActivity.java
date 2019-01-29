@@ -1,8 +1,6 @@
 package io.icode.concareghadmin.application.activities.chatApp;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -25,29 +23,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.adapters.GroupMessageAdapter;
-import io.icode.concareghadmin.application.activities.adapters.MessageAdapter;
 import io.icode.concareghadmin.application.activities.adapters.RecyclerViewAdapterAddUsers;
 import io.icode.concareghadmin.application.activities.constants.Constants;
-import io.icode.concareghadmin.application.activities.interfaces.APIService;
 import io.icode.concareghadmin.application.activities.interfaces.APIServiceGroup;
 import io.icode.concareghadmin.application.activities.models.Admin;
 import io.icode.concareghadmin.application.activities.models.Chats;
@@ -55,14 +45,7 @@ import io.icode.concareghadmin.application.activities.models.GroupChats;
 import io.icode.concareghadmin.application.activities.models.Groups;
 import io.icode.concareghadmin.application.activities.models.Users;
 import io.icode.concareghadmin.application.activities.notifications.Client;
-import io.icode.concareghadmin.application.activities.notifications.DataGroup;
-import io.icode.concareghadmin.application.activities.notifications.MyResponse;
-import io.icode.concareghadmin.application.activities.notifications.SenderGroup;
-import io.icode.concareghadmin.application.activities.notifications.Token;
 import maes.tech.intentanim.CustomIntent;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class GroupMessageActivity extends AppCompatActivity{
 
@@ -85,6 +68,9 @@ public class GroupMessageActivity extends AppCompatActivity{
 
     String group_name;
     String group_image_url;
+    String date_created;
+    String time_created;
+
 
     String admin_uid;
 
@@ -164,6 +150,8 @@ public class GroupMessageActivity extends AppCompatActivity{
         // getting strings passed from recyclerView adapter
         group_name = getIntent().getStringExtra("group_name");
         group_image_url = getIntent().getStringExtra("group_icon");
+        date_created = getIntent().getStringExtra("date_created");
+        time_created = getIntent().getStringExtra("time_created");
         usersIds = getIntent().getStringArrayListExtra("usersIds");
 
         adapterUsers = new RecyclerViewAdapterAddUsers(this,mUsers,true);
@@ -201,7 +189,13 @@ public class GroupMessageActivity extends AppCompatActivity{
         switch (item.getItemId()){
             case R.id.menu_group_icon:
 
-                startActivity(new Intent(GroupMessageActivity.this,ChangeGroupIconActivity.class));
+                Intent intent = new Intent(GroupMessageActivity.this,GroupInfoActivity.class);
+                intent.putExtra("_group_name",group_name);
+                intent.putExtra("_group_icon",group_image_url);
+                intent.putExtra("_date_created",date_created);
+                intent.putExtra("_time_created",time_created);
+                intent.putStringArrayListExtra("_usersIds",(ArrayList<String>)usersIds);
+                startActivity(intent);
 
                 CustomIntent.customType(GroupMessageActivity.this, "fadein-to-fadeout");
 
@@ -230,11 +224,11 @@ public class GroupMessageActivity extends AppCompatActivity{
                 // setting group icon
                 if(group_image_url == null){
                     // loading default icon as image icon
-                    Glide.with(GroupMessageActivity.this).load(R.drawable.ic_group).into(groupIcon);
+                    Glide.with(getApplicationContext()).load(R.mipmap.group_icon).into(groupIcon);
                 }
                 else{
                     // loading default icon as image icon
-                    Glide.with(GroupMessageActivity.this).load(group_image_url).into(groupIcon);
+                    Glide.with(getApplicationContext()).load(group_image_url).into(groupIcon);
                 }
 
                 // method call

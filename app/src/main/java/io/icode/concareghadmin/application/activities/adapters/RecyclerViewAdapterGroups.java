@@ -21,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
@@ -72,7 +73,7 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
 
         if(groups.getGroupIcon() == null){
             // loads the default placeholder into ImageView if ImageUrl is null
-            holder.groupIcon.setImageResource(R.drawable.ic_group);
+            holder.groupIcon.setImageResource(R.mipmap.group_icon);
         }
         else{
             // loads users image into the ImageView
@@ -104,9 +105,20 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
                 Intent intent = new Intent(mCtx,GroupMessageActivity.class);
                 intent.putExtra("group_name", groups.getGroupName());
                 intent.putExtra("group_icon", groups.getGroupIcon());
+                intent.putExtra("date_created", groups.getDateCreated());
+                intent.putExtra("time_created", groups.getTimeCreated());
                 // passing an array of the ids of the group members
                 intent.putStringArrayListExtra("usersIds",(ArrayList<String>)groups.getGroupMembersIds());
                 mCtx.startActivity(intent);
+
+                // storing string in sharePreference
+
+                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(mCtx).edit();
+                editor.putString("group_name",groups.getGroupName());
+                editor.putString("group_icon", groups.getGroupIcon());
+                //editor.putStringSet("icons",(Set<String>)groups.getGroupMembersIds());
+                editor.apply();
+
             }
         });
 

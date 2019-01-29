@@ -6,6 +6,7 @@
     <string name="hint_location" translatable="false">Location/Address</string>
     <string name="hint_address" translatable="false">Address</string>
     <string name="hint_city" translatable="false">City</string>
+    <string name="hint_none" translatable="false">None</string>
     <string name="hint_campus" translatable="false">Campus</string>
     <string name="hint_username" translatable="false">Username</string>
     <string name="hint_phone" translatable="false">Phone Number</string>
@@ -272,6 +273,14 @@
 
     <string name="text_change_icon" translatable="false">
         Change Group Icon
+    </string>
+
+    <string name="msg_no_image" translatable="false">
+       No Image Selected
+    </string>
+
+    <string name="profile_update" translatable="false">
+       group icon updated successfully
     </string>
 
     <string name="text_seen" translatable="false">

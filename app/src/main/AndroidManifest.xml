@@ -78,9 +78,22 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".activities.chatApp.GroupMessageActivity" />
-        <activity android:name=".activities.chatApp.AddUsersActivity" />
-        <activity android:name=".activities.chatApp.ChangeGroupIconActivity"></activity>
+        <activity android:name=".activities.chatApp.GroupMessageActivity"
+            android:configChanges="screenLayout|screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity android:name=".activities.chatApp.AddUsersActivity"
+            android:configChanges="screenLayout|screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity android:name=".activities.chatApp.GroupInfoActivity"
+            android:configChanges="screenLayout|screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
+
+        </activity>
     </application>
 
 </manifest>

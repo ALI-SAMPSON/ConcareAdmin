@@ -8,4 +8,6 @@ public class Constants {
     public static final String CHATS_REF = "Chats";
     public static final String GROUP_CHAT_REF = "GroupChats";
 
+    public static final int REQUEST_CODE = 1;
+
 }

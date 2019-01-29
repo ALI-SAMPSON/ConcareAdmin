@@ -11,6 +11,9 @@ public class Groups {
     private String GroupIcon;
     private String GroupMessage;
     private List<String> GroupMembersIds;
+    // get the date and time at which the group was created
+    private String DateCreated;
+    private String TimeCreated;
 
     // unique to identify message to be deleted
     private String key;
@@ -55,6 +58,22 @@ public class Groups {
 
     public void setGroupMembersIds(List<String> groupMembersIds) {
         GroupMembersIds = groupMembersIds;
+    }
+
+    public String getDateCreated() {
+        return DateCreated;
+    }
+
+    public void setDateCreated(String dateCreated) {
+        DateCreated = dateCreated;
+    }
+
+    public String getTimeCreated() {
+        return TimeCreated;
+    }
+
+    public void setTimeCreated(String timeCreated) {
+        TimeCreated = timeCreated;
     }
 
     //getters and setters to store && retrieve the unique key of each message

@@ -125,6 +125,20 @@
                             app:backgroundTint="@color/colorWhite"/>
                     </LinearLayout>
 
+                    <TextView
+                        android:id="@+id/tv_no_search_results"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_no_search_result"
+                        android:textSize="16sp"
+                        app:fontFamily="@font/lato"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:textColor="@color/green"
+                        android:visibility="gone"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@+id/search_layout"/>
+
                     <android.support.v7.widget.RecyclerView
                         android:layout_below="@+id/search_layout"
                         android:id="@+id/recyclerView"

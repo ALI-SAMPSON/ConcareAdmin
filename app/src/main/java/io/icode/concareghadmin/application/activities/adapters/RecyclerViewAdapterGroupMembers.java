@@ -62,6 +62,8 @@ public class RecyclerViewAdapterGroupMembers extends RecyclerView.Adapter<Recycl
 
         // sets username to the text of the textView
         holder.username.setText(users.getUsername());
+        // sets username to the text of the textView
+        holder.gender.setText(users.getGender());
 
         if(users.getImageUrl() == null){
             // loads the default placeholder into ImageView if ImageUrl is null

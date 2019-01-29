@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -57,7 +58,7 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recyclerview_items_groups,parent, false);
 
-        return new RecyclerViewAdapterGroups.ViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
@@ -103,6 +104,8 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
                 Intent intent = new Intent(mCtx,GroupMessageActivity.class);
                 intent.putExtra("group_name", groups.getGroupName());
                 intent.putExtra("group_icon", groups.getGroupIcon());
+                // passing an array of the ids of the group members
+                intent.putStringArrayListExtra("usersIds",(ArrayList<String>)groups.getGroupMembersIds());
                 mCtx.startActivity(intent);
             }
         });
@@ -130,6 +133,7 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
             groupIcon = itemView.findViewById(R.id.ci_group_icon);
             groupName = itemView.findViewById(R.id.tv_group_name);
             last_msg = itemView.findViewById(R.id.tv_last_msg);
+
         }
     }
 

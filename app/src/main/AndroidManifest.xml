@@ -78,7 +78,9 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".activities.chatApp.GroupMessageActivity"></activity>
+        <activity android:name=".activities.chatApp.GroupMessageActivity" />
+        <activity android:name=".activities.chatApp.AddUsersActivity" />
+        <activity android:name=".activities.chatApp.ChangeGroupIconActivity"></activity>
     </application>
 
 </manifest>

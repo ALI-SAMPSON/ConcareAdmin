@@ -1,0 +1,11 @@
+package io.icode.concareghadmin.application.activities.constants;
+
+public class Constants {
+
+    public static final String USER_REF = "Users";
+    public static final String ADMIN_REF = "Admin";
+    public static final String GROUP_REF = "Groups";
+    public static final String CHATS_REF = "Chats";
+    public static final String GROUP_CHAT_REF = "GroupChats";
+
+}

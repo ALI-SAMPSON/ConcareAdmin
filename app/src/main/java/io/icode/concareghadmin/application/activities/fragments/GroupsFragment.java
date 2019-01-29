@@ -75,6 +75,8 @@ public class GroupsFragment extends Fragment {
 
         groupList = new ArrayList<>();
 
+        groupRef = FirebaseDatabase.getInstance().getReference().child("Groups");
+
         recyclerView = view.findViewById(R.id.recyclerView);
 
         recyclerView.setHasFixedSize(true);
@@ -86,10 +88,7 @@ public class GroupsFragment extends Fragment {
 
         recyclerView.setAdapter(adapterGroups);
 
-
         progressBar = view.findViewById(R.id.progressBar);
-
-        groupRef = FirebaseDatabase.getInstance().getReference().child("Groups");
 
         // method call
         displayGroups();
@@ -133,7 +132,7 @@ public class GroupsFragment extends Fragment {
                 progressBar.setVisibility(View.GONE);
 
                 // display message if exception occurs
-                Snackbar.make(constraintLayout,databaseError.getMessage(),5000).show();
+                Snackbar.make(constraintLayout,databaseError.getMessage(),Snackbar.LENGTH_SHORT).show();
 
             }
         });

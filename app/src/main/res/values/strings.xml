@@ -102,6 +102,12 @@
 
     <string name="text_create" translatable="false">CREATE</string>
 
+    <string name="title_undo_changes" translatable="false">Undo Changes</string>
+
+    <string name="body_undo_changes" translatable="false">
+        Leaving this page will cancel the creating of the current group and changes will be lost
+    </string>
+
     <!--<string name="text_about_us">
         ConCare GH is a unique
         and nascent business set up to encourage the
@@ -187,6 +193,9 @@
     <string name="text_chat_us" translatable="false">Chat Us</string>
     <string name="text_chats" translatable="false">Chats</string>
     <string name="text_users" translatable="false">Users</string>
+    <string name="text_add_users" translatable="false">Add Users</string>
+    <string name="text_no_users" translatable="false">No Users added yet</string>
+    <string name="text_no_search_result" translatable="false">No search results found</string>
     <string name="text_admin" translatable="false">Admin</string>
     <string name="text_chat_with_us" translatable="false">Chat with Us</string>
     <string name="no_recent_chats" translatable="false">No Recent Chats</string>
@@ -259,6 +268,10 @@
 
     <string name="text_search" translatable="false">
         Search...
+    </string>
+
+    <string name="text_change_icon" translatable="false">
+        Change Group Icon
     </string>
 
     <string name="text_seen" translatable="false">

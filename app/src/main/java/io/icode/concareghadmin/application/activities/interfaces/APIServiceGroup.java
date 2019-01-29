@@ -1,13 +1,14 @@
-package io.icode.concareghadmin.application.activities.fragments;
+package io.icode.concareghadmin.application.activities.interfaces;
 
 import io.icode.concareghadmin.application.activities.notifications.MyResponse;
 import io.icode.concareghadmin.application.activities.notifications.Sender;
+import io.icode.concareghadmin.application.activities.notifications.SenderGroup;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
-public interface APIService {
+public interface APIServiceGroup {
 
     @Headers(
             {
@@ -17,6 +18,6 @@ public interface APIService {
     )
 
     @POST("fcm/send")
-    Call<MyResponse> sendNotification(@Body Sender body);
+    Call<MyResponse> sendNotification(@Body SenderGroup body);
 
 }

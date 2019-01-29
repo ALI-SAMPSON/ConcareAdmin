@@ -99,7 +99,7 @@ public class ChatActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
-        toolbar.setNavigationIcon(R.drawable.ic_menu);
+        //toolbar.setNavigationIcon(R.drawable.ic_menu);
         setSupportActionBar(toolbar);
 
         profile_image = findViewById(R.id.profile_image);
@@ -333,16 +333,22 @@ public class ChatActivity extends AppCompatActivity {
 
                 else {
 
-                    groupRef.child(groupName).setValue(groups)
+                    // open users activity so admin can add users
+
+                    Intent intent = new Intent(ChatActivity.this, AddUsersActivity.class);
+
+                    intent.putExtra("group_name",groupName);
+
+                    startActivity(intent);
+
+                    // adds custom animation
+                    CustomIntent.customType(ChatActivity.this, "left-to-right");
+
+                    /*groupRef.child(groupName).setValue(groups)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
-
-                                        // display a success message if group is created succcessfully
-                                        /*Toast.makeText(ChatActivity.this,
-                                                groupName + " group is created successfully ", Toast.LENGTH_LONG).show();
-                                                */
 
                                         // display a success message if group is created succcessfully
                                         Snackbar.make(linearLayout,groupName + " group is created successfully ",DURATION_SHORT).show();
@@ -355,6 +361,7 @@ public class ChatActivity extends AppCompatActivity {
                                     }
                                 }
                             });
+                    */
 
                 }
 
@@ -368,24 +375,6 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        /*groupRef.child(groupName).setValue(groups)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful()){
-
-                            // display a success message if group is created succcessfully
-                            Toast.makeText(ChatActivity.this, groupName + " group is created successfully ", Toast.LENGTH_LONG).show();
-
-                        }
-
-                        else {
-                            // display an error message if group is not created succcessfully
-                            Toast.makeText(ChatActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-        */
     }
 
     private void signOutAdmin(){

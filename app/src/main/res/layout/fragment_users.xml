@@ -20,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
+            android:visibility="gone"
             android:background="@drawable/round_edittext_background">
             <EditText
                 android:id="@+id/editTextSearch"
@@ -38,20 +39,47 @@
                 app:backgroundTint="@color/colorWhite"/>
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/tv_no_search_results"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:fontFamily="@font/lato"
+            android:layout_margin="5dp"
+            android:textColor="@color/orange_light"
+            android:text="@string/text_no_search_result"
+            android:textSize="16sp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/search_layout"
+            android:visibility="gone"/>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_below="@+id/search_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </android.support.v7.widget.RecyclerView>
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
 
+        <TextView
+            android:id="@+id/tv_no_users"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginLeft="25dp"
+            android:layout_gravity="center"
+            app:fontFamily="@font/lato"
+            android:textColor="@android:color/darker_gray"
+            android:text="@string/text_no_users"
+            android:textSize="18sp"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
 
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_centerInParent="true"/>
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 

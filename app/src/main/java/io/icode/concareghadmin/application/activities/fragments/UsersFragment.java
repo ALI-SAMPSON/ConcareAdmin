@@ -23,8 +23,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -43,6 +45,8 @@ import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.adapters.RecyclerViewAdapterUser;
 import io.icode.concareghadmin.application.activities.models.Users;
 
+import static android.view.View.GONE;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -52,16 +56,22 @@ public class UsersFragment extends Fragment {
 
     View view;
 
+    ConstraintLayout mLayout;
+
     private RecyclerView recyclerView;
     private RecyclerViewAdapterUser adapterUser;
     private RecyclerViewAdapterUser adapterSearch;
     private List<Users> mUsers;
 
-    ConstraintLayout mLayout;
-
     DatabaseReference userRef;
 
+    LinearLayout search_layout;
+
     EditText editTextSearch;
+
+    TextView tv_no_search_results;
+
+    TextView tv_no_users;
 
     // material searchView
     MaterialSearchView searchView;
@@ -81,7 +91,13 @@ public class UsersFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        search_layout =  view.findViewById(R.id.search_layout);
+
         editTextSearch =  view.findViewById(R.id.editTextSearch);
+
+        tv_no_users = view.findViewById(R.id.tv_no_users);
+
+        tv_no_search_results = view.findViewById(R.id.tv_no_search_results);
 
         mUsers = new ArrayList<>();
 
@@ -134,7 +150,6 @@ public class UsersFragment extends Fragment {
     // method to search for user in the system
     private void searchUsers(String s) {
 
-        userRef = FirebaseDatabase.getInstance().getReference("Users");
         Query query = userRef.orderByChild("search")
         .startAt(s)
         .endAt(s + "\uf8ff");
@@ -143,6 +158,16 @@ public class UsersFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                if(!dataSnapshot.exists()){
+
+                    // display text
+                    tv_no_search_results.setVisibility(View.VISIBLE);
+
+                    // hide recycler view
+                    recyclerView.setVisibility(GONE);
+
+                }
+
                 // clear's list
                 mUsers.clear();
 
@@ -150,6 +175,12 @@ public class UsersFragment extends Fragment {
                     Users users = snapshot.getValue(Users.class);
 
                     assert users != null;
+
+                    // hide text
+                    tv_no_search_results.setVisibility(View.GONE);
+
+                    // display recycler view
+                    recyclerView.setVisibility(View.VISIBLE);
 
                     mUsers.add(users);
 
@@ -178,16 +209,40 @@ public class UsersFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    // clear's list
-                    mUsers.clear();
+                    if(!dataSnapshot.exists()){
 
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        // display text
+                        tv_no_users.setVisibility(View.VISIBLE);
 
-                        Users users = snapshot.getValue(Users.class);
+                        // hides layout for search edit text
+                        search_layout.setVisibility(GONE);
 
-                        assert users != null;
+                        // hide recycler view
+                        recyclerView.setVisibility(GONE);
+                    }
+                    else {
 
-                        mUsers.add(users);
+                        // clear's list
+                        mUsers.clear();
+
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                            Users users = snapshot.getValue(Users.class);
+
+                            assert users != null;
+
+                            // display text
+                            tv_no_users.setVisibility(View.GONE);
+
+                            // display layout for search edit text
+                            search_layout.setVisibility(View.VISIBLE);
+
+                            // display recycler view
+                            recyclerView.setVisibility(View.VISIBLE);
+
+                            mUsers.add(users);
+
+                        }
 
                     }
 
@@ -195,7 +250,7 @@ public class UsersFragment extends Fragment {
                     adapterUser.notifyDataSetChanged();
 
                 // display the progressBar
-                progressBar.setVisibility(View.GONE);
+                progressBar.setVisibility(GONE);
 
             }
 
@@ -203,7 +258,7 @@ public class UsersFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 // dismiss the progressBar
-                progressBar.setVisibility(View.GONE);
+                progressBar.setVisibility(GONE);
 
                 // display db error message
                 Snackbar.make(mLayout,databaseError.getMessage(),Snackbar.LENGTH_LONG).show();

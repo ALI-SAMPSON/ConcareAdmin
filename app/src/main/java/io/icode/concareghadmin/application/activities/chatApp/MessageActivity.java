@@ -16,7 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -44,7 +43,7 @@ import java.util.TimerTask;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.adapters.MessageAdapter;
-import io.icode.concareghadmin.application.activities.fragments.APIService;
+import io.icode.concareghadmin.application.activities.interfaces.APIService;
 import io.icode.concareghadmin.application.activities.models.Admin;
 import io.icode.concareghadmin.application.activities.models.Chats;
 import io.icode.concareghadmin.application.activities.models.Users;
@@ -53,7 +52,6 @@ import io.icode.concareghadmin.application.activities.notifications.Data;
 import io.icode.concareghadmin.application.activities.notifications.MyResponse;
 import io.icode.concareghadmin.application.activities.notifications.Sender;
 import io.icode.concareghadmin.application.activities.notifications.Token;
-import maes.tech.intentanim.CustomIntent;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -115,13 +113,11 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.ic_back_white);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MessageActivity.this, ChatActivity.class)
-                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                CustomIntent.customType(MessageActivity.this, "fadein-to-fadeout");
+              finish();
             }
         });
 
@@ -495,12 +491,12 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
     // setting the status of the users
     private void status(String status){
 
-        adminRef = FirebaseDatabase.getInstance().getReference("Admin");
-        //.child(admin.getAdminUid());
+        adminRef = FirebaseDatabase.getInstance().getReference("Admin")
+        .child(admin_uid);
 
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put("status",status);
-        userRef.updateChildren(hashMap);
+        adminRef.updateChildren(hashMap);
     }
 
     @Override

@@ -144,28 +144,32 @@ public class ChatsFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                mUsers.clear();
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Users user = snapshot.getValue(Users.class);
-                    for(Chatlist chatlist : usersList){
-                        assert user != null;
-                        if(user.getUid().equals(chatlist.getId())){
-                            // set visibility to gone
-                            tv_no_chats.setVisibility(View.GONE);
-                            // sets visibility to Visible if ther are recent chats
-                            recyclerView.setVisibility(View.VISIBLE);
-                            // adds current users admin has chat with
-                            mUsers.add(user);
+                // checks if there is no recent chat
+                if(!dataSnapshot.exists()){
+                    // sets visibility of recyclerView to gone
+                    recyclerView.setVisibility(View.GONE);
+
+                    // textView to visible if no recent chat exist
+                    tv_no_chats.setVisibility(View.VISIBLE);
+                }
+                else{
+                    mUsers.clear();
+                    for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                        Users user = snapshot.getValue(Users.class);
+                        for(Chatlist chatlist : usersList){
+                            assert user != null;
+                            if(user.getUid().equals(chatlist.getId())){
+                                // set visibility to gone
+                                tv_no_chats.setVisibility(View.GONE);
+                                // sets visibility to Visible if ther are recent chats
+                                recyclerView.setVisibility(View.VISIBLE);
+                                // adds current users admin has chat with
+                                mUsers.add(user);
+                            }
                         }
                     }
                 }
 
-                // checks if there is no recent chat
-                if(!dataSnapshot.exists()){
-                    // sets visibility of recyclerView to gone and textView to visible if no recent chat exist
-                    recyclerView.setVisibility(View.GONE);
-                    tv_no_chats.setVisibility(View.VISIBLE);
-                }
 
                 // notifies adapter of any changes
                 recyclerViewAdapterUser.notifyDataSetChanged();

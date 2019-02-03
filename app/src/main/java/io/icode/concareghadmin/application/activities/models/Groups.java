@@ -11,6 +11,8 @@ public class Groups {
     private String GroupIcon;
     private String GroupMessage;
     private List<String> GroupMembersIds;
+
+    Chats chats;
     // get the date and time at which the group was created
     private String DateCreated;
     private String TimeCreated;

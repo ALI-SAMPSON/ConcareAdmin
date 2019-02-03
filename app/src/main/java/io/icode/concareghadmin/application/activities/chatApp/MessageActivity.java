@@ -227,6 +227,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("sender",sender);
         hashMap.put("receiver", receiver);
+        //hashMap.put("receivers", "");
         hashMap.put("message",message);
         hashMap.put("isseen", false);
 

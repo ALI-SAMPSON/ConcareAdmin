@@ -2,10 +2,14 @@ package io.icode.concareghadmin.application.activities.models;
 
 import com.google.firebase.database.Exclude;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Chats {
 
     private String sender;
     private String receiver;
+    private List<String> receivers;
     private String message;
     private boolean isseen;
 
@@ -19,6 +23,7 @@ public class Chats {
         this.receiver = receiver;
         this.message = message;
         this.isseen = isseen;
+        this.receivers = new ArrayList<>();
     }
 
     public String getSender() {
@@ -35,6 +40,14 @@ public class Chats {
 
     public void setReceiver(String receiver) {
         this.receiver = receiver;
+    }
+
+    public List<String> getReceivers() {
+        return receivers;
+    }
+
+    public void setReceivers(List<String> receivers) {
+        this.receivers = receivers;
     }
 
     public String getMessage() {

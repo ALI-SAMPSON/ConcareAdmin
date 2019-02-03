@@ -27,6 +27,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -45,7 +46,14 @@ import io.icode.concareghadmin.application.activities.models.GroupChats;
 import io.icode.concareghadmin.application.activities.models.Groups;
 import io.icode.concareghadmin.application.activities.models.Users;
 import io.icode.concareghadmin.application.activities.notifications.Client;
+import io.icode.concareghadmin.application.activities.notifications.DataGroup;
+import io.icode.concareghadmin.application.activities.notifications.MyResponse;
+import io.icode.concareghadmin.application.activities.notifications.SenderGroup;
+import io.icode.concareghadmin.application.activities.notifications.Token;
 import maes.tech.intentanim.CustomIntent;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class GroupMessageActivity extends AppCompatActivity{
 
@@ -55,6 +63,8 @@ public class GroupMessageActivity extends AppCompatActivity{
 
     CircleImageView groupIcon;
     TextView groupName;
+
+    TextView tv_no_chats;
 
     RecyclerView recyclerView;
 
@@ -129,6 +139,8 @@ public class GroupMessageActivity extends AppCompatActivity{
         msg_to_send =  findViewById(R.id.editTextMessage);
         btn_send =  findViewById(R.id.btn_send);
 
+        tv_no_chats = findViewById(R.id.tv_no_chats);
+
         //getting reference to the recyclerview and setting it up
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -172,7 +184,7 @@ public class GroupMessageActivity extends AppCompatActivity{
 
         //gettingListOfUsersIds();
 
-        //seenMessage(usersIds);
+        seenMessage(usersIds);
 
     }
 
@@ -232,7 +244,7 @@ public class GroupMessageActivity extends AppCompatActivity{
                 }
 
                 // method call
-                readMessages(admin_uid,usersIds, groups.getGroupIcon());
+                readGroupMessages(admin_uid,usersIds, groups.getGroupIcon());
             }
 
             @Override
@@ -322,7 +334,7 @@ public class GroupMessageActivity extends AppCompatActivity{
                 assert admin != null;
                 if(notify) {
                     // method call to send notification to user when admin sends a message
-                    //sendNotification(receivers, admin.getUsername(), msg);
+                    sendNotification(receivers, admin.getUsername(), msg);
                 }
                 // sets notify to false
                 notify = false;
@@ -339,9 +351,9 @@ public class GroupMessageActivity extends AppCompatActivity{
 
 
     // sends notification to respective user as soon as message is sent
-   /* private void sendNotification(List<String> receivers, final String username , final String message){
+    private void sendNotification(List<String> receivers, final String username , final String message){
         DatabaseReference tokens  = FirebaseDatabase.getInstance().getReference("Tokens");
-        Query query = tokens.orderByKey().equalTo(receivers);
+        Query query = tokens.orderByKey().equalTo(String.valueOf(receivers));
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -381,7 +393,7 @@ public class GroupMessageActivity extends AppCompatActivity{
             }
         });
     }
-    */
+
 
 
     // method to check if user has seen message
@@ -396,7 +408,7 @@ public class GroupMessageActivity extends AppCompatActivity{
                     Chats chats = snapshot.getValue(Chats.class);
                     assert chats != null;
                     if(chats.getReceiver().equals(admin_uid)
-                            && chats.getSender().equals(users_id)){
+                            && chats.getSender().equals(users_id) && users_id.contains(chats.getSender())){
                         HashMap<String,Object> hashMap = new HashMap<>();
                         hashMap.put("isseen",true);
                         snapshot.getRef().updateChildren(hashMap);
@@ -414,7 +426,7 @@ public class GroupMessageActivity extends AppCompatActivity{
     }
 
     // method to readMessages from the database
-    private void readMessages(final String myid, final List<String> usersids, final String imageUrl){
+    private void readGroupMessages(final String myid, final List<String> usersids, final String imageUrl){
 
         // display progressBar
         progressBar.setVisibility(View.VISIBLE);
@@ -429,19 +441,24 @@ public class GroupMessageActivity extends AppCompatActivity{
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 if(!dataSnapshot.exists()){
-
+                    // displays text if there are no recent chats
+                    tv_no_chats.setVisibility(View.VISIBLE);
                 }
 
                 // clears the chats to avoid reading duplicate message
                 mChats.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    GroupChats groupChats = snapshot.getValue(GroupChats.class);
+                    GroupChats groupChats= snapshot.getValue(GroupChats.class);
                     // gets the unique keys of the chats
                     groupChats.setKey(snapshot.getKey());
 
                     assert groupChats != null;
-                    if(groupChats.getReceivers().equals(myid) && groupChats.getSender().equals(usersids) ||
-                            groupChats.getReceivers().equals(usersIds) && groupChats.getSender().equals(myid)){
+                    if(groupChats.getReceivers().equals(myid) && groupChats.getSender().equals(usersids)
+                            || groupChats.getReceivers().equals(usersIds) && groupChats.getSender().equals(myid)){
+
+                        // hides text if there are recent chats
+                        tv_no_chats.setVisibility(View.GONE);
+
                         mChats.add(groupChats);
                     }
 

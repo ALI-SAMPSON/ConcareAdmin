@@ -29,13 +29,13 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
     public static final int MSG_TYPE_RIGHT = 1;
 
     private Context mCtx;
-    private List<GroupChats> mChats;
+    private List<Chats> mChats;
     private String imageUrl;
 
     // Global variable to handle OnItemClickListener
     public static OnItemClickListener mListener;
 
-    public GroupMessageAdapter(Context mCtx, List<GroupChats> mChats, String imageUrl){
+    public GroupMessageAdapter(Context mCtx, List<Chats> mChats, String imageUrl){
         this.mCtx= mCtx;
         this.mChats = mChats;
         this.imageUrl = imageUrl;
@@ -60,9 +60,9 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        GroupChats groupChats = mChats.get(position);
+        Chats chats = mChats.get(position);
 
-        holder.show_message.setText(groupChats.getMessage());
+        holder.show_message.setText(chats.getMessage());
 
         // checks if imageUrl is empty or not
         if(imageUrl == null){
@@ -74,7 +74,7 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
 
         // checks if chat is seen by user and sets the appropriate text
         if(position == mChats.size()-1){
-            if(groupChats.isSeen()){
+            if(chats.isSeen()){
                 holder.txt_seen.setText(R.string.text_seen);
             }
             else{

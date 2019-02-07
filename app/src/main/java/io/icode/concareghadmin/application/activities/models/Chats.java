@@ -18,12 +18,13 @@ public class Chats {
 
     public Chats(){}
 
-    public Chats(String sender, String receiver, String message, boolean isseen) {
+    public Chats(String sender, String receiver, List<String> receivers, String message, boolean isseen) {
         this.sender = sender;
         this.receiver = receiver;
+        this.receivers = receivers;
         this.message = message;
         this.isseen = isseen;
-        this.receivers = new ArrayList<>();
+        //this.receivers = new ArrayList<>();
     }
 
     public String getSender() {

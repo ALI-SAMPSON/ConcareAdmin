@@ -83,6 +83,8 @@ public class ChatActivity extends AppCompatActivity {
 
     DatabaseReference groupRef;
 
+    String admin_uid;
+
     // variable for duration of snackbar and toast
     private static final int DURATION_LONG = 5000;
 
@@ -113,6 +115,11 @@ public class ChatActivity extends AppCompatActivity {
         groups = new Groups();
 
         groupRef = FirebaseDatabase.getInstance().getReference("Groups");
+
+        // getting the uid of the admin stored in sharePreference
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        admin_uid = preferences.getString("uid","");
 
         // method call to check if internet connection is enabled
         isInternetConnnectionEnabled();
@@ -344,25 +351,6 @@ public class ChatActivity extends AppCompatActivity {
                     // adds custom animation
                     CustomIntent.customType(ChatActivity.this, "left-to-right");
 
-                    /*groupRef.child(groupName).setValue(groups)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()){
-
-                                        // display a success message if group is created succcessfully
-                                        Snackbar.make(linearLayout,groupName + " group is created successfully ",DURATION_SHORT).show();
-
-                                    }
-
-                                    else {
-                                        // display an error message if group is not created succcessfully
-                                        Toast.makeText(ChatActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-                    */
-
                 }
 
 
@@ -436,7 +424,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void status(String status){
 
-        adminRef = FirebaseDatabase.getInstance().getReference("Admin");
+        adminRef = FirebaseDatabase.getInstance().getReference("Admin").child(admin_uid);
 
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put("status",status);
@@ -448,19 +436,19 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //status("online");
+        status("online");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //status("online");
+        status("online");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //status("offline");
+        status("offline");
     }
 
     // method to change ProgressDialog style based on the android version of user's phone

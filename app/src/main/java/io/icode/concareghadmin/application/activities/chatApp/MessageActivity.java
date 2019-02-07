@@ -43,6 +43,7 @@ import java.util.TimerTask;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.adapters.MessageAdapter;
+import io.icode.concareghadmin.application.activities.constants.Constants;
 import io.icode.concareghadmin.application.activities.interfaces.APIService;
 import io.icode.concareghadmin.application.activities.models.Admin;
 import io.icode.concareghadmin.application.activities.models.Chats;
@@ -227,14 +228,14 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("sender",sender);
         hashMap.put("receiver", receiver);
-        //hashMap.put("receivers", "");
+        hashMap.put("receivers", new ArrayList<String>(){{add(receiver);}});
         hashMap.put("message",message);
         hashMap.put("isseen", false);
 
-        messageRef.child("Chats").push().setValue(hashMap);
+        messageRef.child(Constants.CHAT_REF).push().setValue(hashMap);
 
         // add chat to the chatList so that it can be added to the Chats fragment
-        final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
+        final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference(Constants.CHAT_LIST_REF)
                 .child(admin_uid)
                 .child(users_id);
 
@@ -361,7 +362,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         // array initialization
         mChats = new ArrayList<>();
 
-        chatRef = FirebaseDatabase.getInstance().getReference("Chats");
+        chatRef = FirebaseDatabase.getInstance().getReference(Constants.CHAT_REF);
 
         mDBListener = chatRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -374,8 +375,10 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
                     chats.setKey(snapshot.getKey());
 
                     assert chats != null;
-                    if(chats.getReceiver().equals(myid) && chats.getSender().equals(userid) ||
-                            chats.getReceiver().equals(userid) && chats.getSender().equals(myid)){
+                    if(chats.getReceiver().equals(myid) && chats.getSender().equals(userid)
+                            || chats.getReceiver().equals(userid) && chats.getSender().equals(myid)
+                            || chats.getReceivers().contains(myid) && chats.getSender().equals(userid)
+                            || chats.getReceivers().contains(userid) && chats.getSender().equals(myid)){
                         mChats.add(chats);
                     }
 

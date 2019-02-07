@@ -1,11 +1,13 @@
 package io.icode.concareghadmin.application.activities.chatApp;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,6 +25,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,10 +38,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.adapters.GroupMessageAdapter;
+import io.icode.concareghadmin.application.activities.adapters.MessageAdapter;
 import io.icode.concareghadmin.application.activities.adapters.RecyclerViewAdapterAddUsers;
 import io.icode.concareghadmin.application.activities.constants.Constants;
 import io.icode.concareghadmin.application.activities.interfaces.APIServiceGroup;
@@ -55,7 +63,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class GroupMessageActivity extends AppCompatActivity{
+public class GroupMessageActivity extends AppCompatActivity implements GroupMessageAdapter.OnItemClickListener{
 
     RelativeLayout relativeLayout;
 
@@ -94,9 +102,8 @@ public class GroupMessageActivity extends AppCompatActivity{
 
     // variable for MessageAdapter class
     GroupMessageAdapter groupMessageAdapter;
-    List<GroupChats> mChats;
+    List<Chats> mChats;
 
-    private RecyclerViewAdapterAddUsers adapterUsers;
     private List<Users> mUsers;
 
     // list to get the ids of selected users from group creating
@@ -141,7 +148,7 @@ public class GroupMessageActivity extends AppCompatActivity{
 
         tv_no_chats = findViewById(R.id.tv_no_chats);
 
-        //getting reference to the recyclerview and setting it up
+        //getting reference to the recycler view and setting it up
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -166,9 +173,7 @@ public class GroupMessageActivity extends AppCompatActivity{
         time_created = getIntent().getStringExtra("time_created");
         usersIds = getIntent().getStringArrayListExtra("usersIds");
 
-        adapterUsers = new RecyclerViewAdapterAddUsers(this,mUsers,true);
-
-        // getting the list of ids of selected users
+        //adapterUsers = new RecyclerViewAdapterAddUsers(this,mUsers,true);
 
         groupRef = FirebaseDatabase.getInstance().getReference(Constants.GROUP_REF).child(group_name);
 
@@ -177,12 +182,7 @@ public class GroupMessageActivity extends AppCompatActivity{
 
         admin_uid = preferences.getString("uid","");
 
-        // display groupIcon and groupName passed to this activity
-        //displayValues();
-
         getGroupDetails();
-
-        //gettingListOfUsersIds();
 
         seenMessage(usersIds);
 
@@ -256,37 +256,6 @@ public class GroupMessageActivity extends AppCompatActivity{
 
     }
 
-    private void gettingListOfUsersIds(){
-
-        groupRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                // clear list
-                usersIds.clear();
-
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-
-                    Groups groups = snapshot.getValue(Groups.class);
-
-                    assert groups != null;
-
-                    //usersIds = groups.getGroupMembersIds();
-
-                    usersIds = (List<String>)groups.getGroupMembersIds();
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // display error message if exception occurs
-                Toast.makeText(GroupMessageActivity.this,databaseError.getMessage(),Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
     public void btnSend(View view) {
 
         // sets notify to true
@@ -316,11 +285,12 @@ public class GroupMessageActivity extends AppCompatActivity{
 
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("sender",sender);
+        hashMap.put("receiver","");
         hashMap.put("receivers", receivers);
         hashMap.put("message",message);
         hashMap.put("isseen", false);
 
-        messageRef.child(Constants.GROUP_CHAT_REF).push().setValue(hashMap);
+        messageRef.child(Constants.CHAT_REF).push().setValue(hashMap);
 
 
         // variable to hold the message to be sent
@@ -353,7 +323,7 @@ public class GroupMessageActivity extends AppCompatActivity{
     // sends notification to respective user as soon as message is sent
     private void sendNotification(List<String> receivers, final String username , final String message){
         DatabaseReference tokens  = FirebaseDatabase.getInstance().getReference("Tokens");
-        Query query = tokens.orderByKey().equalTo(String.valueOf(receivers));
+        Query query = tokens.orderByKey().equalTo(receivers.get(0));
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -365,7 +335,7 @@ public class GroupMessageActivity extends AppCompatActivity{
                     assert token != null;
                     SenderGroup sender = new SenderGroup(data, token.getToken());
 
-                    // apiService object to sendNotification to user
+                    // apiService object to sendNotification to users
                     apiService.sendNotification(sender)
                             .enqueue(new Callback<MyResponse>() {
                                 @Override
@@ -395,11 +365,10 @@ public class GroupMessageActivity extends AppCompatActivity{
     }
 
 
-
     // method to check if user has seen message
     private void seenMessage(final List<String> users_id){
 
-        chatRef = FirebaseDatabase.getInstance().getReference("Chats");
+        chatRef = FirebaseDatabase.getInstance().getReference(Constants.CHAT_REF);
 
         seenListener = chatRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -434,7 +403,7 @@ public class GroupMessageActivity extends AppCompatActivity{
         // array initialization
         mChats = new ArrayList<>();
 
-        chatRef = FirebaseDatabase.getInstance().getReference(Constants.GROUP_CHAT_REF);
+        chatRef = FirebaseDatabase.getInstance().getReference(Constants.CHAT_REF);
 
         mDBListener = chatRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -444,40 +413,45 @@ public class GroupMessageActivity extends AppCompatActivity{
                     // displays text if there are no recent chats
                     tv_no_chats.setVisibility(View.VISIBLE);
                 }
+                else{
 
-                // clears the chats to avoid reading duplicate message
-                mChats.clear();
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    GroupChats groupChats= snapshot.getValue(GroupChats.class);
-                    // gets the unique keys of the chats
-                    groupChats.setKey(snapshot.getKey());
+                    // clears the chats to avoid reading duplicate message
+                    mChats.clear();
 
-                    assert groupChats != null;
-                    if(groupChats.getReceivers().equals(myid) && groupChats.getSender().equals(usersids)
-                            || groupChats.getReceivers().equals(usersIds) && groupChats.getSender().equals(myid)){
+                    for(DataSnapshot snapshot : dataSnapshot.getChildren()){
 
-                        // hides text if there are recent chats
-                        tv_no_chats.setVisibility(View.GONE);
+                        Chats chats = snapshot.getValue(Chats.class);
+                        // gets the unique keys of the chats
+                        chats.setKey(snapshot.getKey());
 
-                        mChats.add(groupChats);
+                        assert chats != null;
+
+                        if(chats.getReceivers().contains(myid) && usersIds.contains(chats.getSender())
+                                ||chats.getReceivers().equals(usersIds) && chats.getSender().equals(myid))
+                        {
+                            // hides text if there are recent chats
+                            tv_no_chats.setVisibility(View.GONE);
+
+                            mChats.add(chats);
+                        }
+
+                        // initializing the messageAdapter and setting adapter to recyclerView
+                        groupMessageAdapter = new GroupMessageAdapter(GroupMessageActivity.this,mChats,imageUrl);
+                        // setting adapter
+                        recyclerView.setAdapter(groupMessageAdapter);
+                        // notify data change in adapter
+                        groupMessageAdapter.notifyDataSetChanged();
+
+                        // dismiss progressBar
+                        progressBar.setVisibility(View.GONE);
+
+                        // setting on OnItemClickListener in this activity as an interface for ContextMenu
+                        groupMessageAdapter.setOnItemClickListener(GroupMessageActivity.this);
+
                     }
-
-
-
                 }
 
-                // initializing the messageAdapter and setting adapter to recyclerView
-                groupMessageAdapter = new GroupMessageAdapter(GroupMessageActivity.this,mChats,imageUrl);
-                // setting adapter
-                recyclerView.setAdapter(groupMessageAdapter);
-                // notify data change in adapter
-                groupMessageAdapter.notifyDataSetChanged();
 
-                // dismiss progressBar
-                progressBar.setVisibility(View.GONE);
-
-                // setting on OnItemClickListener in this activity as an interface for ContextMenu
-                //groupMessageAdapter.setOnItemClickListener(getApplicationContext());
 
             }
 
@@ -498,7 +472,7 @@ public class GroupMessageActivity extends AppCompatActivity{
      Click Listeners in activity
      ***/
 
-    /*@Override
+    @Override
     public void onItemClick(int position) {
         Toast.makeText(this," please long click on a message to delete ",Toast.LENGTH_LONG).show();
     }
@@ -567,7 +541,7 @@ public class GroupMessageActivity extends AppCompatActivity{
     public void onCancelClick(int position) {
         // do nothing / close ContextMenu
     }
-    */
+
 
     // keeping track of the current user the admin is chatting to avoid sending notification everytime
     private void currentUser(String users_id){
@@ -579,7 +553,7 @@ public class GroupMessageActivity extends AppCompatActivity{
     // setting the status of the users
     private void status(String status){
 
-        adminRef = FirebaseDatabase.getInstance().getReference("Admin")
+        adminRef = FirebaseDatabase.getInstance().getReference(Constants.ADMIN_REF)
         .child(admin_uid);
 
         HashMap<String,Object> hashMap = new HashMap<>();

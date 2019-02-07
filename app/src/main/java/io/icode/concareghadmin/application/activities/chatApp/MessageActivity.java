@@ -282,7 +282,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
     // sends notification to respective user as soon as message is sent
     private void sendNotification(String receiver, final String username , final String message){
-        DatabaseReference tokens  = FirebaseDatabase.getInstance().getReference("Tokens");
+        DatabaseReference tokens  = FirebaseDatabase.getInstance().getReference(Constants.TOKENS_REF);
         Query query = tokens.orderByKey().equalTo(receiver);
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -327,7 +327,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
     // method to check if user has seen message
     private void seenMessage(final String users_id){
 
-        chatRef = FirebaseDatabase.getInstance().getReference("Chats");
+        chatRef = FirebaseDatabase.getInstance().getReference(Constants.CHAT_REF);
 
         seenListener = chatRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -375,6 +375,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
                     chats.setKey(snapshot.getKey());
 
                     assert chats != null;
+
                     if(chats.getReceiver().equals(myid) && chats.getSender().equals(userid)
                             || chats.getReceiver().equals(userid) && chats.getSender().equals(myid)
                             || chats.getReceivers().contains(myid) && chats.getSender().equals(userid)

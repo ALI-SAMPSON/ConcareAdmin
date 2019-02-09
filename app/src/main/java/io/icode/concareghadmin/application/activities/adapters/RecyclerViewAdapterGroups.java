@@ -27,6 +27,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.chatApp.GroupMessageActivity;
 import io.icode.concareghadmin.application.activities.chatApp.MessageActivity;
+import io.icode.concareghadmin.application.activities.constants.Constants;
 import io.icode.concareghadmin.application.activities.models.Admin;
 import io.icode.concareghadmin.application.activities.models.Chats;
 import io.icode.concareghadmin.application.activities.models.Groups;
@@ -83,18 +84,10 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
 
         // calling the lastMessage method
         if(isChat){
-            //lastMessage(users.getUid(),holder.last_msg);
+            lastMessage(groups.getGroupMembersIds(),holder.last_msg);
         }
         else {
             holder.last_msg.setVisibility(View.GONE);
-        }
-
-        // code to check if user is online
-        if(isChat){
-
-        }
-        else{
-
         }
 
         // onClickListener for view
@@ -150,7 +143,7 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
     }
 
     // checks for last message
-    private void lastMessage(final String user_id, final TextView last_msg){
+    private void lastMessage(final List<String> users_ids, final TextView last_msg){
 
         theLastMessage = "default";
 
@@ -158,7 +151,7 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mCtx);
         final String admin_uid = preferences.getString("uid","");
 
-        DatabaseReference lastMsgRef = FirebaseDatabase.getInstance().getReference("Chats");
+        DatabaseReference lastMsgRef = FirebaseDatabase.getInstance().getReference(Constants.CHAT_REF);
         lastMsgRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -168,8 +161,8 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
                     assert chats != null;
 
                     // compares the uid of the admin and user and return the last message
-                    if(chats.getReceiver().equals(admin_uid) && chats.getSender().equals(user_id)
-                            || chats.getReceiver().equals(user_id) && chats.getSender().equals(admin_uid)){
+                    if(chats.getReceiver().equals("") && chats.getReceivers().containsAll(users_ids)
+                            && chats.getSender().equals(admin_uid)){
                         theLastMessage = chats.getMessage();
                     }
 

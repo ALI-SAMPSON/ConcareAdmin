@@ -104,10 +104,10 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
     GroupMessageAdapter groupMessageAdapter;
     List<Chats> mChats;
 
-    private List<Users> mUsers;
+    List<Users> mUsers;
 
     // list to get the ids of selected users from group creating
-    private List<String> usersIds;
+    List<String> usersIds = new ArrayList<>();
 
     // Listener to listener for messages seen
     ValueEventListener seenListener;
@@ -163,6 +163,8 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
         progressDialog.setMessage("Deleting message...");
 
         admin = new Admin();
+
+        //usersIds = new ArrayList<>();
 
         mUsers = new ArrayList<>();
 
@@ -244,6 +246,8 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
                 }
 
                 // method call
+                //readGroupMessages(admin_uid,usersIds, groups.getGroupIcon());
+
                 readGroupMessages(admin_uid,usersIds, groups.getGroupIcon());
             }
 
@@ -395,7 +399,7 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
     }
 
     // method to readMessages from the database
-    private void readGroupMessages(final String myid, final List<String> usersids, final String imageUrl){
+    private void readGroupMessages(final String adminId, final List<String> usersids, final String imageUrl){
 
         // display progressBar
         progressBar.setVisibility(View.VISIBLE);
@@ -412,6 +416,9 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
                 if(!dataSnapshot.exists()){
                     // displays text if there are no recent chats
                     tv_no_chats.setVisibility(View.VISIBLE);
+
+                    // hides progressBar
+                    progressBar.setVisibility(View.GONE);
                 }
                 else{
 
@@ -426,12 +433,10 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
 
                         assert chats != null;
 
-                        if(chats.getReceivers().contains(myid) && usersIds.contains(chats.getSender())
-                                ||chats.getReceivers().equals(usersIds) && chats.getSender().equals(myid))
-                        {
+                        if(chats.getReceivers().equals(usersids) && chats.getSender().equals(adminId)){
                             // hides text if there are recent chats
                             tv_no_chats.setVisibility(View.GONE);
-
+                            // add chats to list of chats
                             mChats.add(chats);
                         }
 
@@ -441,10 +446,8 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
                         recyclerView.setAdapter(groupMessageAdapter);
                         // notify data change in adapter
                         groupMessageAdapter.notifyDataSetChanged();
-
                         // dismiss progressBar
                         progressBar.setVisibility(View.GONE);
-
                         // setting on OnItemClickListener in this activity as an interface for ContextMenu
                         groupMessageAdapter.setOnItemClickListener(GroupMessageActivity.this);
 

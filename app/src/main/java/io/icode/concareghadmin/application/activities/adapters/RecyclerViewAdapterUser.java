@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -165,9 +166,12 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
 
                     // compares the uid of the admin and user and return the last message
                     if(chats.getReceiver().equals(admin_uid) && chats.getSender().equals(user_id)
-                            || chats.getReceiver().equals(user_id) && chats.getSender().equals(admin_uid)){
+                            || chats.getReceiver().equals(user_id) && chats.getSender().equals(admin_uid)
+                            || chats.getReceiver().equals("") && chats.getReceivers().contains(user_id)
+                            && chats.getSender().equals(admin_uid)){
                         theLastMessage = chats.getMessage();
                     }
+
 
                 }
 

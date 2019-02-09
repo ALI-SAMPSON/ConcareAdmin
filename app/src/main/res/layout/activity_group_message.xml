@@ -69,7 +69,7 @@
         android:layout_marginLeft="25dp"
         android:textStyle="bold"
         app:fontFamily="@font/nunito_semibold"
-        android:textColor="@android:color/darker_gray"
+        android:textColor="@color/orange_light"
         android:textAllCaps="false"
         android:text="@string/no_recent_chats"
         android:visibility="gone"

@@ -354,7 +354,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
     }
 
     // method to readMessages from the database
-    private void readMessages(final String myid, final String userid, final String imageUrl){
+    private void readMessages(final String adminId, final String userId, final String imageUrl){
 
         // display progressBar
         progressBar.setVisibility(View.VISIBLE);
@@ -376,10 +376,10 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
                     assert chats != null;
 
-                    if(chats.getReceiver().equals(myid) && chats.getSender().equals(userid)
-                            || chats.getReceiver().equals(userid) && chats.getSender().equals(myid)
-                            || chats.getReceivers().contains(myid) && chats.getSender().equals(userid)
-                            || chats.getReceivers().contains(userid) && chats.getSender().equals(myid)){
+                    if(chats.getReceiver().equals(adminId) && chats.getSender().equals(userId)
+                            || chats.getReceiver().equals(userId) && chats.getSender().equals(adminId)
+                            || chats.getReceiver().equals("") && chats.getReceivers().contains(userId)
+                            && chats.getSender().equals(adminId)){
                         mChats.add(chats);
                     }
 

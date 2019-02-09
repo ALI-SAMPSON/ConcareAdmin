@@ -83,8 +83,8 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
     Intent intent;
 
     // string to get intentExtras
-    String  users_id;
-    String users_name;
+    String  user_id;
+    String user_name;
 
     // variable for MessageAdapter class
     MessageAdapter messageAdapter;
@@ -140,8 +140,8 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         recyclerView.setLayoutManager(linearLayoutManager);
 
         intent = getIntent();
-        users_id = intent.getStringExtra("uid");
-        users_name = intent.getStringExtra("username");
+        user_id = intent.getStringExtra("uid");
+        user_name = intent.getStringExtra("username");
 
         // creating an instance of the Admin Class
         admin = new Admin();
@@ -153,7 +153,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
         currentAdmin = FirebaseAuth.getInstance().getCurrentUser();
 
-        userRef = FirebaseDatabase.getInstance().getReference("Users").child(users_id);
+        userRef = FirebaseDatabase.getInstance().getReference("Users").child(user_id);
 
         progressBar =  findViewById(R.id.progressBar);
 
@@ -164,7 +164,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
         getUserDetails();
 
-        seenMessage(users_id);
+        seenMessage(user_id);
 
     }
 
@@ -186,7 +186,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
                 }
 
                 // method call
-                readMessages(admin_uid,users_id, users.getImageUrl());
+                readMessages(admin_uid,user_id, users.getImageUrl());
             }
 
             @Override
@@ -210,7 +210,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         if(!message.equals("")){
             //btn_send.setVisibility(View.VISIBLE);
             // call to method to sendMessage
-            sendMessage(admin_uid,users_id,message);
+            sendMessage(admin_uid,user_id,message);
         }
         else{
             Toast.makeText(MessageActivity.this,
@@ -237,13 +237,13 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         // add chat to the chatList so that it can be added to the Chats fragment
         final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference(Constants.CHAT_LIST_REF)
                 .child(admin_uid)
-                .child(users_id);
+                .child(user_id);
 
         chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.exists()){
-                    chatRef.child("id").setValue(users_id);
+                    chatRef.child("id").setValue(user_id);
                 }
             }
 
@@ -290,7 +290,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
                     Data data = new Data(admin_uid, R.mipmap.app_logo_round, username+": "+message,
-                            getString(R.string.application_name), users_id);
+                            getString(R.string.application_name), user_id);
 
                     assert token != null;
                     Sender sender = new Sender(data, token.getToken());
@@ -325,7 +325,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
     }
 
     // method to check if user has seen message
-    private void seenMessage(final String users_id){
+    private void seenMessage(final String user_id){
 
         chatRef = FirebaseDatabase.getInstance().getReference(Constants.CHAT_REF);
 
@@ -335,8 +335,12 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chats chats = snapshot.getValue(Chats.class);
                     assert chats != null;
-                    if(chats.getReceiver().equals(admin_uid)
-                            && chats.getSender().equals(users_id)){
+                    if(chats.getReceiver().equals(admin_uid) && chats.getSender().equals(user_id)
+                            || chats.getReceiver().equals(user_id) && chats.getSender().equals(admin_uid)
+                            || chats.getReceiver().equals("") && chats.getReceivers().contains(user_id)
+                            && chats.getSender().equals(admin_uid)
+                            || chats.getReceivers().contains(admin_uid)
+                            && chats.getSender().equals(user_id)){
                         HashMap<String,Object> hashMap = new HashMap<>();
                         hashMap.put("isseen",true);
                         snapshot.getRef().updateChildren(hashMap);
@@ -379,7 +383,9 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
                     if(chats.getReceiver().equals(adminId) && chats.getSender().equals(userId)
                             || chats.getReceiver().equals(userId) && chats.getSender().equals(adminId)
                             || chats.getReceiver().equals("") && chats.getReceivers().contains(userId)
-                            && chats.getSender().equals(adminId)){
+                            && chats.getSender().equals(adminId)
+                            || chats.getReceivers().contains(adminId)
+                            && chats.getSender().equals(userId)){
                         mChats.add(chats);
                     }
 

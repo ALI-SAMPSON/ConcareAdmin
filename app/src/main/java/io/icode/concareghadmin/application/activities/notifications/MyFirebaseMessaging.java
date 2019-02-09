@@ -25,12 +25,13 @@ import com.google.firebase.messaging.RemoteMessage;
 import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.chatApp.ChatActivity;
 import io.icode.concareghadmin.application.activities.chatApp.MessageActivity;
+import io.icode.concareghadmin.application.activities.constants.Constants;
 import io.icode.concareghadmin.application.activities.models.Admin;
 
 @SuppressWarnings("ALL")
 public class MyFirebaseMessaging extends FirebaseMessagingService {
 
-    DatabaseReference adminRef = FirebaseDatabase.getInstance().getReference("Admin");
+    DatabaseReference adminRef = FirebaseDatabase.getInstance().getReference(Constants.ADMIN_REF);
 
     @Override
     public void onMessageReceived(final RemoteMessage remoteMessage) {

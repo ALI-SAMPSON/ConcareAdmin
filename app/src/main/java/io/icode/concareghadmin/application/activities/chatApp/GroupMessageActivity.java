@@ -47,6 +47,7 @@ import io.icode.concareghadmin.application.activities.adapters.GroupMessageAdapt
 import io.icode.concareghadmin.application.activities.adapters.MessageAdapter;
 import io.icode.concareghadmin.application.activities.adapters.RecyclerViewAdapterAddUsers;
 import io.icode.concareghadmin.application.activities.constants.Constants;
+import io.icode.concareghadmin.application.activities.interfaces.APIService;
 import io.icode.concareghadmin.application.activities.interfaces.APIServiceGroup;
 import io.icode.concareghadmin.application.activities.models.Admin;
 import io.icode.concareghadmin.application.activities.models.Chats;
@@ -54,8 +55,10 @@ import io.icode.concareghadmin.application.activities.models.GroupChats;
 import io.icode.concareghadmin.application.activities.models.Groups;
 import io.icode.concareghadmin.application.activities.models.Users;
 import io.icode.concareghadmin.application.activities.notifications.Client;
+import io.icode.concareghadmin.application.activities.notifications.Data;
 import io.icode.concareghadmin.application.activities.notifications.DataGroup;
 import io.icode.concareghadmin.application.activities.notifications.MyResponse;
+import io.icode.concareghadmin.application.activities.notifications.Sender;
 import io.icode.concareghadmin.application.activities.notifications.SenderGroup;
 import io.icode.concareghadmin.application.activities.notifications.Token;
 import maes.tech.intentanim.CustomIntent;
@@ -290,7 +293,7 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("sender",sender);
         hashMap.put("receiver","");
-        hashMap.put("receivers", receivers);
+        hashMap.put("receivers", new ArrayList<String>(){{addAll(receivers);}});
         hashMap.put("message",message);
         hashMap.put("isseen", false);
 
@@ -325,47 +328,60 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
 
 
     // sends notification to respective user as soon as message is sent
-    private void sendNotification(List<String> receivers, final String username , final String message){
-        DatabaseReference tokens  = FirebaseDatabase.getInstance().getReference("Tokens");
-        Query query = tokens.orderByKey().equalTo(receivers.get(0));
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Token token = snapshot.getValue(Token.class);
-                    DataGroup data = new DataGroup(admin_uid, R.mipmap.app_logo_round, username+": "+message,
-                            getString(R.string.application_name), usersIds);
+    private void sendNotification(final List<String> receivers, final String username , final String message){
 
-                    assert token != null;
-                    SenderGroup sender = new SenderGroup(data, token.getToken());
+        /* for loop to loop through the list of users id in
+        the group and send the notification accordingly */
+        //for(final String id : receivers){
 
-                    // apiService object to sendNotification to users
-                    apiService.sendNotification(sender)
-                            .enqueue(new Callback<MyResponse>() {
-                                @Override
-                                public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                                    if(response.code() == 200){
-                                        if(response.body().success != 1){
-                                            Toast.makeText(GroupMessageActivity.this,"Failed!",Toast.LENGTH_LONG).show();
+            for(int i = 0; i < receivers.size(); i++){
+
+                final String id = receivers.get(i);
+
+            DatabaseReference tokens  = FirebaseDatabase.getInstance().getReference(Constants.TOKENS_REF);
+            Query query = tokens.orderByKey().equalTo(id);
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                        Token token = snapshot.getValue(Token.class);
+                        DataGroup data = new DataGroup(admin_uid, R.mipmap.app_logo_round, username+": "+message,
+                                getString(R.string.application_name), receivers);
+
+                        assert token != null;
+                        SenderGroup sender = new SenderGroup(data, token.getToken());
+
+                        // apiService object to sendNotification to users
+                        apiService.sendNotification(sender)
+                                .enqueue(new Callback<MyResponse>() {
+                                    @Override
+                                    public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                        if(response.code() == 200){
+                                            if(response.body().success != 1){
+                                                Toast.makeText(GroupMessageActivity.this,"Failed!",Toast.LENGTH_LONG).show();
+                                            }
                                         }
                                     }
-                                }
 
-                                @Override
-                                public void onFailure(Call<MyResponse> call, Throwable t) {
-                                    // display error message
-                                    Toast.makeText(GroupMessageActivity.this,t.getMessage(),Toast.LENGTH_LONG).show();
-                                }
-                            });
+                                    @Override
+                                    public void onFailure(Call<MyResponse> call, Throwable t) {
+                                        // display error message
+                                        Toast.makeText(GroupMessageActivity.this,t.getMessage(),Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // display error message
-                Toast.makeText(GroupMessageActivity.this,databaseError.getMessage(),Toast.LENGTH_LONG).show();
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // display error message
+                    Toast.makeText(GroupMessageActivity.this,databaseError.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            });
+
+
+        }
+
     }
 
 

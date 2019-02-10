@@ -370,7 +370,8 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
                                     public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
                                         if(response.code() == 200){
                                             if(response.body().success != 1){
-                                                Toast.makeText(GroupMessageActivity.this,"Failed!",Toast.LENGTH_LONG).show();
+                                                Toast.makeText(GroupMessageActivity.this,
+                                                        getString(R.string.notification_failed),Toast.LENGTH_LONG).show();
                                             }
                                         }
                                     }

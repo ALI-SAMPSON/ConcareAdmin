@@ -29,6 +29,7 @@ import java.util.List;
 import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.adapters.RecyclerViewAdapterUser;
 import io.icode.concareghadmin.application.activities.chatApp.ChatActivity;
+import io.icode.concareghadmin.application.activities.constants.Constants;
 import io.icode.concareghadmin.application.activities.models.Chatlist;
 import io.icode.concareghadmin.application.activities.models.Users;
 import io.icode.concareghadmin.application.activities.notifications.Token;
@@ -126,7 +127,7 @@ public class ChatsFragment extends Fragment {
 
     // Update currentAdmin's token
     private void updateToken(String token){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(Constants.TOKENS_REF);
         Token token1 = new Token(token);
         reference.child(admin_uid).setValue(token1);
     }

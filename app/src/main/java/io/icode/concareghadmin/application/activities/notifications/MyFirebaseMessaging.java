@@ -138,6 +138,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
             i = j;
         }
 
+        builder.build().flags |= Notification.FLAG_AUTO_CANCEL;
         // building notification using notification manager
         oreoNotification.getManager().notify(i,builder.build());
 

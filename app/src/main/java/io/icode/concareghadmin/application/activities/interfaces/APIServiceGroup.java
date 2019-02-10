@@ -18,6 +18,6 @@ public interface APIServiceGroup {
     )
 
     @POST("fcm/send")
-    Call<MyResponse> sendNotification(@Body SenderGroup body);
+    Call<MyResponse> sendNotification(@Body Sender body);
 
 }

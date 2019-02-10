@@ -34,6 +34,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,6 +62,7 @@ import io.icode.concareghadmin.application.activities.notifications.MyResponse;
 import io.icode.concareghadmin.application.activities.notifications.Sender;
 import io.icode.concareghadmin.application.activities.notifications.SenderGroup;
 import io.icode.concareghadmin.application.activities.notifications.Token;
+import io.icode.concareghadmin.application.activities.notifications.TokenGroup;
 import maes.tech.intentanim.CustomIntent;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -187,10 +189,20 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
 
         admin_uid = preferences.getString("uid","");
 
+        // method call to update token
+        //updateToken(FirebaseInstanceId.getInstance().getToken());
+
         getGroupDetails();
 
         seenMessage(usersIds);
 
+    }
+
+    // Update currentAdmin's token
+    private void updateToken(String token){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(Constants.TOKENS_REF);
+        Token token1 = new Token(token);
+        reference.child(admin_uid).setValue(token1);
     }
 
     @Override
@@ -327,16 +339,16 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
     }
 
 
-    // sends notification to respective user as soon as message is sent
+    // sends notification to respective users as soon as message is sent
     private void sendNotification(final List<String> receivers, final String username , final String message){
 
         /* for loop to loop through the list of users id in
         the group and send the notification accordingly */
-        //for(final String id : receivers){
+        for(final String id : receivers){
 
-            for(int i = 0; i < receivers.size(); i++){
+            //for(int i = 0; i < receivers.size(); i++){
 
-                final String id = receivers.get(i);
+              //  final String id = receivers.get(i);
 
             DatabaseReference tokens  = FirebaseDatabase.getInstance().getReference(Constants.TOKENS_REF);
             Query query = tokens.orderByKey().equalTo(id);
@@ -345,11 +357,11 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                         Token token = snapshot.getValue(Token.class);
-                        DataGroup data = new DataGroup(admin_uid, R.mipmap.app_logo_round, username+": "+message,
-                                getString(R.string.application_name), receivers);
+                        Data data = new Data(admin_uid, R.mipmap.app_logo_round, username+": "+message,
+                                getString(R.string.application_name), id);
 
                         assert token != null;
-                        SenderGroup sender = new SenderGroup(data, token.getToken());
+                        Sender sender = new Sender(data, token.getToken());
 
                         // apiService object to sendNotification to users
                         apiService.sendNotification(sender)

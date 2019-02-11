@@ -95,6 +95,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
                 .setSmallIcon(R.mipmap.app_logo_round)
                 .setContentTitle(title)
                 .setContentText(body)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
                 .setAutoCancel(true)
                 .setSound(defaultSound)
                 .setVibrate(new long[]{1000,1000,1000})

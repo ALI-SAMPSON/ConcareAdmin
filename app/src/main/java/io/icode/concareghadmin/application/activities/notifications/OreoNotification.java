@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.net.Uri;
 import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 
 import io.icode.concareghadmin.application.R;
 
@@ -67,6 +68,7 @@ public class OreoNotification extends ContextWrapper{
         return new Notification.Builder(getApplicationContext(),CHANNEL_ID)
                 .setContentTitle(title)
                 .setContentText(body)
+                .setStyle(new Notification.BigTextStyle().bigText(body))
                 .setContentIntent(pendingIntent)
                 .setSound(soundUri)
                 .setSmallIcon(R.mipmap.app_logo_round)

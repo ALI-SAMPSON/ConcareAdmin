@@ -263,7 +263,7 @@ public class AdminLoginActivity extends AppCompatActivity {
                        progressBar.setVisibility(View.GONE);
                        // display a message if there is an error
                        //Snackbar.make(relativeLayout,"Incorrect Email or password. Please Try Again",Snackbar.LENGTH_LONG).show();
-                       Toast.makeText(AdminLoginActivity.this,"Incorrect email or password. Please Try Again",Toast.LENGTH_LONG).show();
+                       Toast.makeText(AdminLoginActivity.this,R.string.incorrect_pass_email,Toast.LENGTH_LONG).show();
 
                    }
 

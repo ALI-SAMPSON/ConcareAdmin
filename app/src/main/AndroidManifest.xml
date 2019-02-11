@@ -61,6 +61,7 @@
         <activity android:name=".activities.activities.ResetPasswordActivity" />
         <activity android:name=".activities.chatApp.MessageActivity" />
 
+        <!-- service to handle the sending of notifications -->
         <service
             android:name=".activities.notifications.MyFirebaseIdService"
             android:enabled="true"
@@ -92,7 +93,6 @@
             android:configChanges="screenLayout|screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
-
         </activity>
     </application>
 

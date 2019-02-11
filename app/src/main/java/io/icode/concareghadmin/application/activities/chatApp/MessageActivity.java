@@ -33,6 +33,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,6 +58,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+@SuppressWarnings("ALL")
 public class MessageActivity extends AppCompatActivity implements MessageAdapter.OnItemClickListener {
 
     RelativeLayout relativeLayout;
@@ -64,13 +66,14 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
     CircleImageView profile_image;
     TextView username;
 
+    TextView tv_no_chats;
+
     // instance of Admin Class
     Admin admin;
 
     // variable to hold uid of admin from sharePreference
     String admin_uid;
 
-    FirebaseUser currentAdmin;
     DatabaseReference userRef;
 
     DatabaseReference chatRef;
@@ -132,6 +135,8 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         msg_to_send =  findViewById(R.id.editTextMessage);
         btn_send =  findViewById(R.id.btn_send);
 
+        tv_no_chats = findViewById(R.id.tv_no_chats);
+
         //getting reference to the recyclerview and setting it up
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -151,8 +156,6 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
         admin_uid = preferences.getString("uid","");
 
-        currentAdmin = FirebaseAuth.getInstance().getCurrentUser();
-
         userRef = FirebaseDatabase.getInstance().getReference("Users").child(user_id);
 
         progressBar =  findViewById(R.id.progressBar);
@@ -166,6 +169,16 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
         seenMessage(user_id);
 
+        // method call to update token
+        updateToken(FirebaseInstanceId.getInstance().getToken());
+
+    }
+
+    // Update currentAdmin's token
+    private void updateToken(String token){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(Constants.TOKENS_REF);
+        Token token1 = new Token(token);
+        reference.child(admin_uid).setValue(token1);
     }
 
     private void getUserDetails(){
@@ -174,7 +187,8 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Users users = dataSnapshot.getValue(Users.class);
-                    username.setText(users.getUsername());
+                assert users != null;
+                username.setText(users.getUsername());
                 if(users.getImageUrl() == null){
                     // sets a default placeholder into imageView if url is null
                     profile_image.setImageResource(R.drawable.ic_person_unknown);
@@ -258,6 +272,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         final String msg = message;
 
         adminRef = FirebaseDatabase.getInstance().getReference("Admin").child(admin_uid);
+
         adminRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -280,29 +295,30 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
     }
 
-    // sends notification to respective user as soon as message is sent
-    private void sendNotification(String receiver, final String username , final String message){
-        DatabaseReference tokens  = FirebaseDatabase.getInstance().getReference(Constants.TOKENS_REF);
+    // sends notification to admin as soon as message is sent
+    private void sendNotification(String receiver, final String username, final String message){
+
+        DatabaseReference tokens = FirebaseDatabase.getInstance().getReference(Constants.TOKENS_REF);
         Query query = tokens.orderByKey().equalTo(receiver);
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
-                    Data data = new Data(admin_uid, R.mipmap.app_logo_round, username+": "+message,
-                            getString(R.string.application_name), user_id);
+                    Data data = new Data(admin_uid,R.mipmap.app_logo_round, username+": "+message,
+                            getString(R.string.application_name),user_id);
 
                     assert token != null;
                     Sender sender = new Sender(data, token.getToken());
 
-                    // apiService object to sendNotification to user
                     apiService.sendNotification(sender)
                             .enqueue(new Callback<MyResponse>() {
                                 @Override
                                 public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
                                     if(response.code() == 200){
                                         if(response.body().success != 1){
-                                            Toast.makeText(MessageActivity.this,"Failed!",Toast.LENGTH_LONG).show();
+                                            /*Toast.makeText(MessageActivity.this,"Failed : "
+                                                    + !response.isSuccessful(),Toast.LENGTH_LONG).show();*/
                                         }
                                     }
                                 }
@@ -310,19 +326,22 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
                                 @Override
                                 public void onFailure(Call<MyResponse> call, Throwable t) {
                                     // display error message
-                                    Toast.makeText(MessageActivity.this,t.getMessage(),Toast.LENGTH_LONG).show();
+                                    Snackbar.make(relativeLayout,t.getMessage(),Snackbar.LENGTH_LONG).show();
                                 }
                             });
+
                 }
             }
 
             @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 // display error message
-                Toast.makeText(MessageActivity.this,databaseError.getMessage(),Toast.LENGTH_LONG).show();
+                Snackbar.make(relativeLayout,databaseError.getMessage(),Snackbar.LENGTH_LONG).show();
             }
         });
+
     }
+
 
     // method to check if user has seen message
     private void seenMessage(final String user_id){
@@ -371,38 +390,58 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         mDBListener = chatRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // clears the chats to avoid reading duplicate message
-                mChats.clear();
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Chats chats = snapshot.getValue(Chats.class);
-                    // gets the unique keys of the chats
-                    chats.setKey(snapshot.getKey());
 
-                    assert chats != null;
+                if(!dataSnapshot.exists()){
 
-                    if(chats.getReceiver().equals(adminId) && chats.getSender().equals(userId)
-                            || chats.getReceiver().equals(userId) && chats.getSender().equals(adminId)
-                            || chats.getReceiver().equals("") && chats.getReceivers().contains(userId)
-                            && chats.getSender().equals(adminId)
-                            || chats.getReceivers().contains(adminId)
-                            && chats.getSender().equals(userId)){
-                        mChats.add(chats);
-                    }
-
-                    // initializing the messageAdapter and setting adapter to recyclerView
-                    messageAdapter = new MessageAdapter(MessageActivity.this,mChats,imageUrl);
-                    // setting adapter
-                    recyclerView.setAdapter(messageAdapter);
-                    // notify data change in adapter
-                    messageAdapter.notifyDataSetChanged();
+                    // displays text if there are no recent chats
+                    tv_no_chats.setVisibility(View.VISIBLE);
 
                     // dismiss progressBar
                     progressBar.setVisibility(View.GONE);
 
-                    // setting on OnItemClickListener in this activity as an interface for ContextMenu
-                    messageAdapter.setOnItemClickListener(MessageActivity.this);
+                }
+                else{
+
+                    // clears the chats to avoid reading duplicate message
+                    mChats.clear();
+                    for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                        Chats chats = snapshot.getValue(Chats.class);
+                        // gets the unique keys of the chats
+                        chats.setKey(snapshot.getKey());
+
+                        assert chats != null;
+
+                        if(chats.getReceiver().equals(adminId) && chats.getSender().equals(userId)
+                                || chats.getReceiver().equals(userId) && chats.getSender().equals(adminId)
+                                || chats.getReceiver().equals("") && chats.getReceivers().contains(userId)
+                                && chats.getSender().equals(adminId)
+                                || chats.getReceivers().contains(adminId)
+                                && chats.getSender().equals(userId)){
+                            mChats.add(chats);
+                        }
+
+                        // initializing the messageAdapter and setting adapter to recyclerView
+                        messageAdapter = new MessageAdapter(MessageActivity.this,mChats,imageUrl);
+                        // setting adapter
+                        recyclerView.setAdapter(messageAdapter);
+                        // notify data change in adapter
+                        messageAdapter.notifyDataSetChanged();
+
+                        // hides text if there are recent chats
+                        tv_no_chats.setVisibility(View.GONE);
+
+                        // dismiss progressBar
+                        progressBar.setVisibility(View.GONE);
+
+                        // setting on OnItemClickListener in this activity as an interface for ContextMenu
+                        messageAdapter.setOnItemClickListener(MessageActivity.this);
+
+                    }
+
 
                 }
+
+
             }
 
             @Override

@@ -1,5 +1,4 @@
 package io.icode.concareghadmin.application.activities.interfaces;
-
 import io.icode.concareghadmin.application.activities.notifications.MyResponse;
 import io.icode.concareghadmin.application.activities.notifications.Sender;
 import retrofit2.Call;
@@ -11,7 +10,7 @@ public interface APIService {
 
     @Headers(
             {
-                   "Content-type:application/json",
+                    "Content-Type:application/json",
                     "Authorization:key=AAAA91e8Zac:APA91bHbjO_ue4XRH-6zegoMWKrzQheXLbGV3YFf8zi8-Y_akskyvQ0KJw4omJCiWdbKsFTrHvD3-gOeKhZEfHzeyHzoYIJbr1m9u6ntVLNpx-BMtRUbuzrcu9KhfLv6Enb8lh86mpq_"
             }
     )

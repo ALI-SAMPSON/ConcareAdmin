@@ -60,6 +60,19 @@
         android:visibility="gone"
         android:layout_centerInParent="true"/>
 
+    <TextView
+        android:id="@+id/tv_no_chats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginLeft="25dp"
+        android:textStyle="bold"
+        android:layout_centerInParent="true"
+        app:fontFamily="@font/nunito_semibold"
+        android:textColor="@color/orange_light"
+        android:text="@string/no_recent_chats"
+        android:visibility="gone"/>
+
     <RelativeLayout
         android:id="@+id/bottom_layout"
         android:layout_width="match_parent"

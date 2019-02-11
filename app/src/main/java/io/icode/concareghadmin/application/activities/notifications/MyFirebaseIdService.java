@@ -54,7 +54,6 @@ public class MyFirebaseIdService extends FirebaseInstanceIdService {
 
     private void updateToken(final String refreshToken){
 
-
         // getting an instance of currentAdmin
         adminRef.addValueEventListener(new ValueEventListener() {
             @Override

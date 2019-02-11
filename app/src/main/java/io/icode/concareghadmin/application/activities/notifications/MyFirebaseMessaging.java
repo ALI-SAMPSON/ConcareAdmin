@@ -27,6 +27,7 @@ import io.icode.concareghadmin.application.activities.chatApp.ChatActivity;
 import io.icode.concareghadmin.application.activities.chatApp.MessageActivity;
 import io.icode.concareghadmin.application.activities.constants.Constants;
 import io.icode.concareghadmin.application.activities.models.Admin;
+import io.icode.concareghadmin.application.activities.models.Chats;
 
 @SuppressWarnings("ALL")
 public class MyFirebaseMessaging extends FirebaseMessagingService {
@@ -138,7 +139,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
             i = j;
         }
 
-        builder.build().flags |= Notification.FLAG_AUTO_CANCEL;
+        //builder.build().flags |= Notification.FLAG_AUTO_CANCEL;
         // building notification using notification manager
         oreoNotification.getManager().notify(i,builder.build());
 

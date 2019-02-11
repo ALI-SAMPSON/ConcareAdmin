@@ -45,29 +45,23 @@ import java.util.TimerTask;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.adapters.GroupMessageAdapter;
-import io.icode.concareghadmin.application.activities.adapters.MessageAdapter;
-import io.icode.concareghadmin.application.activities.adapters.RecyclerViewAdapterAddUsers;
 import io.icode.concareghadmin.application.activities.constants.Constants;
 import io.icode.concareghadmin.application.activities.interfaces.APIService;
-import io.icode.concareghadmin.application.activities.interfaces.APIServiceGroup;
 import io.icode.concareghadmin.application.activities.models.Admin;
 import io.icode.concareghadmin.application.activities.models.Chats;
-import io.icode.concareghadmin.application.activities.models.GroupChats;
 import io.icode.concareghadmin.application.activities.models.Groups;
 import io.icode.concareghadmin.application.activities.models.Users;
 import io.icode.concareghadmin.application.activities.notifications.Client;
 import io.icode.concareghadmin.application.activities.notifications.Data;
-import io.icode.concareghadmin.application.activities.notifications.DataGroup;
 import io.icode.concareghadmin.application.activities.notifications.MyResponse;
 import io.icode.concareghadmin.application.activities.notifications.Sender;
-import io.icode.concareghadmin.application.activities.notifications.SenderGroup;
 import io.icode.concareghadmin.application.activities.notifications.Token;
-import io.icode.concareghadmin.application.activities.notifications.TokenGroup;
 import maes.tech.intentanim.CustomIntent;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+@SuppressWarnings("ALL")
 public class GroupMessageActivity extends AppCompatActivity implements GroupMessageAdapter.OnItemClickListener{
 
     RelativeLayout relativeLayout;
@@ -119,7 +113,7 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
 
     ValueEventListener mDBListener;
 
-    APIServiceGroup apiService;
+    APIService apiService;
 
     boolean notify = false;
 
@@ -144,7 +138,7 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
         });
 
         // creates APIService using Google API from the APIService Class
-        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIServiceGroup.class);
+        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
 
         groupName =  findViewById(R.id.tv_group_name);
         groupIcon =  findViewById(R.id.ci_group_icon);
@@ -190,7 +184,7 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
         admin_uid = preferences.getString("uid","");
 
         // method call to update token
-        //updateToken(FirebaseInstanceId.getInstance().getToken());
+        updateToken(FirebaseInstanceId.getInstance().getToken());
 
         getGroupDetails();
 
@@ -346,10 +340,6 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
         the group and send the notification accordingly */
         for(final String id : receivers){
 
-            //for(int i = 0; i < receivers.size(); i++){
-
-              //  final String id = receivers.get(i);
-
             DatabaseReference tokens  = FirebaseDatabase.getInstance().getReference(Constants.TOKENS_REF);
             Query query = tokens.orderByKey().equalTo(id);
             query.addValueEventListener(new ValueEventListener() {
@@ -358,7 +348,7 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
                     for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                         Token token = snapshot.getValue(Token.class);
                         Data data = new Data(admin_uid, R.mipmap.app_logo_round, username+": "+message,
-                                getString(R.string.application_name), id);
+                                 getString(R.string.application_name), id);
 
                         assert token != null;
                         Sender sender = new Sender(data, token.getToken());
@@ -370,8 +360,8 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
                                     public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
                                         if(response.code() == 200){
                                             if(response.body().success != 1){
-                                                Toast.makeText(GroupMessageActivity.this,
-                                                        getString(R.string.notification_failed),Toast.LENGTH_LONG).show();
+                                                /*Toast.makeText(GroupMessageActivity.this,"Failed : "
+                                                        + !response.isSuccessful(),Toast.LENGTH_LONG).show();*/
                                             }
                                         }
                                     }
@@ -475,6 +465,8 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
                         recyclerView.setAdapter(groupMessageAdapter);
                         // notify data change in adapter
                         groupMessageAdapter.notifyDataSetChanged();
+                        // hides text if there are recent chats
+                        tv_no_chats.setVisibility(View.GONE);
                         // dismiss progressBar
                         progressBar.setVisibility(View.GONE);
                         // setting on OnItemClickListener in this activity as an interface for ContextMenu

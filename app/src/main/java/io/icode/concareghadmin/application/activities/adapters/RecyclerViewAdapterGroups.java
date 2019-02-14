@@ -74,7 +74,7 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
 
         if(groups.getGroupIcon() == null){
             // loads the default placeholder into ImageView if ImageUrl is null
-            holder.groupIcon.setImageResource(R.mipmap.group_icon);
+            Glide.with(mCtx).load(R.mipmap.group_icon).into(holder.groupIcon);
         }
         else{
             // loads users image into the ImageView

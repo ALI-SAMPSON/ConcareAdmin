@@ -45,6 +45,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.activities.AdminLoginActivity;
 import io.icode.concareghadmin.application.activities.adapters.ViewPagerAdapter;
+import io.icode.concareghadmin.application.activities.constants.Constants;
 import io.icode.concareghadmin.application.activities.fragments.ChatsFragment;
 import io.icode.concareghadmin.application.activities.fragments.GroupsFragment;
 import io.icode.concareghadmin.application.activities.fragments.UsersFragment;
@@ -114,7 +115,7 @@ public class ChatActivity extends AppCompatActivity {
 
         groups = new Groups();
 
-        groupRef = FirebaseDatabase.getInstance().getReference("Groups");
+        groupRef = FirebaseDatabase.getInstance().getReference(Constants.GROUP_REF);
 
         // getting the uid of the admin stored in sharePreference
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -324,8 +325,6 @@ public class ChatActivity extends AppCompatActivity {
     // method to create group in database
     private void createNewGroup(final String groupName){
 
-        groups.setGroupName(groupName);
-
         // checks if group already exist
         groupRef.child(groupName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -333,7 +332,8 @@ public class ChatActivity extends AppCompatActivity {
                 if(dataSnapshot.exists()){
 
                     // display hint if group already exist
-                    Snackbar.make(linearLayout,groupName + " group already exist . Please create a group with a different name."
+                    Snackbar.make(linearLayout,groupName
+                            + " group already exist . Please create a group with a different name."
                             + " E.g " + groupName + " 01 , 02...",DURATION_LONG).show();
 
                 }

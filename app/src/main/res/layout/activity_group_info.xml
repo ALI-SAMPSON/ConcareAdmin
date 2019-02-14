@@ -21,7 +21,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:layout_marginTop="0dp"
-                app:cardBackgroundColor="@color/colorWhite">
+                app:cardBackgroundColor="@color/colorWhite"
+                app:cardCornerRadius="5dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -31,7 +32,7 @@
                         android:id="@+id/ci_group_icon"
                         android:layout_width="match_parent"
                         android:layout_height="250dp"
-                        android:src="@drawable/group_icon"
+                        android:background="@drawable/group_icon"
                         android:scaleType="fitXY"/>
 
                     <ProgressBar
@@ -88,7 +89,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:layout_marginTop="15dp"
-                app:cardBackgroundColor="@color/colorWhite">
+                app:cardBackgroundColor="@color/colorWhite"
+                app:cardCornerRadius="5dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"

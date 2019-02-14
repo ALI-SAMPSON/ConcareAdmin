@@ -88,8 +88,7 @@
         android:src="@drawable/ic_create_new"
         android:onClick="createGroup"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
         android:layout_margin="20dp"/>
 
 </RelativeLayout>

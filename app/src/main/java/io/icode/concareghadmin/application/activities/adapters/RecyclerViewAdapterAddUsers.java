@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,23 +80,32 @@ public class RecyclerViewAdapterAddUsers extends RecyclerView.Adapter<RecyclerVi
 
         if(users.getImageUrl() == null){
             // loads the default placeholder into ImageView if ImageUrl is null
-            holder.profile_pic.setImageResource(R.drawable.ic_person_unknown);
+            Glide.with(mCtx).load(R.mipmap.profile_icon).into(holder.profile_pic);
         }
         else{
             // loads users image into the ImageView
             Glide.with(mCtx).load(users.getImageUrl()).into(holder.profile_pic);
         }
 
+        // uncheck check boxes
+        //holder.mCheckBox.setChecked(false);
+
+        // prevents the recycler view to automatically select an item from list
+        holder.mCheckBox.setOnCheckedChangeListener(null);
+        holder.mCheckBox.setSelected(users.isSelected());
 
         // attaching on click listener to checkbox to select users and add to group
-        holder.checkBox.setOnClickListener(new View.OnClickListener() {
+        holder.mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                // checks if check box is checked
-                if(holder.checkBox.isChecked()){
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
 
                     // add user to list if checked
                     selectedUserIds.add(users.getUid());
+
+                    // set Selected to true
+                    users.setSelected(true);
+
 
                 }
                 else{
@@ -103,9 +113,14 @@ public class RecyclerViewAdapterAddUsers extends RecyclerView.Adapter<RecyclerVi
                     // removes user id from list if user is unchecked
                     selectedUserIds.remove(users.getUid());
 
+                    // set Selected to false
+                    users.setSelected(false);
+
                 }
             }
         });
+
+        holder.mCheckBox.setChecked(users.isSelected());
 
 
     }
@@ -127,7 +142,7 @@ public class RecyclerViewAdapterAddUsers extends RecyclerView.Adapter<RecyclerVi
         CircleImageView profile_pic;
         TextView username;
         TextView gender;
-        CheckBox checkBox;
+        CheckBox mCheckBox;
 
 
         public ViewHolder(View itemView) {
@@ -138,7 +153,7 @@ public class RecyclerViewAdapterAddUsers extends RecyclerView.Adapter<RecyclerVi
             profile_pic = itemView.findViewById(R.id.profile_image);
             username = itemView.findViewById(R.id.username);
             gender = itemView.findViewById(R.id.gender);
-            checkBox = itemView.findViewById(R.id.add_user);
+            mCheckBox = itemView.findViewById(R.id.add_user);
         }
     }
 

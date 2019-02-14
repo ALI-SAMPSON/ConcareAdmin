@@ -272,8 +272,8 @@
         Search...
     </string>
 
-    <string name="text_change_icon" translatable="false">
-        Change Group Icon
+    <string name="text_group_info" translatable="false">
+        Group Info
     </string>
 
     <string name="msg_no_image" translatable="false">

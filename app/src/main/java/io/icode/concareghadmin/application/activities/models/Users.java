@@ -1,5 +1,7 @@
 package io.icode.concareghadmin.application.activities.models;
 
+import com.google.firebase.database.Exclude;
+
 public class Users {
 
     //field in the database
@@ -12,6 +14,7 @@ public class Users {
     private String status;
     // field to search username in both caps and lowercase
     private String search;
+    private boolean isSelected;
 
 
     //default constructor
@@ -20,7 +23,7 @@ public class Users {
     //constructor with one or more parameters
     public Users(String email, String username, String uid,
                  String gender, String phoneNumber, String imageUrl,
-                 String status, String search){
+                 String status, String search, boolean isSelected){
         this.email = email;
         this.username = username;
         this.uid = uid;
@@ -29,6 +32,7 @@ public class Users {
         this.imageUrl = imageUrl;
         this.status = status;
         this.search = search;
+        this.isSelected = isSelected;
 
     }
 
@@ -99,5 +103,15 @@ public class Users {
 
     public void setSearch(String search) {
         this.search = search;
+    }
+
+    @Exclude
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    @Exclude
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 }

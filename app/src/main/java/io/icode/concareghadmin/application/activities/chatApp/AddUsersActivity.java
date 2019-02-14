@@ -191,7 +191,6 @@ public class AddUsersActivity extends AppCompatActivity {
 
                 }
 
-
                 // notifies any data change
                 adapterUsers.notifyDataSetChanged();
 
@@ -347,6 +346,7 @@ public class AddUsersActivity extends AppCompatActivity {
 
                 // finishes the activity after 3 secs
                 finish();
+
             }
         },3000);
 

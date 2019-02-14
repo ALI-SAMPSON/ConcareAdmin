@@ -67,7 +67,7 @@ public class RecyclerViewAdapterGroupMembers extends RecyclerView.Adapter<Recycl
 
         if(users.getImageUrl() == null){
             // loads the default placeholder into ImageView if ImageUrl is null
-            holder.profile_pic.setImageResource(R.drawable.ic_person_unknown);
+            Glide.with(mCtx).load(R.mipmap.profile_icon).into(holder.profile_pic);
         }
         else{
             // loads users image into the ImageView

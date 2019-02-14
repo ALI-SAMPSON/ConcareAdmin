@@ -110,6 +110,7 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
                 Intent intent = new Intent(mCtx,MessageActivity.class);
                 intent.putExtra("uid", users.getUid());
                 intent.putExtra("username", users.getUsername());
+                intent.putExtra("status", users.getStatus());
                 mCtx.startActivity(intent);
             }
         });

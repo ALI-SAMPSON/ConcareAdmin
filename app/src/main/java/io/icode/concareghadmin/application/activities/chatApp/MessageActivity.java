@@ -64,7 +64,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
     RelativeLayout relativeLayout;
 
     CircleImageView profile_image;
-    TextView username;
+    TextView username,tv_user_status;
 
     TextView tv_no_chats;
 
@@ -88,6 +88,9 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
     // string to get intentExtras
     String  user_id;
     String user_name;
+
+    //Variable to store status of the current user
+    String status;
 
     // variable for MessageAdapter class
     MessageAdapter messageAdapter;
@@ -137,6 +140,8 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
         tv_no_chats = findViewById(R.id.tv_no_chats);
 
+        tv_user_status = findViewById(R.id.user_status);
+
         //getting reference to the recyclerview and setting it up
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -147,6 +152,12 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         intent = getIntent();
         user_id = intent.getStringExtra("uid");
         user_name = intent.getStringExtra("username");
+
+        // get the current ststus of user
+        status = intent.getStringExtra("status");
+
+        // set status of the admin on toolbar below the username in the message activity
+        tv_user_status.setText(status);
 
         // creating an instance of the Admin Class
         admin = new Admin();

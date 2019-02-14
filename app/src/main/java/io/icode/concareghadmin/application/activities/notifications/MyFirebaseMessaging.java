@@ -41,11 +41,12 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         final String sent = remoteMessage.getData().get("sent");
 
         // getting an instance of currentAdmin
-        adminRef.addValueEventListener(new ValueEventListener() {
+        adminRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+
                     Admin currentAdmin = snapshot.getValue(Admin.class);
 
                     // checks if there is a currentAdmin and if message was sent by currentAdmin
@@ -83,9 +84,9 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         int j = Integer.parseInt(user.replaceAll("[\\D]",""));
-        Intent intent = new Intent(this,ChatActivity.class);
+        Intent intent = new Intent(this,MessageActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("userid",user);
+        bundle.putString("uid",user);
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,j,intent,PendingIntent.FLAG_ONE_SHOT);
@@ -122,9 +123,9 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         int j = Integer.parseInt(user.replaceAll("[\\D]",""));
-        Intent intent = new Intent(this,ChatActivity.class);
+        Intent intent = new Intent(this,MessageActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("userid",user);
+        bundle.putString("uid",user);
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,j,intent,PendingIntent.FLAG_ONE_SHOT);

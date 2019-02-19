@@ -293,7 +293,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
 
                 // getting text from field
-                String groupName = editTextGroupName.getText().toString();
+                String groupName = editTextGroupName.getText().toString().trim();
 
                 if(TextUtils.isEmpty(groupName)){
                     // display hint to user

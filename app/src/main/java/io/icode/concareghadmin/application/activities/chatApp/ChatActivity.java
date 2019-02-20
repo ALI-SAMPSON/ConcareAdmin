@@ -225,6 +225,7 @@ public class ChatActivity extends AppCompatActivity {
             chatRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    // instance of the ViewPagerAdapter class
                     ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
                     // variable to count the number of unread messages
                     int unreadMessages = 0;
@@ -470,6 +471,28 @@ public class ChatActivity extends AppCompatActivity {
             progressDialog.setTitle("");
             progressDialog.setMessage("signing out...");
         }
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        // finish activity and closes app
+        finish();
+        //closeApp();
+    }
+
+    // method to close app
+    private void closeApp(){
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                moveTaskToBack(true);
+                android.os.Process.killProcess(android.os.Process.myPid());
+                System.exit(1);
+            }
+        },1000);
 
     }
 

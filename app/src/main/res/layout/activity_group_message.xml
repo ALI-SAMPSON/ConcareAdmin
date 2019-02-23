@@ -48,7 +48,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_below="@+id/bar_layout"
-        android:layout_above="@+id/bottom_layout"
+        android:layout_above="@+id/button_send_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </android.support.v7.widget.RecyclerView>
@@ -75,47 +75,65 @@
         android:visibility="gone"
         android:layout_centerInParent="true"/>
 
-    <RelativeLayout
-        android:id="@+id/bottom_layout"
+    <LinearLayout
+        android:id="@+id/button_send_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_toStartOf="@+id/layout_send"
+        android:layout_toLeftOf="@+id/layout_send"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginRight="2dp"
+        android:padding="5dp"
         android:background="@drawable/circular_edittext"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="8dp"
-        android:padding="5dp">
-
-
+        android:layout_alignParentBottom="true">
         <EditText
             android:id="@+id/editTextMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/type_message"
             app:fontFamily="@font/lato"
+            android:padding="7dp"
+            android:layout_gravity="center_vertical"
             android:background="@android:color/transparent"
-            android:inputType="textMultiLine"
-            android:layout_toLeftOf="@+id/btn_send"
-            android:layout_toStartOf="@+id/btn_send"
+            android:inputType="textMultiLine|textAutoComplete|textAutoCorrect"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_centerVertical="true"/>
+            android:layout_marginEnd="10dp" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/layout_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:padding="5dp"
+        android:gravity="center_vertical"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true">
         <ImageButton
             android:id="@+id/btn_send"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
+            android:padding="7dp"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/ic_send"
-            android:scaleType="center"
             android:background="@drawable/circular_button"
-            android:onClick="btnSend"
-            android:visibility="visible"/>
-
-    </RelativeLayout>
+            android:onClick="btnSend"/>
+    </LinearLayout>
 
 </RelativeLayout>

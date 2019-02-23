@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
-
-apply plugin: 'io.fabric'
+//apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 28
@@ -17,10 +16,11 @@ android {
         /*customDebugType {
             debuggable true
         }*/
-        release {
-            minifyEnabled false
+        /*release {
+            //minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        */
     }
 }
 
@@ -60,7 +60,7 @@ dependencies {
     implementation 'com.daimajia.androidanimations:library:2.3@aar'
 
     // Firebase Crashlytics dependency
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
+    //implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
 
     // Add Google Play Services Dependencies
     implementation 'com.google.android.gms:play-services-identity:16.0.0'

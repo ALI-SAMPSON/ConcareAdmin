@@ -88,7 +88,6 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
     String date_created;
     String time_created;
 
-
     String admin_uid;
 
     DatabaseReference groupRef;

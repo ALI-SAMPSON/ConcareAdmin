@@ -38,6 +38,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.HashMap;
 
@@ -53,6 +54,7 @@ import io.icode.concareghadmin.application.activities.models.Admin;
 import io.icode.concareghadmin.application.activities.models.Chats;
 import io.icode.concareghadmin.application.activities.models.Groups;
 import io.icode.concareghadmin.application.activities.models.Users;
+import io.icode.concareghadmin.application.activities.notifications.Token;
 import maes.tech.intentanim.CustomIntent;
 
 @SuppressWarnings("ALL")
@@ -122,17 +124,15 @@ public class ChatActivity extends AppCompatActivity {
 
         admin_uid = preferences.getString("uid","");
 
+        // update device token
+        updateToken(FirebaseInstanceId.getInstance().getToken());
+
         // method call to check if internet connection is enabled
         isInternetConnnectionEnabled();
 
         // method call to change ProgressDialog style based on the android version of user's phone
         changeProgressDialogBackground();
 
-    }
-
-    @Override
-    protected void onStart(){
-        super.onStart();
     }
 
     @Override
@@ -272,6 +272,34 @@ public class ChatActivity extends AppCompatActivity {
             // sets visibility to visible if there is  no internet connection
             internetConnection.setVisibility(View.VISIBLE);
         }
+
+    }
+
+
+    // method to update device token
+    private void updateToken(final String token){
+
+        adminRef = FirebaseDatabase.getInstance().getReference(Constants.ADMIN_REF);
+
+        // getting an instance of currentAdmin
+        adminRef.child(admin_uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                Admin currentAdmin = dataSnapshot.getValue(Admin.class);
+
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference(Constants.TOKENS_REF);
+                Token token1 = new Token(token);
+                reference.child(currentAdmin.getAdminUid()).setValue(token1);
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(getApplicationContext(),databaseError.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
 
     }
 
@@ -435,21 +463,43 @@ public class ChatActivity extends AppCompatActivity {
     // setting status to "online" when activity is resumed
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        status("online");
+        // update user's device token
+        updateToken(FirebaseInstanceId.getInstance().getToken());
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        // update user's device token
+        updateToken(FirebaseInstanceId.getInstance().getToken());
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         status("online");
+        // update user's device token
+        updateToken(FirebaseInstanceId.getInstance().getToken());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         status("online");
+        // update user's device token
+        updateToken(FirebaseInstanceId.getInstance().getToken());
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         status("offline");
+        // update user's device token
+        updateToken(FirebaseInstanceId.getInstance().getToken());
     }
 
     // method to change ProgressDialog style based on the android version of user's phone

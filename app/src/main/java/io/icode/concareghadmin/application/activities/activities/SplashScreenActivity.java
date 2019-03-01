@@ -2,6 +2,7 @@ package io.icode.concareghadmin.application.activities.activities;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,12 +17,22 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import io.icode.concareghadmin.application.R;
+import io.icode.concareghadmin.application.activities.constants.Constants;
+import io.icode.concareghadmin.application.activities.models.Admin;
+import io.icode.concareghadmin.application.activities.notifications.Token;
 import io.icode.concareghadmin.application.activities.prefs.SavedSharePreference;
 import io.icode.concareghadmin.application.activities.chatApp.ChatActivity;
 import maes.tech.intentanim.CustomIntent;
 
+@SuppressWarnings("ALL")
 public class SplashScreenActivity extends AppCompatActivity {
 
     private TextView app_title;
@@ -32,7 +43,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
-    private FirebaseAuth mAuth;
+    DatabaseReference adminRef;
 
     ProgressBar progressBar;
 
@@ -65,11 +76,64 @@ public class SplashScreenActivity extends AppCompatActivity {
         // displays the progressBar
         progressBar1.setVisibility(View.VISIBLE);
 
-        // firebase instance
-        mAuth = FirebaseAuth.getInstance();
+        //method call to update device token
+        updateToken(FirebaseInstanceId.getInstance().getToken());
 
         // method call
         runAnimation();
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        // update user's device token
+        updateToken(FirebaseInstanceId.getInstance().getToken());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // update user's device token
+        updateToken(FirebaseInstanceId.getInstance().getToken());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // update user's device token
+        updateToken(FirebaseInstanceId.getInstance().getToken());
+    }
+
+    // method to update device token
+    private void updateToken(final String token){
+
+        adminRef = FirebaseDatabase.getInstance().getReference(Constants.ADMIN_REF);
+
+        // getting an instance of currentAdmin
+        adminRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+
+                    Admin currentAdmin = snapshot.getValue(Admin.class);
+
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference(Constants.TOKENS_REF);
+                    Token token1 = new Token(token);
+                    reference.child(currentAdmin.getAdminUid()).setValue(token1);
+
+                }
+
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(getApplicationContext(),databaseError.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
 
     }
 
@@ -113,6 +177,9 @@ public class SplashScreenActivity extends AppCompatActivity {
 
             // finish the activity
             finish();
+
+            // update user's device token
+            updateToken(FirebaseInstanceId.getInstance().getToken());
 
         }
     }

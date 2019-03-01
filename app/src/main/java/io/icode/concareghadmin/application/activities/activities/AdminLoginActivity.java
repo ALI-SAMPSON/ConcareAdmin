@@ -206,7 +206,7 @@ public class AdminLoginActivity extends AppCompatActivity {
         final String email = editTextEmail.getText().toString();
         final String password = editTextPassword.getText().toString();
 
-       adminRef.addValueEventListener(new ValueEventListener() {
+       adminRef.addListenerForSingleValueEvent(new ValueEventListener() {
            @Override
            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 

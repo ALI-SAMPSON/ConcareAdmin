@@ -86,6 +86,12 @@ public class ChatActivity extends AppCompatActivity {
 
     DatabaseReference groupRef;
 
+    ValueEventListener adminEventListener;
+
+    ValueEventListener chatEventListener;
+
+    ValueEventListener groupEventListener;
+
     String admin_uid;
 
     // variable for duration of snackbar and toast
@@ -185,9 +191,9 @@ public class ChatActivity extends AppCompatActivity {
             // sets visibility to visible if there is  no internet connection
             internetConnection.setVisibility(View.GONE);
 
-            adminRef = FirebaseDatabase.getInstance().getReference("Admin");
+            adminRef = FirebaseDatabase.getInstance().getReference(Constants.ADMIN_REF);
 
-            adminRef.addValueEventListener(new ValueEventListener() {
+            adminEventListener = adminRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -220,9 +226,9 @@ public class ChatActivity extends AppCompatActivity {
             final ViewPager viewPager = findViewById(R.id.view_pager);
 
             // Checks for incoming messages and counts them to be displays together in the chats fragments
-            chatRef = FirebaseDatabase.getInstance().getReference("Chats");
+            chatRef = FirebaseDatabase.getInstance().getReference(Constants.CHAT_REF);
 
-            chatRef.addValueEventListener(new ValueEventListener() {
+            chatEventListener = chatRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     // instance of the ViewPagerAdapter class
@@ -282,7 +288,7 @@ public class ChatActivity extends AppCompatActivity {
         adminRef = FirebaseDatabase.getInstance().getReference(Constants.ADMIN_REF);
 
         // getting an instance of currentAdmin
-        adminRef.child(admin_uid).addListenerForSingleValueEvent(new ValueEventListener() {
+         adminRef.child(admin_uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -445,7 +451,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     // method to clear sharePreference when admin log outs
-    private  void clearEmail(Context ctx){
+    private void clearEmail(Context ctx){
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
         editor.clear(); // clear all stored data (email)
         editor.commit();
@@ -453,15 +459,20 @@ public class ChatActivity extends AppCompatActivity {
 
     private void status(String status){
 
-        adminRef = FirebaseDatabase.getInstance().getReference("Admin").child(admin_uid);
+        // admin uid is not null
+        if(admin_uid != null){
+            adminRef = FirebaseDatabase.getInstance().getReference(Constants.ADMIN_REF)
+                    .child(admin_uid);
 
-        HashMap<String,Object> hashMap = new HashMap<>();
-        hashMap.put("status",status);
-        adminRef.updateChildren(hashMap);
+            HashMap<String,Object> hashMap = new HashMap<>();
+            hashMap.put("status",status);
+            adminRef.updateChildren(hashMap);
+        }
+
+
     }
 
     // setting status to "online" when activity is resumed
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -474,8 +485,7 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        // update user's device token
-        updateToken(FirebaseInstanceId.getInstance().getToken());
+        status("online");
     }
 
     @Override
@@ -487,17 +497,13 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        status("online");
-        // update user's device token
-        updateToken(FirebaseInstanceId.getInstance().getToken());
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
-        status("offline");
+        if(adminRef != null && chatRef != null){
+            adminRef.removeEventListener(adminEventListener);
+            chatRef.removeEventListener(chatEventListener);
+        }
+
         // update user's device token
         updateToken(FirebaseInstanceId.getInstance().getToken());
     }

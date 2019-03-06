@@ -74,9 +74,11 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
     // variable to hold uid of admin from sharePreference
     String admin_uid;
 
+    // dbRef variables
     DatabaseReference userRef;
 
     DatabaseReference chatRef;
+
     DatabaseReference adminRef;
 
     // editText and Button to send Message
@@ -167,7 +169,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
         admin_uid = preferences.getString("uid","");
 
-        userRef = FirebaseDatabase.getInstance().getReference("Users").child(user_id);
+        userRef = FirebaseDatabase.getInstance().getReference(Constants.USER_REF).child(user_id);
 
         progressBar =  findViewById(R.id.progressBar);
 
@@ -552,12 +554,25 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
     // setting the status of the users
     private void status(String status){
 
-        adminRef = FirebaseDatabase.getInstance().getReference("Admin")
+        adminRef = FirebaseDatabase.getInstance().getReference(Constants.ADMIN_REF)
         .child(admin_uid);
 
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put("status",status);
         adminRef.updateChildren(hashMap);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        status("online");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        status("online");
+        //currentUser(users_id);
     }
 
     @Override
@@ -575,11 +590,20 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        status("offline");
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         status("offline");
         // removes eventListeners when activity is destroyed
-        chatRef.removeEventListener(seenListener);
-        chatRef.removeEventListener(mDBListener);
+        if(chatRef != null){
+            chatRef.removeEventListener(seenListener);
+            chatRef.removeEventListener(mDBListener);
+        }
+
     }
 }

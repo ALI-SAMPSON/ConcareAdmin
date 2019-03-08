@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -60,11 +61,15 @@ import maes.tech.intentanim.CustomIntent;
 @SuppressWarnings("ALL")
 public class ChatActivity extends AppCompatActivity {
 
+    AppBarLayout appBarLayout;
+
     Toolbar toolbar;
 
     RelativeLayout internetConnection;
 
     LinearLayout linearLayout;
+
+    TextView tv_Retry;
 
     CircleImageView profile_image;
     TextView username;
@@ -104,9 +109,13 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        appBarLayout = findViewById(R.id.appBarLayout);
+
         internetConnection = findViewById(R.id.no_internet_connection);
 
         linearLayout = findViewById(R.id.linearLayout);
+
+        tv_Retry = findViewById(R.id.tv_Retry);
 
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
@@ -130,11 +139,14 @@ public class ChatActivity extends AppCompatActivity {
 
         admin_uid = preferences.getString("uid","");
 
-        // update device token
-        updateToken(FirebaseInstanceId.getInstance().getToken());
-
         // method call to check if internet connection is enabled
         isInternetConnnectionEnabled();
+
+        // refresh page if internet is enabled or not
+        onTapToRetry();
+
+        // update device token
+        updateToken(FirebaseInstanceId.getInstance().getToken());
 
         // method call to change ProgressDialog style based on the android version of user's phone
         changeProgressDialogBackground();
@@ -178,6 +190,16 @@ public class ChatActivity extends AppCompatActivity {
        return super.onOptionsItemSelected(item);
     }
 
+    public void onTapToRetry(){
+        internetConnection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // method call to refresh page to see if connecting is enabled or not
+                isInternetConnnectionEnabled();
+            }
+        });
+    }
+
     // method to check if internet connection is enabled
     private void isInternetConnnectionEnabled(){
 
@@ -187,6 +209,8 @@ public class ChatActivity extends AppCompatActivity {
 
             //we are connected to a network
             isConnected = true;
+
+            appBarLayout.setVisibility(View.VISIBLE);
 
             // sets visibility to visible if there is  no internet connection
             internetConnection.setVisibility(View.GONE);
@@ -274,6 +298,8 @@ public class ChatActivity extends AppCompatActivity {
         else{
 
             isConnected = false;
+
+            appBarLayout.setVisibility(View.GONE);
 
             // sets visibility to visible if there is  no internet connection
             internetConnection.setVisibility(View.VISIBLE);
@@ -504,8 +530,6 @@ public class ChatActivity extends AppCompatActivity {
             chatRef.removeEventListener(chatEventListener);
         }
 
-        // update user's device token
-        updateToken(FirebaseInstanceId.getInstance().getToken());
     }
 
     // method to change ProgressDialog style based on the android version of user's phone

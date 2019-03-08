@@ -319,8 +319,6 @@
          NO
     </string>
 
-    <string name="no_internet">No Internet</string>
-
     <string name="text_no_internet">check Internet Connection and Try Again!</string>
 
     <string name="title_delete_message" translatable="false">
@@ -330,6 +328,10 @@
     <string name="notification_failed" translatable="false">
          Failed to send notification to users
     </string>
+
+    <string name="no_internet">No Internet.Please check connection and try again</string>
+
+    <string name="retry">Tap on the image above to retry</string>
 
     <string name="incorrect_pass_email">Incorrect email or password. Please Try Again!</string>
 

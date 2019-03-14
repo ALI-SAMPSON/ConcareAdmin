@@ -61,6 +61,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static io.icode.concareghadmin.application.activities.constants.Constants.ADMIN_REF;
+
 @SuppressWarnings("ALL")
 public class GroupMessageActivity extends AppCompatActivity implements GroupMessageAdapter.OnItemClickListener{
 
@@ -308,7 +310,7 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
         // variable to hold the message to be sent
         final String msg = message;
 
-        adminRef = FirebaseDatabase.getInstance().getReference("Admin").child(admin_uid);
+        adminRef = FirebaseDatabase.getInstance().getReference(ADMIN_REF).child(admin_uid);
         adminRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -576,7 +578,7 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
     // setting the status of the users
     private void status(String status){
 
-        adminRef = FirebaseDatabase.getInstance().getReference(Constants.ADMIN_REF)
+        adminRef = FirebaseDatabase.getInstance().getReference(ADMIN_REF)
         .child(admin_uid);
 
         HashMap<String,Object> hashMap = new HashMap<>();

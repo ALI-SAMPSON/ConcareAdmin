@@ -42,8 +42,10 @@
         android:text="@string/hint_username"
         android:textSize="14sp"
         android:maxLines="1"
+        android:layout_marginTop="3dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"/>
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="10dp"/>
 
     <View
         android:layout_below="@+id/ci_group_icon"

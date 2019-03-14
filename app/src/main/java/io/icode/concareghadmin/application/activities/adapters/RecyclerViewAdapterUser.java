@@ -29,6 +29,8 @@ import io.icode.concareghadmin.application.activities.models.Admin;
 import io.icode.concareghadmin.application.activities.models.Chats;
 import io.icode.concareghadmin.application.activities.models.Users;
 
+import static io.icode.concareghadmin.application.activities.constants.Constants.CHAT_REF;
+
 public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAdapterUser.ViewHolder> {
 
     Admin admin;
@@ -67,6 +69,7 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
 
         // sets username to the text of the textView
         holder.username.setText(users.getUsername());
+        //holder.last_msg.setText(users.getUid());
 
         if(users.getImageUrl() == null){
             // loads the default placeholder into ImageView if ImageUrl is null
@@ -82,7 +85,7 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
         if(isChat){
             lastMessage(users.getUid(),holder.last_msg);
         }
-        else {
+        else{
             holder.last_msg.setVisibility(View.GONE);
         }
 
@@ -156,7 +159,7 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mCtx);
         final String admin_uid = preferences.getString("uid","");
 
-        DatabaseReference lastMsgRef = FirebaseDatabase.getInstance().getReference("Chats");
+        DatabaseReference lastMsgRef = FirebaseDatabase.getInstance().getReference(CHAT_REF);
         lastMsgRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

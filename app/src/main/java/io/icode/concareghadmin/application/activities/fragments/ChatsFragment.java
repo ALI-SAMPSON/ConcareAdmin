@@ -34,6 +34,8 @@ import io.icode.concareghadmin.application.activities.models.Chatlist;
 import io.icode.concareghadmin.application.activities.models.Users;
 import io.icode.concareghadmin.application.activities.notifications.Token;
 
+import static io.icode.concareghadmin.application.activities.constants.Constants.CHAT_LIST_REF;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -98,7 +100,7 @@ public class ChatsFragment extends Fragment {
         // setting adapter
         recyclerView.setAdapter(recyclerViewAdapterUser);
 
-        reference = FirebaseDatabase.getInstance().getReference("Chatlist").child(admin_uid);
+        reference = FirebaseDatabase.getInstance().getReference(CHAT_LIST_REF).child(admin_uid);
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -139,7 +141,7 @@ public class ChatsFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
 
         // db reference to users table
-        reference = FirebaseDatabase.getInstance().getReference("Users");
+        reference = FirebaseDatabase.getInstance().getReference(Constants.USER_REF);
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -192,7 +194,5 @@ public class ChatsFragment extends Fragment {
         });
 
     }
-
-
 
 }

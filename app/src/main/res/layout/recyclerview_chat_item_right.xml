@@ -38,7 +38,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 app:fontFamily="@font/lato"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:background="@drawable/chat_background_right"/>
 
             <TextView

@@ -26,7 +26,7 @@
         android:layout_centerVertical="false"
         android:text="@string/hint_username"
         android:textColor="@color/status_bar_back"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"/>
@@ -41,9 +41,10 @@
         app:fontFamily="@font/lato"
         android:text="@string/hint_username"
         android:textSize="14sp"
-        android:maxLines="1"
+        android:layout_marginTop="3dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"/>
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="10dp"/>
 
     <View
         android:layout_below="@+id/profile_image"

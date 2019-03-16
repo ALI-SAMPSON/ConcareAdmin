@@ -2,10 +2,12 @@ package io.icode.concareghadmin.application.activities.fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +30,7 @@ import java.util.List;
 
 import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.adapters.RecyclerViewAdapterUser;
+import io.icode.concareghadmin.application.activities.chatApp.AddUsersActivity;
 import io.icode.concareghadmin.application.activities.chatApp.ChatActivity;
 import io.icode.concareghadmin.application.activities.constants.Constants;
 import io.icode.concareghadmin.application.activities.models.Chatlist;
@@ -151,7 +154,6 @@ public class ChatsFragment extends Fragment {
                 if(!dataSnapshot.exists()){
                     // sets visibility of recyclerView to gone
                     recyclerView.setVisibility(View.GONE);
-
                     // textView to visible if no recent chat exist
                     tv_no_chats.setVisibility(View.VISIBLE);
                 }
@@ -194,5 +196,6 @@ public class ChatsFragment extends Fragment {
         });
 
     }
+
 
 }

@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="290dp"
         android:gravity="center"
-        android:background="@drawable/login_bg"
+        android:background="@mipmap/login_bg"
         android:orientation="horizontal">
     </LinearLayout>
 

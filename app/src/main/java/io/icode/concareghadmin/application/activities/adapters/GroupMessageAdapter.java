@@ -67,7 +67,7 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
         // checks if imageUrl is empty or not
         if(imageUrl == null){
             // loads the default placeholder into ImageView if ImageUrl is null
-            Glide.with(mCtx).load(R.mipmap.group_icon).into(holder.profile_image);
+            Glide.with(mCtx).load(R.drawable.ic_group).into(holder.profile_image);
         }
         else{
             // loads the image url into ImageView if ImageUrl is  not null

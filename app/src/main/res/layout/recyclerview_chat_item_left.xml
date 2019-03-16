@@ -11,7 +11,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_centerVertical="true"
-        android:background="@mipmap/profile_icon"
+        android:background="@drawable/ic_user_filled"
         android:visibility="gone"
         android:scaleType="centerCrop"/>
 

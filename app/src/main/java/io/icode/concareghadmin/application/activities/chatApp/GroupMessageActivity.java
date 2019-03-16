@@ -248,7 +248,7 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
                 // setting group icon
                 if(group_image_url == null){
                     // loading default icon as image icon
-                    Glide.with(getApplicationContext()).load(R.mipmap.group_icon).into(groupIcon);
+                    Glide.with(getApplicationContext()).load(R.drawable.ic_group_white).into(groupIcon);
                 }
                 else{
                     // loading default icon as image icon

@@ -203,7 +203,7 @@ public class GroupInfoActivity extends AppCompatActivity {
 
                 if(groups.getGroupIcon() == null){
                     // loading default icon as image icon
-                    Glide.with(getApplicationContext()).load(R.mipmap.group_icon).into(ci_group_icon);
+                    Glide.with(getApplicationContext()).load(R.drawable.ic_group_white).into(ci_group_icon);
                 }
                 else{
                     // loading image url as image icon

@@ -22,7 +22,7 @@
                 android:layout_height="300dp"
                 android:layout_marginTop="0dp"
                 app:cardBackgroundColor="@color/colorWhite"
-                app:cardCornerRadius="5dp">
+                app:cardCornerRadius="8dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -90,7 +90,7 @@
                 android:layout_height="300dp"
                 android:layout_marginTop="15dp"
                 app:cardBackgroundColor="@color/colorWhite"
-                app:cardCornerRadius="5dp">
+                app:cardCornerRadius="8dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"

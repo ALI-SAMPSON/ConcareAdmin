@@ -80,7 +80,7 @@ public class RecyclerViewAdapterAddUsers extends RecyclerView.Adapter<RecyclerVi
 
         if(users.getImageUrl() == null){
             // loads the default placeholder into ImageView if ImageUrl is null
-            Glide.with(mCtx).load(R.mipmap.profile_icon).into(holder.profile_pic);
+            Glide.with(mCtx).load(R.drawable.ic_user).into(holder.profile_pic);
         }
         else{
             // loads users image into the ImageView

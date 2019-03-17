@@ -21,17 +21,14 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
 import io.icode.concareghadmin.application.activities.chatApp.GroupMessageActivity;
-import io.icode.concareghadmin.application.activities.chatApp.MessageActivity;
 import io.icode.concareghadmin.application.activities.constants.Constants;
 import io.icode.concareghadmin.application.activities.models.Admin;
 import io.icode.concareghadmin.application.activities.models.Chats;
 import io.icode.concareghadmin.application.activities.models.Groups;
-import io.icode.concareghadmin.application.activities.models.Users;
 
 public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerViewAdapterGroups.ViewHolder> {
 
@@ -58,7 +55,7 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recyclerview_items_groups,parent, false);
+                .inflate(R.layout.recyclerview_item_group,parent, false);
 
         return new ViewHolder(view);
     }

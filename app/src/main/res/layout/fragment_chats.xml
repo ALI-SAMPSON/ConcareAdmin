@@ -9,12 +9,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activities.fragments.ChatsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <!-- recyclerView -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:visibility="gone"/>
+
+   </android.support.v4.widget.NestedScrollView>
 
     <TextView
         android:id="@+id/tv_no_chats"

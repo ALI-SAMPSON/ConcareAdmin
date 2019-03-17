@@ -173,7 +173,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             startActivity(new Intent(SplashScreenActivity.this,ChatActivity.class));
 
             // Add a custom animation ot the activity
-            CustomIntent.customType(SplashScreenActivity.this,"fadein-to-fadeout");
+            CustomIntent.customType(SplashScreenActivity.this,getString(R.string.fadein_to_fadeout));
 
             // finish the activity
             finish();

@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -87,21 +88,31 @@ public class ChatsFragment extends Fragment {
 
         // getting reference to view
         recyclerView = view.findViewById(R.id.recyclerView);
+
         recyclerView.setHasFixedSize(true);
+
+        // setting layout for recyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(applicationContext));
 
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(dividerItemDecoration);
+
         progressBar = view.findViewById(R.id.progressBar);
-
-        // getting the uid of the admin stored in shared preference
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext);
-
-        admin_uid = preferences.getString("uid","");
 
         // initializing recyclerView adapter
         recyclerViewAdapterUser = new RecyclerViewAdapterUser(applicationContext,mUsers,true);
 
         // setting adapter
         recyclerView.setAdapter(recyclerViewAdapterUser);
+
+        // enable smooth scrolling in recycler view
+        recyclerView.setNestedScrollingEnabled(false);
+
+        // getting the uid of the admin stored in shared preference
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext);
+
+        admin_uid = preferences.getString("uid","");
 
         reference = FirebaseDatabase.getInstance().getReference(CHAT_LIST_REF).child(admin_uid);
 

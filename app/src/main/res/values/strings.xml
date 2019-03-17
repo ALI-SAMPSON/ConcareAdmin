@@ -339,4 +339,15 @@
          Are you sure you want to delete this message?
     </string>
 
+    <!-- Intent animation string -->
+    <string name="fadein_to_fadeout">fadein-to-fadeout</string>
+
+    <string name="left_to_right">left-to-right</string>
+
+    <string name="right_to_left">right-to-left</string>
+
+    <string name="up_to_bottom">up-to-bottom</string>
+
+    <string name="bottom_to_up">bottom-to-up</string>
+
 </resources>

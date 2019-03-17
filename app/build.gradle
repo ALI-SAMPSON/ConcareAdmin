@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
-//apply plugin: 'io.fabric'
+
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 28
@@ -46,6 +47,7 @@ dependencies {
     // Picasso library to load images
     implementation 'com.squareup.picasso:picasso:2.71828'
     testImplementation 'junit:junit:4.12'
+    //noinspection GradleCompatible
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     // Support Libraries
@@ -73,11 +75,11 @@ dependencies {
     //implementation 'com.google.android.gms:play-services-ads:17.1.1'
 
     // library to add enable sending of notification using firebase messaging service
-    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.google.firebase:firebase-messaging:17.4.0'
 
-    // material edittext
+    // material editText
     implementation 'com.rengwuxian.materialedittext:library:2.1.4'
 
     // material searchView Library

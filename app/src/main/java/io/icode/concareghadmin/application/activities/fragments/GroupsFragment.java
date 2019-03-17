@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -81,8 +82,15 @@ public class GroupsFragment extends Fragment {
 
         recyclerView.setHasFixedSize(true);
 
+        // enable smooth scrolling in recycler view
+        recyclerView.setNestedScrollingEnabled(false);
+
         // setting layout of the recycler view
         recyclerView.setLayoutManager(new LinearLayoutManager(applicationContext));
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
         adapterGroups = new RecyclerViewAdapterGroups(applicationContext,groupList,false);
 

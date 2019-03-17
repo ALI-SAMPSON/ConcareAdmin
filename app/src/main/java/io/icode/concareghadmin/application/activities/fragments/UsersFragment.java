@@ -11,6 +11,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -88,8 +89,18 @@ public class UsersFragment extends Fragment {
 
         // getting reference to recyclerview
         recyclerView =  view.findViewById(R.id.recyclerView);
+
         recyclerView.setHasFixedSize(true);
+
+        // enable smooth scrolling in recycler view
+        recyclerView.setNestedScrollingEnabled(false);
+
+        // setting layout for recyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
         search_layout =  view.findViewById(R.id.search_layout);
 

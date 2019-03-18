@@ -14,8 +14,8 @@
         android:layout_height="290dp"
         android:gravity="center"
         android:background="@mipmap/login_bg"
-        android:orientation="horizontal">
-    </LinearLayout>
+        android:orientation="horizontal"/>
+
 
 <de.hdodenhof.circleimageview.CircleImageView
     android:id="@+id/app_logo"
@@ -67,11 +67,10 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 android:textColorHint="@color/background_super_dark"
                 app:fontFamily="@font/nunito_semibold"
-                android:textSize="16sp"
                 android:hint="@string/hint_email"
                 android:inputType="textEmailAddress|textAutoComplete|textAutoCorrect"
                 android:drawableStart="@drawable/ic_email_orange"
-                android:backgroundTint="@color/orange_light"
+                android:backgroundTint="@android:color/darker_gray"
                 tools:targetApi="o"
                 android:importantForAutofill="no" />
         </android.support.design.widget.TextInputLayout>
@@ -105,9 +104,8 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 android:hint="@string/hint_password"
                 android:inputType="textPassword"
-                android:textSize="16sp"
                 app:fontFamily="@font/nunito_semibold"
-                android:backgroundTint="@color/orange_light"
+                android:backgroundTint="@android:color/darker_gray"
                 android:importantForAutofill="no"
                 tools:targetApi="o"/>
         </android.support.design.widget.TextInputLayout>
@@ -116,7 +114,7 @@
         <Button
             android:id="@+id/forgot_password"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="10dp"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -127,10 +125,10 @@
             android:layout_below="@+id/password_container"
             android:focusable="false"
             android:clickable="false"
+            android:enabled="true"
             android:text="@string/text_forgot_password"
-            android:textColor="@color/orange_deep"
+            android:textColor="@android:color/darker_gray"
             app:fontFamily="@font/nunito_semibold"
-            android:textSize="16sp"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textStyle="normal"
@@ -158,7 +156,6 @@
     android:textColor="@color/colorWhite"
     android:textAllCaps="false"
     app:fontFamily="@font/nunito_semibold"
-    android:textSize="16sp"
     android:textStyle="normal"
     android:textAlignment="center"
     android:background="@drawable/round_corner_button_login"

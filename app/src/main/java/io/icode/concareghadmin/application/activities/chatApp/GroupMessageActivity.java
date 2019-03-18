@@ -453,12 +453,23 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
 
                         assert chats != null;
 
-                        if(chats.getReceivers().equals(usersids) && chats.getSender().equals(adminId)){
+
+                        if(chats.getReceiver().equals("") && usersids.containsAll(chats.getReceivers()) && chats.getSender().equals(adminId)
+                                || chats.getReceiver().equals("") && !chats.getReceivers().containsAll(usersids) && chats.getSender().equals(adminId)
+                                || chats.getReceiver().equals("") && chats.getReceivers().containsAll(usersids) && chats.getSender().equals(adminId)
+                                //|| chats.getReceiver().equals("") && usersids.equals(chats.getReceivers()) && chats.getSender().equals(adminId)
+                                //|| chats.getReceiver().equals("") && !chats.getReceivers().containsAll(usersids) && chats.getSender().equals(adminId)
+                                //|| chats.getReceiver().equals("") && chats.getReceivers().equals(usersids) && chats.getSender().equals(adminId)
+                                //|| chats.getReceiver().equals("") && !chats.getReceivers().equals(usersids) && chats.getSender().equals(adminId)
+                                //|| chats.getReceivers().containsAll(usersids)&& chats.getSender().equals(adminId)
+                        ){
                             // hides text if there are recent chats
                             tv_no_chats.setVisibility(View.GONE);
                             // add chats to list of chats
                             mChats.add(chats);
                         }
+
+
 
                         // initializing the messageAdapter and setting adapter to recyclerView
                         groupMessageAdapter = new GroupMessageAdapter(GroupMessageActivity.this,mChats,imageUrl);

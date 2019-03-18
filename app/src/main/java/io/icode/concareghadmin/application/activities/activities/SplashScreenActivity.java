@@ -60,7 +60,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         checkPlayServices();
 
         // getting reference to the first Top progressBar
-        progressBar = findViewById(R.id.progressBar);
+        /*progressBar = findViewById(R.id.progressBar);
 
         // changes color of progressBar to you desired color
         progressBar.getIndeterminateDrawable().setColorFilter(0xff676767,PorterDuff.Mode.MULTIPLY);
@@ -75,6 +75,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         // displays the progressBar
         progressBar1.setVisibility(View.VISIBLE);
+        */
 
         //method call to update device token
         updateToken(FirebaseInstanceId.getInstance().getToken());
@@ -198,7 +199,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                     startActivity(new Intent(SplashScreenActivity.this, AdminLoginActivity.class));
 
                     // Add a custom animation ot the activity
-                    CustomIntent.customType(SplashScreenActivity.this,"fadein-to-fadeout");
+                    CustomIntent.customType(SplashScreenActivity.this,getString(R.string.fadein_to_fadeout));
 
                     // finishes the activity
                     finish(); // this prevents the app from going back to the splash screen
@@ -222,7 +223,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         TextView app_title = findViewById(R.id.splash_screen_text);
 
         //add an animation using the YoYo Library
-        YoYo.with(Techniques.FlipInX)
+        YoYo.with(Techniques.ZoomOut)
                 .duration(1000)
                 .repeat(1)
                 .playOn(app_title);
@@ -232,7 +233,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         TextView watermark = findViewById(R.id.water_mark);
 
         //add an animation using the YoYo Library
-        YoYo.with(Techniques.BounceInUp)
+        YoYo.with(Techniques.FadeInUp)
                 .duration(1000)
                 .repeat(1)
                 .playOn(watermark);
@@ -244,6 +245,6 @@ public class SplashScreenActivity extends AppCompatActivity {
     public void finish() {
         super.finish();
         // Add a custom animation ot the activity
-        CustomIntent.customType(SplashScreenActivity.this,"fadein-to-fadeout");
+        CustomIntent.customType(SplashScreenActivity.this,getString(R.string.fadein_to_fadeout));
     }
 }

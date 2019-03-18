@@ -76,7 +76,7 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
 
         // checks if chat is seen by user and sets the appropriate text
         if(position == mChats.size()-1){
-            if(chats.isSeen()){
+            if(chats.isIsseen()){
                 holder.txt_seen.setText(R.string.text_seen);
             }
             else{

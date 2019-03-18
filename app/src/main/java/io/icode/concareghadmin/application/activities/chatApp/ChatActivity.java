@@ -262,7 +262,7 @@ public class ChatActivity extends AppCompatActivity {
                     for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                         Chats chats = snapshot.getValue(Chats.class);
                         assert chats != null;
-                        if(chats.getReceiver().equals(admin.getAdminUid()) && !chats.isSeen()){
+                        if(chats.getReceiver().equals(admin.getAdminUid()) && !chats.isIsseen()){
                             unreadMessages++;
                         }
                     }
@@ -410,7 +410,7 @@ public class ChatActivity extends AppCompatActivity {
                     startActivity(intent);
 
                     // adds custom animation
-                    CustomIntent.customType(ChatActivity.this, "left-to-right");
+                    CustomIntent.customType(ChatActivity.this, getString(R.string.left_to_right));
 
                 }
 
@@ -432,7 +432,7 @@ public class ChatActivity extends AppCompatActivity {
         builder.setTitle(getString(R.string.text_sign_out));
         builder.setMessage(getString(R.string.sign_out_msg));
 
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.text_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -454,7 +454,7 @@ public class ChatActivity extends AppCompatActivity {
                         // send admin to login activity
                         startActivity(new Intent(ChatActivity.this, AdminLoginActivity.class)
                                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
-                        CustomIntent.customType(ChatActivity.this, "fadein-to-fadeout");
+                        CustomIntent.customType(ChatActivity.this, getString(R.string.fadein_to_fadeout));
 
                         finish();
 
@@ -464,7 +464,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.text_no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -541,7 +541,7 @@ public class ChatActivity extends AppCompatActivity {
             progressDialog = new ProgressDialog(this, ProgressDialog.THEME_HOLO_DARK);
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialog.setTitle("");
-            progressDialog.setMessage("signing out...");
+            progressDialog.setMessage(getString(R.string.signing_out_text));
         }
         //else do this
         else{
@@ -549,7 +549,7 @@ public class ChatActivity extends AppCompatActivity {
             progressDialog = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialog.setTitle("");
-            progressDialog.setMessage("signing out...");
+            progressDialog.setMessage(getString(R.string.signing_out_text));
         }
 
     }

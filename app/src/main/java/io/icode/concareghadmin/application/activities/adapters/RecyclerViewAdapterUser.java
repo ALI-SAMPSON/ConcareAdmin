@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,7 +83,7 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
 
         // calling the lastMessage method
         if(isChat){
-            lastMessage(users.getUid(),holder.last_msg);
+            lastMessage(users.getUid(),holder.last_msg, holder.lastMessageLoadingBar);
         }
         else{
             holder.last_msg.setVisibility(View.GONE);
@@ -136,6 +137,8 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
         CircleImageView status_online;
         CircleImageView status_offline;
 
+        ProgressBar lastMessageLoadingBar;
+
         public ViewHolder(View itemView) {
             super(itemView);
 
@@ -146,11 +149,15 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
             status_online = itemView.findViewById(R.id.status_online);
             status_offline = itemView.findViewById(R.id.status_offline);
             last_msg = itemView.findViewById(R.id.last_msg);
+            lastMessageLoadingBar = itemView.findViewById(R.id.lastMessageLoadingBar);
         }
     }
 
     // checks for last message
-    private void lastMessage(final String user_id, final TextView last_msg){
+    private void lastMessage(final String user_id, final TextView last_msg, final ProgressBar progressBar){
+
+        // display progressBar
+        progressBar.setVisibility(View.VISIBLE);
 
         theLastMessage = "default";
 
@@ -175,7 +182,6 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
                         theLastMessage = chats.getMessage();
                     }
 
-
                 }
 
                 // switch case for theLastMessage
@@ -190,12 +196,21 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
                 }
 
                 theLastMessage = "default";
+
+                // display progressBar
+                progressBar.setVisibility(View.GONE);
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+
                 // display error message if one should occur
                 Toast.makeText(mCtx, databaseError.getMessage(),Toast.LENGTH_LONG).show();
+
+                // display progressBar
+                progressBar.setVisibility(View.GONE);
+
             }
         });
     }

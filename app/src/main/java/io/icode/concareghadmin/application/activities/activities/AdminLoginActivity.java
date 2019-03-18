@@ -41,6 +41,8 @@ import io.icode.concareghadmin.application.activities.chatApp.ChatActivity;
 import io.icode.concareghadmin.application.activities.models.Admin;
 import maes.tech.intentanim.CustomIntent;
 
+import static io.icode.concareghadmin.application.activities.constants.Constants.ADMIN_REF;
+
 public class AdminLoginActivity extends AppCompatActivity {
 
     // variable to store Decryption algorithm name
@@ -79,9 +81,11 @@ public class AdminLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_login);
 
+        relativeLayout = findViewById(R.id.relativeLayout);
+
         admin = new Admin();
 
-        adminRef = FirebaseDatabase.getInstance().getReference("Admin");
+        adminRef = FirebaseDatabase.getInstance().getReference(ADMIN_REF);
 
         app_logo = findViewById(R.id.app_logo);
 
@@ -95,8 +99,6 @@ public class AdminLoginActivity extends AppCompatActivity {
         forgot_password = findViewById(R.id.forgot_password);
         buttonLogin = findViewById(R.id.buttonLogin);
         //buttonSignUpLink = findViewById(R.id.buttonSignUpLink);
-
-        relativeLayout = findViewById(R.id.relativeLayout);
 
         progressBar = findViewById(R.id.progressBar);
 
@@ -252,7 +254,7 @@ public class AdminLoginActivity extends AppCompatActivity {
                        startActivity(new Intent(AdminLoginActivity.this,ChatActivity.class));
 
                        // Add a custom animation ot the activity
-                       CustomIntent.customType(AdminLoginActivity.this,"fadein-to-fadeout");
+                       CustomIntent.customType(AdminLoginActivity.this,getString(R.string.fadein_to_fadeout));
 
                        // finishes this activity(prevents user from going back to this activity when back button is pressed)
                        finish();
@@ -262,8 +264,8 @@ public class AdminLoginActivity extends AppCompatActivity {
 
                        progressBar.setVisibility(View.GONE);
                        // display a message if there is an error
-                       //Snackbar.make(relativeLayout,"Incorrect Email or password. Please Try Again",Snackbar.LENGTH_LONG).show();
-                       Toast.makeText(AdminLoginActivity.this,R.string.incorrect_pass_email,Toast.LENGTH_LONG).show();
+                       Snackbar.make(relativeLayout,getString(R.string.incorrect_pass_email),Snackbar.LENGTH_LONG).show();
+                       //Toast.makeText(AdminLoginActivity.this,R.string.incorrect_pass_email,Toast.LENGTH_LONG).show();
 
                    }
 
@@ -326,7 +328,7 @@ public class AdminLoginActivity extends AppCompatActivity {
     public void onForgotPasswordClick(View view) {
 
         // shakes the button when clicked
-        YoYo.with(Techniques.FlipOutX).playOn(forgot_password);
+        /*YoYo.with(Techniques.FlipOutX).playOn(forgot_password);
 
         // start the ResetPassword Activity
         startActivity(new Intent(AdminLoginActivity.this,ResetPasswordActivity.class));
@@ -336,13 +338,18 @@ public class AdminLoginActivity extends AppCompatActivity {
 
         // finish the activity
         finish();
+        */
+
+        Snackbar.make(view,getString(R.string.reset_pass_msg),Snackbar.LENGTH_LONG).show();
+
     }
+
 
     @Override
     public void finish() {
         super.finish();
         // Add a custom animation ot the activity
-        CustomIntent.customType(AdminLoginActivity.this,"fadein-to-fadeout");
+        CustomIntent.customType(AdminLoginActivity.this,getString(R.string.fadein_to_fadeout));
     }
 
     @Override

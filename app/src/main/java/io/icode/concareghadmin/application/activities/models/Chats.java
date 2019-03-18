@@ -59,12 +59,12 @@ public class Chats {
         this.message = message;
     }
 
-    public boolean isSeen() {
+    public boolean isIsseen() {
         return isseen;
     }
 
-    public void setSeen(boolean isseen) {
-        isseen = isseen;
+    public void setIsseen(boolean isseen) {
+        this.isseen = isseen;
     }
 
     //getters and setters to store && retrieve the unique key of each message

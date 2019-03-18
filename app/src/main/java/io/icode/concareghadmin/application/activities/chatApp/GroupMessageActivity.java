@@ -456,7 +456,7 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
 
                         if(chats.getReceiver().equals("") && usersids.containsAll(chats.getReceivers()) && chats.getSender().equals(adminId)
                                 || chats.getReceiver().equals("") && !chats.getReceivers().containsAll(usersids) && chats.getSender().equals(adminId)
-                                || chats.getReceiver().equals("") && chats.getReceivers().containsAll(usersids) && chats.getSender().equals(adminId)
+                                //|| chats.getReceiver().equals("") && chats.getReceivers().containsAll(usersids) && chats.getSender().equals(adminId)
                                 //|| chats.getReceiver().equals("") && usersids.equals(chats.getReceivers()) && chats.getSender().equals(adminId)
                                 //|| chats.getReceiver().equals("") && !chats.getReceivers().containsAll(usersids) && chats.getSender().equals(adminId)
                                 //|| chats.getReceiver().equals("") && chats.getReceivers().equals(usersids) && chats.getSender().equals(adminId)

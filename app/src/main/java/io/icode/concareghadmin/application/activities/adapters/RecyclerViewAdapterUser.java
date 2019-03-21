@@ -74,8 +74,12 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
         if(users.getImageUrl() == null){
             // loads the default placeholder into ImageView if ImageUrl is null
             Glide.with(mCtx).load(R.drawable.ic_user_filled).into(holder.profile_pic);
+
         }
         else{
+
+            //holder.profile_pic.setBackground(null);
+
             // loads users image into the ImageView
             Glide.with(mCtx).load(users.getImageUrl()).into(holder.profile_pic);
         }
@@ -180,6 +184,12 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
                             || chats.getReceiver().equals("") && chats.getReceivers().contains(user_id)
                             && chats.getSender().equals(admin_uid)){
                         theLastMessage = chats.getMessage();
+
+                        /*SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(mCtx).edit();
+                        editor.putString("last_msg",chats.getMessage());
+                        editor.apply();
+                        */
+
                     }
 
                 }
@@ -191,7 +201,15 @@ public class RecyclerViewAdapterUser extends RecyclerView.Adapter<RecyclerViewAd
                         break;
 
                         default:
+
                             last_msg.setText(theLastMessage);
+
+                            /*SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mCtx);
+                            theLastMessage = prefs.getString("last_msg",null);
+
+                            last_msg.setText(theLastMessage);
+                            */
+
                             break;
                 }
 

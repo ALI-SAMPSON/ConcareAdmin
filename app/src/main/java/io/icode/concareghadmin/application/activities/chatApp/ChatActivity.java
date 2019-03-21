@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -67,7 +68,7 @@ public class ChatActivity extends AppCompatActivity {
 
     RelativeLayout internetConnection;
 
-    LinearLayout linearLayout;
+    ConstraintLayout constraintLayout;
 
     TextView tv_Retry;
 
@@ -113,7 +114,7 @@ public class ChatActivity extends AppCompatActivity {
 
         internetConnection = findViewById(R.id.no_internet_connection);
 
-        linearLayout = findViewById(R.id.linearLayout);
+        constraintLayout = findViewById(R.id.constraintLayout);
 
         tv_Retry = findViewById(R.id.tv_Retry);
 
@@ -393,7 +394,7 @@ public class ChatActivity extends AppCompatActivity {
                 if(dataSnapshot.exists()){
 
                     // display hint if group already exist
-                    Snackbar.make(linearLayout,groupName
+                    Snackbar.make(constraintLayout,groupName
                             + " group already exist . Please create a group with a different name."
                             + " E.g " + groupName + " 01 , 02...",DURATION_LONG).show();
 

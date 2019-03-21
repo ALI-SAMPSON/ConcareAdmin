@@ -11,7 +11,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +62,9 @@ public class ChatsFragment extends Fragment {
 
     String admin_uid;
 
-    DatabaseReference reference;
+    DatabaseReference userRef;
+
+    DatabaseReference chatListRef;
 
     ProgressBar progressBar;
 
@@ -92,7 +96,9 @@ public class ChatsFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
 
         // setting layout for recyclerView
-        recyclerView.setLayoutManager(new LinearLayoutManager(applicationContext));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(applicationContext);
+
+        recyclerView.setLayoutManager(linearLayoutManager);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 DividerItemDecoration.VERTICAL);
@@ -114,9 +120,9 @@ public class ChatsFragment extends Fragment {
 
         admin_uid = preferences.getString("uid","");
 
-        reference = FirebaseDatabase.getInstance().getReference(CHAT_LIST_REF).child(admin_uid);
+        chatListRef = FirebaseDatabase.getInstance().getReference(CHAT_LIST_REF).child(admin_uid);
 
-        reference.addValueEventListener(new ValueEventListener() {
+        chatListRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 usersList.clear();
@@ -155,9 +161,9 @@ public class ChatsFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
 
         // db reference to users table
-        reference = FirebaseDatabase.getInstance().getReference(Constants.USER_REF);
+        userRef = FirebaseDatabase.getInstance().getReference(Constants.USER_REF);
 
-        reference.addValueEventListener(new ValueEventListener() {
+        userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 

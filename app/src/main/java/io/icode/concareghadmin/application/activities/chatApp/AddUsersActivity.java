@@ -221,7 +221,7 @@ public class AddUsersActivity extends AppCompatActivity {
         SimpleDateFormat currentDateFormat = new  SimpleDateFormat("MMM dd,yyyy");
         currentDate = currentDateFormat.format(calendarDate.getTime());
 
-        // get the current time
+        // gets the current time
         Calendar calendarTime = Calendar.getInstance();
         SimpleDateFormat currentTimeFormat = new SimpleDateFormat("hh:mm a");
         currentTime = currentTimeFormat.format(calendarTime.getTime());

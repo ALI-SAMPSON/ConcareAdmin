@@ -59,7 +59,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity android:name=".activities.activities.ResetPasswordActivity" />
-        <activity android:name=".activities.chatApp.MessageActivity" />
+        <activity android:name=".activities.chatApp.MessageActivity"
+            android:windowSoftInputMode="stateHidden"
+            android:configChanges="screenLayout|screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
+        </activity>
 
         <!-- service to handle the sending of notifications -->
         <service
@@ -80,6 +85,7 @@
         </service>
 
         <activity android:name=".activities.chatApp.GroupMessageActivity"
+            android:windowSoftInputMode="stateHidden"
             android:configChanges="screenLayout|screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">

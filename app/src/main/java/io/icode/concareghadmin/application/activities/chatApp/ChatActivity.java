@@ -230,7 +230,8 @@ public class ChatActivity extends AppCompatActivity {
 
                         //text if users's imageUrl is equal to default
                         if (admin.getImageUrl() == null) {
-                            profile_image.setImageResource(R.drawable.app_logo);
+                            //profile_image.setImageResource(R.drawable.app_logo);
+                            Glide.with(ChatActivity.this).load(R.drawable.app_logo).into(profile_image);
                         } else {
                             // load users's Image Url
                             Glide.with(ChatActivity.this).load(admin.getImageUrl()).into(profile_image);

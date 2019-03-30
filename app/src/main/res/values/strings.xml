@@ -218,7 +218,13 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
 
-    <string name="type_message" translatable="false">Type a message...</string>
+    <string name="type_message" translatable="false">Type a message</string>
+
+    <string name="no_text_message" translatable="false">Type a message to send</string>
+
+    <string name="text_msg_deleted" translatable="false">Message deleted</string>
+
+    <string name="deleted_msg_alert" translatable="false">please long click on a message to delete </string>
 
     <string name="text_reproductive_health" translatable="false">
 

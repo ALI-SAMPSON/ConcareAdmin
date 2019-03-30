@@ -84,6 +84,15 @@ public class ChatsFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_chats,container,false);
 
+        // method call to initialize views
+        init();
+
+        return view;
+    }
+
+    // method to initialize views
+    private void init(){
+
         tv_no_chats = view.findViewById(R.id.tv_no_chats);
 
         usersList = new ArrayList<>();
@@ -97,6 +106,7 @@ public class ChatsFragment extends Fragment {
 
         // setting layout for recyclerView
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(applicationContext);
+        linearLayoutManager.setStackFromEnd(true);
 
         recyclerView.setLayoutManager(linearLayoutManager);
 
@@ -120,6 +130,17 @@ public class ChatsFragment extends Fragment {
 
         admin_uid = preferences.getString("uid","");
 
+        addUsersToChatList();
+
+        // method call to update token
+        updateToken(FirebaseInstanceId.getInstance().getToken());
+
+        //addUsersToChatList();
+
+    }
+
+    private void addUsersToChatList(){
+
         chatListRef = FirebaseDatabase.getInstance().getReference(CHAT_LIST_REF).child(admin_uid);
 
         chatListRef.addValueEventListener(new ValueEventListener() {
@@ -141,10 +162,6 @@ public class ChatsFragment extends Fragment {
             }
         });
 
-        // method call to update token
-        updateToken(FirebaseInstanceId.getInstance().getToken());
-
-        return view;
     }
 
     // Update currentAdmin's token
@@ -191,7 +208,6 @@ public class ChatsFragment extends Fragment {
                         }
                     }
                 }
-
 
                 // notifies adapter of any changes
                 recyclerViewAdapterUser.notifyDataSetChanged();

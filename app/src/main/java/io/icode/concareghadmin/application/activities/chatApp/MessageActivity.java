@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -58,8 +59,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static io.icode.concareghadmin.application.activities.constants.Constants.ADMIN_REF;
+import static io.icode.concareghadmin.application.activities.constants.Constants.client_url;
+
 @SuppressWarnings("ALL")
-public class MessageActivity extends AppCompatActivity implements MessageAdapter.OnItemClickListener {
+public class MessageActivity extends AppCompatActivity implements View.OnClickListener, MessageAdapter.OnItemClickListener {
 
     RelativeLayout relativeLayout;
 
@@ -83,7 +87,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
     // editText and Button to send Message
     EditText msg_to_send;
-    ImageButton btn_send;
+    ImageButton img_emoji,btn_send;
 
     Intent intent;
 
@@ -131,7 +135,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         });
 
         // creates APIService using Google API from the APIService Class
-        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
+        apiService = Client.getClient(client_url).create(APIService.class);
 
         relativeLayout = findViewById(R.id.relativeLayout);
 
@@ -139,6 +143,10 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         username =  findViewById(R.id.username);
         msg_to_send =  findViewById(R.id.editTextMessage);
         btn_send =  findViewById(R.id.btn_send);
+        img_emoji =  findViewById(R.id.img_emoji);
+
+        btn_send.setOnClickListener(this);
+        img_emoji.setOnClickListener(this);
 
         tv_no_chats = findViewById(R.id.tv_no_chats);
 
@@ -178,8 +186,10 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         // setting message on progressDialog
         progressDialog.setMessage("Deleting message...");
 
+        // call
         getUserDetails();
 
+        // call
         seenMessage(user_id);
 
         // method call to update token
@@ -225,26 +235,46 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
     }
 
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()){
+            case R.id.img_emoji:{
+
+                Toast.makeText(MessageActivity.this,
+                        "Hi, there!",Toast.LENGTH_LONG).show();
+
+                break;
+            }
+
+            case R.id.btn_send:{
+                // sets notify to true
+                notify = true;
+
+                String message  = msg_to_send.getText().toString();
+
+                // checks if the edit field is not message before sending message
+                if(!message.equals("")){
+                    //btn_send.setVisibility(View.VISIBLE);
+                    // call to method to sendMessage
+                    sendMessage(admin_uid,user_id,message);
+                }
+                else{
+                    Toast.makeText(MessageActivity.this,
+                            getString(R.string.no_text_message),Toast.LENGTH_LONG).show();
+                }
+                // clear the field after message is sent
+                msg_to_send.setText("");
+
+                break;
+            }
+        }
+
+    }
+
     // ImageView OnClickListener to send Message
     public void btnSend(View view) {
 
-        // sets notify to true
-        notify = true;
-
-        String message  = msg_to_send.getText().toString();
-
-        // checks if the edit field is not message before sending message
-        if(!message.equals("")){
-            //btn_send.setVisibility(View.VISIBLE);
-            // call to method to sendMessage
-            sendMessage(admin_uid,user_id,message);
-        }
-        else{
-            Toast.makeText(MessageActivity.this,
-                    "Oops, No message to send",Toast.LENGTH_LONG).show();
-        }
-        // clear the field after message is sent
-        msg_to_send.setText("");
     }
 
     // sends message to user by taking in these three parameters
@@ -284,7 +314,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         // variable to hold the message to be sent
         final String msg = message;
 
-        adminRef = FirebaseDatabase.getInstance().getReference("Admin").child(admin_uid);
+        adminRef = FirebaseDatabase.getInstance().getReference(ADMIN_REF).child(admin_uid);
 
         adminRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -476,7 +506,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
 
     @Override
     public void onItemClick(int position) {
-        Toast.makeText(this," please long click on a message to delete ",Toast.LENGTH_LONG).show();
+        Toast.makeText(this,getString(R.string.deleted_msg_alert),Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -510,7 +540,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
-                                    Toast.makeText(MessageActivity.this," Message deleted ",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(MessageActivity.this,getString(R.string.text_msg_deleted),Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -554,7 +584,7 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
     // setting the status of the users
     private void status(String status){
 
-        adminRef = FirebaseDatabase.getInstance().getReference(Constants.ADMIN_REF)
+        adminRef = FirebaseDatabase.getInstance().getReference(ADMIN_REF)
         .child(admin_uid);
 
         HashMap<String,Object> hashMap = new HashMap<>();
@@ -606,4 +636,5 @@ public class MessageActivity extends AppCompatActivity implements MessageAdapter
         }
 
     }
+
 }

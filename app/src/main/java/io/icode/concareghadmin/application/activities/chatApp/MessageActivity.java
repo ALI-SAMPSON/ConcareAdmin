@@ -266,6 +266,7 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
             }
 
             case R.id.btn_send:{
+
                 // sets notify to true
                 notify = true;
 
@@ -278,6 +279,7 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
                     sendMessage(admin_uid,user_id,message);
                 }
                 else{
+
                     Toast.makeText(MessageActivity.this,
                             getString(R.string.no_text_message),Toast.LENGTH_LONG).show();
                 }

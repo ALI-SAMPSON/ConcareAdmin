@@ -223,9 +223,8 @@ public class SplashScreenActivity extends AppCompatActivity {
         TextView app_title = findViewById(R.id.splash_screen_text);
 
         //add an animation using the YoYo Library
-        YoYo.with(Techniques.ZoomOut)
+        YoYo.with(Techniques.SlideInLeft)
                 .duration(1000)
-                .repeat(1)
                 .playOn(app_title);
 
 

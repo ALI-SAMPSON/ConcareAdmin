@@ -145,6 +145,7 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
         btn_send =  findViewById(R.id.btn_send);
         img_emoji =  findViewById(R.id.img_emoji);
 
+        // setting on click listener on image buttons
         btn_send.setOnClickListener(this);
         img_emoji.setOnClickListener(this);
 
@@ -242,7 +243,7 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.img_emoji:{
 
                 Toast.makeText(MessageActivity.this,
-                        "Hi, there!",Toast.LENGTH_LONG).show();
+                        getString(R.string.text_hi),Toast.LENGTH_LONG).show();
 
                 break;
             }
@@ -269,11 +270,6 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             }
         }
-
-    }
-
-    // ImageView OnClickListener to send Message
-    public void btnSend(View view) {
 
     }
 

@@ -73,7 +73,8 @@
         android:layout_below="@+id/bar_layout"
         android:layout_above="@+id/button_send_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scrollbars="vertical">
     </android.support.v7.widget.RecyclerView>
 
     <ProgressBar
@@ -180,8 +181,7 @@
                 android:padding="7dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_send"
-                android:background="@drawable/circular_button"
-                android:onClick="btnSend"/>
+                android:background="@drawable/circular_button"/>
         </LinearLayout>
 
 </RelativeLayout>

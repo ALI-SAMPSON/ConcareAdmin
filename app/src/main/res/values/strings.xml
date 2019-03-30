@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">CONCARE GH - ADMIN</string>
     <string name="application_name" translatable="false">CONCARE GH</string>
+    <string name="admin_name" translatable="false">CONCARE GH:</string>
     <string name="hint_email" translatable="false">Email</string>
     <string name="hint_password" translatable="false">Password</string>
     <string name="hint_location" translatable="false">Location/Address</string>
@@ -223,6 +224,8 @@
     <string name="no_text_message" translatable="false">Type a message to send</string>
 
     <string name="text_msg_deleted" translatable="false">Message deleted</string>
+
+    <string name="text_hi" translatable="false">Hi, there!</string>
 
     <string name="deleted_msg_alert" translatable="false">please long click on a message to delete </string>
 

@@ -11,18 +11,21 @@ public class Chats {
     private String receiver;
     private List<String> receivers;
     private String message;
+    private String timeStamp;
     private boolean isseen;
+
 
     // unique to identify message to be deleted
     private String key;
 
     public Chats(){}
 
-    public Chats(String sender, String receiver, List<String> receivers, String message, boolean isseen) {
+    public Chats(String sender, String receiver, List<String> receivers, String message,String timeStamp, boolean isseen) {
         this.sender = sender;
         this.receiver = receiver;
         this.receivers = receivers;
         this.message = message;
+        this.timeStamp = timeStamp;
         this.isseen = isseen;
         //this.receivers = new ArrayList<>();
     }
@@ -57,6 +60,14 @@ public class Chats {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     public boolean isIsseen() {

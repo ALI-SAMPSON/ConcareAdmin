@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.icode.concareghadmin.application.R;
+import io.icode.concareghadmin.application.activities.adapters.RecyclerViewAdapterChat;
 import io.icode.concareghadmin.application.activities.adapters.RecyclerViewAdapterUser;
 import io.icode.concareghadmin.application.activities.chatApp.AddUsersActivity;
 import io.icode.concareghadmin.application.activities.chatApp.ChatActivity;
@@ -54,7 +55,7 @@ public class ChatsFragment extends Fragment {
 
     private RecyclerView recyclerView;
 
-    private RecyclerViewAdapterUser recyclerViewAdapterUser;
+    private RecyclerViewAdapterChat recyclerViewAdapterChat;
 
     private List<Chatlist> usersList;
 
@@ -106,7 +107,6 @@ public class ChatsFragment extends Fragment {
 
         // setting layout for recyclerView
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(applicationContext);
-        linearLayoutManager.setStackFromEnd(true);
 
         recyclerView.setLayoutManager(linearLayoutManager);
 
@@ -117,10 +117,10 @@ public class ChatsFragment extends Fragment {
         progressBar = view.findViewById(R.id.progressBar);
 
         // initializing recyclerView adapter
-        recyclerViewAdapterUser = new RecyclerViewAdapterUser(applicationContext,mUsers,true);
+        recyclerViewAdapterChat = new RecyclerViewAdapterChat(applicationContext,mUsers,true);
 
         // setting adapter
-        recyclerView.setAdapter(recyclerViewAdapterUser);
+        recyclerView.setAdapter(recyclerViewAdapterChat);
 
         // enable smooth scrolling in recycler view
         recyclerView.setNestedScrollingEnabled(false);
@@ -210,7 +210,7 @@ public class ChatsFragment extends Fragment {
                 }
 
                 // notifies adapter of any changes
-                recyclerViewAdapterUser.notifyDataSetChanged();
+                recyclerViewAdapterChat.notifyDataSetChanged();
 
                 // dismiss the progressBar
                 progressBar.setVisibility(View.GONE);

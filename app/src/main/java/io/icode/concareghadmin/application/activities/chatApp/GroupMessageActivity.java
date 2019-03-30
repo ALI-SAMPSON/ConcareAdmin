@@ -62,9 +62,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static io.icode.concareghadmin.application.activities.constants.Constants.ADMIN_REF;
+import static io.icode.concareghadmin.application.activities.constants.Constants.client_url;
 
 @SuppressWarnings("ALL")
-public class GroupMessageActivity extends AppCompatActivity implements GroupMessageAdapter.OnItemClickListener{
+public class GroupMessageActivity extends AppCompatActivity implements View.OnClickListener,
+        GroupMessageAdapter.OnItemClickListener{
 
     RelativeLayout relativeLayout;
 
@@ -98,7 +100,7 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
 
     // editText and Button to send Message
     EditText msg_to_send;
-    ImageButton btn_send;
+    ImageButton img_emoji,btn_send;
 
     // variable for MessageAdapter class
     GroupMessageAdapter groupMessageAdapter;
@@ -139,12 +141,16 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
         });
 
         // creates APIService using Google API from the APIService Class
-        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
+        apiService = Client.getClient(client_url).create(APIService.class);
 
         groupName =  findViewById(R.id.tv_group_name);
         groupIcon =  findViewById(R.id.ci_group_icon);
         msg_to_send =  findViewById(R.id.editTextMessage);
         btn_send =  findViewById(R.id.btn_send);
+        img_emoji =  findViewById(R.id.img_emoji);
+
+        btn_send.setOnClickListener(this);
+        img_emoji.setOnClickListener(this);
 
         tv_no_chats = findViewById(R.id.tv_no_chats);
 
@@ -221,7 +227,7 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
                 intent.putStringArrayListExtra("_usersIds",(ArrayList<String>)usersIds);
                 startActivity(intent);
 
-                CustomIntent.customType(GroupMessageActivity.this, "fadein-to-fadeout");
+                CustomIntent.customType(GroupMessageActivity.this, getString(R.string.fadein_to_fadeout));
 
                 break;
 
@@ -256,7 +262,6 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
                 }
 
                 // method call
-                //readGroupMessages(admin_uid,usersIds, groups.getGroupIcon());
 
                 readGroupMessages(admin_uid,usersIds, groups.getGroupIcon());
             }
@@ -270,25 +275,42 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
 
     }
 
-    public void btnSend(View view) {
+    @Override
+    public void onClick(View v) {
 
-        // sets notify to true
-        notify = true;
+        switch (v.getId()){
 
-        String message  = msg_to_send.getText().toString();
+            case R.id.img_emoji:{
 
-        // checks if the edit field is not message before sending message
-        if(!message.equals("")){
+                Toast.makeText(GroupMessageActivity.this,
+                        getString(R.string.text_hi),Toast.LENGTH_LONG).show();
 
-            // call to method to sendMessage
-            sendMessage(admin_uid,usersIds,message);
+                break;
+            }
+
+            case R.id.btn_send:{
+                // sets notify to true
+                notify = true;
+
+                String message  = msg_to_send.getText().toString();
+
+                // checks if the edit field is not message before sending message
+                if(!message.equals("")){
+
+                    // call to method to sendMessage
+                    sendMessage(admin_uid,usersIds,message);
+                }
+                else{
+                    Toast.makeText(GroupMessageActivity.this,
+                            getString(R.string.no_text_message),Toast.LENGTH_LONG).show();
+                }
+                // clear the field after message is sent
+                msg_to_send.setText("");
+
+                break;
+            }
         }
-        else{
-            Toast.makeText(GroupMessageActivity.this,
-                    "Oops, No message to send",Toast.LENGTH_LONG).show();
-        }
-        // clear the field after message is sent
-        msg_to_send.setText("");
+
     }
 
     // sends message to user by taking in these three parameters
@@ -510,7 +532,7 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
 
     @Override
     public void onItemClick(int position) {
-        Toast.makeText(this," please long click on a message to delete ",Toast.LENGTH_LONG).show();
+        Toast.makeText(this,getString(R.string.deleted_msg_alert),Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -544,7 +566,7 @@ public class GroupMessageActivity extends AppCompatActivity implements GroupMess
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
-                                    Toast.makeText(GroupMessageActivity.this," Message deleted ",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(GroupMessageActivity.this,getString(R.string.text_msg_deleted),Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }).addOnFailureListener(new OnFailureListener() {

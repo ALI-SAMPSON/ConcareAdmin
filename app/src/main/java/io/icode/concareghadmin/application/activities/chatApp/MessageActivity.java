@@ -36,7 +36,9 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
@@ -112,6 +114,9 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
     APIService apiService;
 
     boolean notify = false;
+
+    // variable to store the current time
+    String currentTime;
 
     // loading bar to load messages
     ProgressBar progressBar;
@@ -193,8 +198,20 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
         // call
         seenMessage(user_id);
 
+        // mehtod call to get current time
+        getCurrentTime();
+
         // method call to update token
         updateToken(FirebaseInstanceId.getInstance().getToken());
+
+    }
+
+    // gets the current time
+    private void getCurrentTime(){
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
+        currentTime = timeFormat.format(calendar.getTime());
 
     }
 
@@ -283,6 +300,7 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
         hashMap.put("receiver", receiver);
         hashMap.put("receivers", new ArrayList<String>(){{add(receiver);}});
         hashMap.put("message",message);
+        hashMap.put("timeStamp",currentTime);
         hashMap.put("isseen", false);
 
         messageRef.child(Constants.CHAT_REF).push().setValue(hashMap);
@@ -444,6 +462,7 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
                     // clears the chats to avoid reading duplicate message
                     mChats.clear();
                     for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+
                         Chats chats = snapshot.getValue(Chats.class);
                         // gets the unique keys of the chats
                         chats.setKey(snapshot.getKey());

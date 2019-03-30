@@ -64,6 +64,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         holder.show_message.setText(chats.getMessage());
 
+        if(chats.getTimeStamp() != null){
+            holder.timeStamp.setVisibility(View.VISIBLE);
+            holder.timeStamp.setText(chats.getTimeStamp());
+        }
+        else{
+            holder.timeStamp.setVisibility(View.GONE);
+            holder.timeStamp.setText(null);
+        }
+
         // checks if imageUrl is empty or not
         if(imageUrl == null){
             // loads the default placeholder into ImageView if ImageUrl is null
@@ -98,7 +107,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
         CircleImageView profile_image;
-        TextView show_message;
+        TextView show_message,timeStamp;
 
         // Message Seen textView
         TextView txt_seen;
@@ -107,6 +116,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             super(itemView);
 
             show_message = itemView.findViewById(R.id.show_message);
+            timeStamp = itemView.findViewById(R.id.timeStamp);
             profile_image = itemView.findViewById(R.id.profile_image);
             txt_seen = itemView.findViewById(R.id.txt_seen);
 

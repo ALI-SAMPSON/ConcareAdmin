@@ -221,6 +221,8 @@
 
     <string name="data_label" translatable="false">Source Text</string>
 
+    <string name="text_copy" translatable="false">C</string>
+
     <string name="text_copied" translatable="false">Copied</string>
 
     <string name="text_pasted" translatable="false">Pasted</string>
@@ -238,6 +240,8 @@
     <string name="text_hi" translatable="false">Hi, there!</string>
 
     <string name="deleted_msg_alert" translatable="false">please long click on a message to delete </string>
+
+    <string name="long_click_msg_alert" translatable="false">please long click to see more options </string>
 
     <string name="text_reproductive_health" translatable="false">
 

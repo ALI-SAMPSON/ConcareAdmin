@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -125,6 +126,8 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
 
     ClipboardManager clipboardManager;
 
+    int selectedPosition = -1;
+
     // loading bar to load messages
     ProgressBar progressBar;
 
@@ -158,6 +161,8 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
         apiService = Client.getClient(client_url).create(APIService.class);
 
         relativeLayout = findViewById(R.id.relativeLayout);
+
+        mChats = new ArrayList<>();
 
         profile_image =  findViewById(R.id.profile_image);
         username =  findViewById(R.id.username);
@@ -215,9 +220,6 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
         // method call
         seenMessage(user_id);
 
-        // method call to get current time
-        getCurrentTime();
-
         // method call to update token
         updateToken(FirebaseInstanceId.getInstance().getToken());
     }
@@ -271,30 +273,6 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
-    // method to copy Text to clipboard
-    private void copyTextData(){
-
-        recyclerView.addOnItemTouchListener(
-                new RecyclerItemDoubleClickListener(getApplicationContext(),new RecyclerItemDoubleClickListener.OnItemDoubleClickListener(){
-                    @Override
-                    public void onItemDoubleClick(View view, int position) {
-                            String val = String.valueOf(position);
-                            TextView textView = view.findViewById(R.id.show_message);
-                            messageText = textView.getText().toString();
-                    }
-                }));
-
-        if(messageText != null){
-            // Create a new ClipData.
-            ClipData clipData = ClipData.newPlainText(getString(R.string.data_label),messageText);
-            clipboardManager.setPrimaryClip(clipData);
-            // Popup a snackbar.
-            Snackbar snackbar = Snackbar.make(relativeLayout, getString(R.string.text_copied), Snackbar.LENGTH_SHORT);
-            snackbar.show();
-        }
-
-    }
-
     // method to paste Text copied to clipboard
     private void pasteCopiedText(){
 
@@ -322,10 +300,6 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
                 return true;
             }
         });
-
-
-
-
 
 
     }
@@ -384,6 +358,9 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
 
                 // sets notify to true
                 notify = true;
+
+                // method call to get current time
+                getCurrentTime();
 
                 String message  = msg_to_send.getText().toString();
 
@@ -557,7 +534,7 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
         progressBar.setVisibility(View.VISIBLE);
 
         // array initialization
-        mChats = new ArrayList<>();
+        //mChats = new ArrayList<>();
 
         chatRef = FirebaseDatabase.getInstance().getReference(Constants.CHAT_REF);
 
@@ -638,7 +615,7 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onItemClick(int position) {
-        Toast.makeText(this,getString(R.string.deleted_msg_alert),Toast.LENGTH_LONG).show();
+        Toast.makeText(this,getString(R.string.long_click_msg_alert),Toast.LENGTH_LONG).show();
     }
 
     @Override

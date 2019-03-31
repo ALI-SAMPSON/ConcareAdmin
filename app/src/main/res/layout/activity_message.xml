@@ -118,11 +118,9 @@
             android:padding="5dp"
             android:background="@drawable/circular_edittext"
             android:layout_alignParentBottom="true">
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
                 <ImageButton
                     android:id="@+id/img_emoji"
                     android:layout_width="wrap_content"
@@ -133,7 +131,6 @@
                     android:layout_marginRight="0dp"
                     android:layout_marginEnd="0dp"
                     android:background="@drawable/ic_emoji"/>
-
                 <EditText
                     android:id="@+id/editTextMessage"
                     android:layout_width="match_parent"
@@ -152,10 +149,7 @@
                     android:layout_marginStart="0dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginEnd="15dp" />
-
             </RelativeLayout>
-
-
         </android.support.v7.widget.CardView>
 
         <LinearLayout

@@ -533,7 +533,7 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
         builder.setTitle(getString(R.string.title_delete_message));
         builder.setMessage(getString(R.string.text_delete_message));
 
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton((getString(R.string.text_yes)), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -574,7 +574,7 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
 
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton((getString(R.string.text_no)), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -612,40 +612,40 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onStart() {
         super.onStart();
-        status("online");
+        status(getString(R.string.status_online));
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        status("online");
+        status(getString(R.string.status_online));
         //currentUser(users_id);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        status("online");
+        status(getString(R.string.status_online));
         //currentUser(users_id);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        status("online");
+        status(getString(R.string.status_online));
         //currentUser("none");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        status("offline");
+        status(getString(R.string.status_online));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        status("offline");
+        status(getString(R.string.status_online));
         // removes eventListeners when activity is destroyed
         if(chatRef != null){
             chatRef.removeEventListener(seenListener);

@@ -52,22 +52,19 @@
                     android:id="@+id/timeStamp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
+                    android:padding="5dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginStart="5dp"
                     android:layout_gravity="end"
                     android:gravity="end"
-                    android:text="12:30 AM"
+                    android:text=""
                     android:layout_weight="1"
                     android:layout_marginRight="5dp"
                     android:layout_marginEnd="5dp"
                     android:textColor="@color/status_bar_back"
-                    app:fontFamily="@font/lato"
                     android:textSize="12sp" />
 
             </LinearLayout>
-
-
 
             <TextView
                 android:id="@+id/txt_seen"

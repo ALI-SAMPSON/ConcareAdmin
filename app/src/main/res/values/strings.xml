@@ -219,6 +219,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
 
+    <string name="status_online" translatable="false">online</string>
+
+    <string name="status_offline" translatable="false">offline</string>
+
     <string name="type_message" translatable="false">Type a message</string>
 
     <string name="no_text_message" translatable="false">Type a message to send</string>

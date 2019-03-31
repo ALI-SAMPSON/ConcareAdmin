@@ -2,6 +2,9 @@ package io.icode.concareghadmin.application.activities.chatApp;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,7 +19,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,8 +28,6 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,6 +46,7 @@ import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.icode.concareghadmin.application.R;
+import io.icode.concareghadmin.application.activities.RecyclerItemDoubleClickListener;
 import io.icode.concareghadmin.application.activities.adapters.MessageAdapter;
 import io.icode.concareghadmin.application.activities.constants.Constants;
 import io.icode.concareghadmin.application.activities.interfaces.APIService;
@@ -68,6 +69,8 @@ import static io.icode.concareghadmin.application.activities.constants.Constants
 public class MessageActivity extends AppCompatActivity implements View.OnClickListener, MessageAdapter.OnItemClickListener {
 
     RelativeLayout relativeLayout;
+
+    Toolbar toolbar;
 
     CircleImageView profile_image;
     TextView username,tv_user_status;
@@ -118,6 +121,10 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
     // variable to store the current time
     String currentTime;
 
+    String messageText;
+
+    ClipboardManager clipboardManager;
+
     // loading bar to load messages
     ProgressBar progressBar;
 
@@ -128,14 +135,22 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        // method call to initialize all global variables
+        init();
+
+    }
+
+    // initialize variables
+    private void init(){
+
+        toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_back_white);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              finish();
+                finish();
             }
         });
 
@@ -192,18 +207,59 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
         // setting message on progressDialog
         progressDialog.setMessage("Deleting message...");
 
-        // call
+        clipboardManager = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+
+        // method call
         getUserDetails();
 
-        // call
+        // method call
         seenMessage(user_id);
 
-        // mehtod call to get current time
+        // method call to get current time
         getCurrentTime();
 
         // method call to update token
         updateToken(FirebaseInstanceId.getInstance().getToken());
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // method call to copy text to clipboard
+        //copyTextData();
+
+        // method call to paste text from clipboard
+        //pasteCopiedText();
+
+        status(getString(R.string.status_online));
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        status(getString(R.string.status_online));
+        //currentUser(users_id);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        status(getString(R.string.status_online));
+        //currentUser(users_id);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        status(getString(R.string.status_online));
+        //currentUser("none");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        status(getString(R.string.status_online));
     }
 
     // gets the current time
@@ -212,6 +268,65 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
         currentTime = timeFormat.format(calendar.getTime());
+
+    }
+
+    // method to copy Text to clipboard
+    private void copyTextData(){
+
+        recyclerView.addOnItemTouchListener(
+                new RecyclerItemDoubleClickListener(getApplicationContext(),new RecyclerItemDoubleClickListener.OnItemDoubleClickListener(){
+                    @Override
+                    public void onItemDoubleClick(View view, int position) {
+                            String val = String.valueOf(position);
+                            TextView textView = view.findViewById(R.id.show_message);
+                            messageText = textView.getText().toString();
+                    }
+                }));
+
+        if(messageText != null){
+            // Create a new ClipData.
+            ClipData clipData = ClipData.newPlainText(getString(R.string.data_label),messageText);
+            clipboardManager.setPrimaryClip(clipData);
+            // Popup a snackbar.
+            Snackbar snackbar = Snackbar.make(relativeLayout, getString(R.string.text_copied), Snackbar.LENGTH_SHORT);
+            snackbar.show();
+        }
+
+    }
+
+    // method to paste Text copied to clipboard
+    private void pasteCopiedText(){
+
+        msg_to_send.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                // Get clip data from clipboard.
+                ClipData clipData = clipboardManager.getPrimaryClip();
+                // Get item count.
+                int itemCount = clipData.getItemCount();
+                if(itemCount > 0)
+                {
+                    // Get source text
+                    ClipData.Item item = clipData.getItemAt(0);
+                    String copiedText = item.getText().toString();
+
+                    // Set the text to target textview.
+                    msg_to_send.setText(copiedText);
+
+                    // Show a toast to tell user text has been pasted.
+                    Toast.makeText(MessageActivity.this,getString(R.string.text_pasted),Toast.LENGTH_LONG).show();
+                }
+
+                return true;
+            }
+        });
+
+
+
+
+
 
     }
 
@@ -607,39 +722,6 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put("status",status);
         adminRef.updateChildren(hashMap);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        status(getString(R.string.status_online));
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        status(getString(R.string.status_online));
-        //currentUser(users_id);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        status(getString(R.string.status_online));
-        //currentUser(users_id);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        status(getString(R.string.status_online));
-        //currentUser("none");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        status(getString(R.string.status_online));
     }
 
     @Override

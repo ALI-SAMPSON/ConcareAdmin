@@ -219,6 +219,12 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
 
+    <string name="data_label" translatable="false">Source Text</string>
+
+    <string name="text_copied" translatable="false">Copied</string>
+
+    <string name="text_pasted" translatable="false">Pasted</string>
+
     <string name="status_online" translatable="false">online</string>
 
     <string name="status_offline" translatable="false">offline</string>
